@@ -1,0 +1,2985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripple Exchange | Secure Crypto Trading Platform</title>
+  <meta name="description" content="Advanced cryptocurrency trading and mining platform with real-time market data and bank-level security">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tripple-exchange.com/">
+  <meta property="og:title" content="Tripple Exchange | Secure Crypto Trading Platform">
+  <meta property="og:description" content="Trade 150+ cryptocurrencies with real-time market data. Start mining with our powerful solutions today.">
+  <meta property="og:image" content="https://tripple-exchange.com/social-preview.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://tripple-exchange.com/">
+  <meta property="twitter:title" content="Tripple Exchange | Secure Crypto Trading Platform">
+  <meta property="twitter:description" content="Trade 150+ cryptocurrencies with real-time market data. Start mining with our powerful solutions today.">
+  <meta property="twitter:image" content="https://tripple-exchange.com/social-preview.jpg">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+    :root {
+      /* Modern Color Palette */
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-light: rgba(59, 130, 246, 0.1);
+      --primary-dark: #1e40af;
+      --secondary: #8b5cf6;
+      --secondary-dark: #7c3aed;
+      --accent: #00e5ff;
+      --accent-hover: #00b8d4;
+      
+      /* Background Colors */
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --surface-lighter: #475569;
+      --surface-hover: rgba(255, 255, 255, 0.05);
+      
+      /* Text Colors */
+      --text: #f8fafc;
+      --text-secondary: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-light: rgba(255, 255, 255, 0.9);
+      
+      /* Status Colors */
+      --success: #10b981;
+      --success-light: rgba(16, 185, 129, 0.1);
+      --error: #ef4444;
+      --error-light: rgba(239, 68, 68, 0.1);
+      --warning: #f59e0b;
+      --warning-light: rgba(245, 158, 11, 0.1);
+      --info: #3b82f6;
+      --info-light: rgba(59, 130, 246, 0.1);
+      
+      /* UI Elements */
+      --border: #334155;
+      --border-light: rgba(51, 65, 85, 0.5);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      
+      /* Gradients */
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+      --gradient-hover: linear-gradient(135deg, var(--primary-hover), var(--secondary-dark));
+      --btn-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+      --btn-gradient-hover: linear-gradient(135deg, var(--primary-hover), var(--accent-hover));
+      
+      /* Market Colors */
+      --up: #10b981;
+      --up-bg: rgba(16, 185, 129, 0.1);
+      --down: #ef4444;
+      --down-bg: rgba(239, 68, 68, 0.1);
+      
+      /* Special Colors */
+      --gold: #fbbf24;
+      --silver: #e2e8f0;
+      --bronze: #f59e0b;
+      
+      /* Typography */
+      --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      
+      /* Layout */
+      --header-height: 5rem;
+      --sidebar-width: 16rem;
+      --container-padding: 1.5rem;
+      --section-spacing: 6rem;
+      
+      /* Border Radius */
+      --radius-sm: 0.375rem;
+      --radius: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.5rem;
+      --radius-full: 9999px;
+      
+      /* Transitions */
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Z-index */
+      --z-dropdown: 1000;
+      --z-sticky: 1020;
+      --z-fixed: 1030;
+      --z-modal: 1050;
+      --z-popover: 1060;
+      --z-tooltip: 1070;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-weight: 400;
+      font-size: 1rem;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 1rem 0;
+      color: var(--text);
+    }
+    
+    h1 { font-size: 3.5rem; }
+    h2 { font-size: 2.5rem; }
+    h3 { font-size: 2rem; }
+    h4 { font-size: 1.5rem; }
+    h5 { font-size: 1.25rem; }
+    h6 { font-size: 1rem; }
+    
+    p {
+      margin: 0 0 1.5rem 0;
+      color: var(--text-secondary);
+    }
+    
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    a:hover {
+      color: var(--primary-hover);
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: var(--btn-gradient);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-primary:hover {
+      background: var(--btn-gradient-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    
+    .btn-outline:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+    
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+    
+    .btn-lg {
+      padding: 1rem 2.25rem;
+      font-size: 1.125rem;
+    }
+    
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0e14 0%, #161b22 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      visibility: visible;
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+    
+    .loading-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 400%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 150, 255, 0.1),
+        rgba(0, 150, 255, 0.05),
+        transparent
+      );
+      animation: shimmer 3s infinite linear;
+    }
+    
+    .loading-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+    }
+    
+    .loading-container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2.5rem;
+      background: rgba(13, 17, 23, 0.8);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      max-width: 90%;
+      width: 400px;
+    }
+    
+    .crypto-loader {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .crypto-loader-circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--primary);
+      animation: crypto-spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+    
+    .crypto-loader-circle:nth-child(1) {
+      width: 100%;
+      height: 100%;
+      animation-delay: -0.3s;
+      border-width: 3px;
+      border-top-color: var(--primary);
+    }
+    
+    .crypto-loader-circle:nth-child(2) {
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+      animation-delay: -0.6s;
+      border-top-color: var(--accent);
+      border-width: 2px;
+    }
+    
+    .crypto-loader-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: var(--gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    
+    .loading-progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    
+    .loading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 3px;
+      position: relative;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .loading-progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+      );
+      animation: progress-shine 2s infinite;
+    }
+    
+    .loading-text {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(45deg, #fff, var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .loading-subtext {
+      color: var(--text-secondary);
+      font-size: 0.8125rem;
+      margin-top: 0.25rem;
+      opacity: 0.8;
+    }
+    
+    .loading-stats {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Layout Utilities */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 var(--container-padding);
+    }
+    
+    .section {
+      padding: var(--section-spacing) 0;
+      position: relative;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    /* Grid System */
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .grid-cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid-cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .grid-cols-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    /* Header Styles */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      z-index: var(--z-fixed);
+      transition: var(--transition);
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-scrolled {
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow: var(--shadow-xl);
+      height: 4.5rem;
+    }
+    
+    /* Navigation */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: var(--transition);
+    }
+    
+    .logo:hover {
+      opacity: 0.9;
+    }
+    
+    .logo-img {
+      width: 2rem;
+      height: 2rem;
+    }
+    
+    .logo-text {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.75rem;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      position: relative;
+      padding: 0.5rem 0;
+      white-space: nowrap;
+    }
+    
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text);
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--gradient);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: var(--transition);
+      border-radius: 2px;
+    }
+    
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+    
+    /* Auth Buttons */
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .btn-login {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .btn-login:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-light);
+    }
+    
+    .btn-register {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+    
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* Mobile Navigation */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      z-index: 1001;
+    }
+    
+    .mobile-menu-btn:hover {
+      background: var(--surface-hover);
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 320px;
+      height: 100vh;
+      background: var(--surface);
+      z-index: 1000;
+      transition: var(--transition-slow);
+      padding: 5rem 2rem 2rem;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+      overflow-y: auto;
+    }
+    
+    .mobile-menu.active {
+      right: 0;
+    }
+    
+    .mobile-menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .mobile-menu-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .mobile-menu-links a i {
+      width: 1.5rem;
+      text-align: center;
+    }
+    
+    .mobile-menu-links a:hover,
+    .mobile-menu-links a.active {
+      color: var(--text);
+      background: var(--surface-light);
+    }
+    
+    .mobile-auth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+    
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Hero Section */
+    .hero {
+      padding: 10rem 0 5rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7));
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=2232&auto=format&fit=crop') no-repeat center center/cover;
+      z-index: -1;
+      opacity: 0.15;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--text), var(--text-secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+    
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(10px);
+      padding: 1.25rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+    
+    .stat-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: var(--radius);
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    
+    .stat-number {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    /* About Section */
+    .about-section {
+      background: var(--bg);
+    }
+    
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    
+    .about-text h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+    
+    .about-text p {
+      margin-bottom: 1.5rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    .about-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .about-feature {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    
+    .about-feature-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius);
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    
+    .about-feature-text h3 {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    
+    .about-feature-text p {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+    
+    /* Chart Container */
+    .chart-container {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .chart-header h3 {
+      font-size: 1.125rem;
+      color: var(--text);
+    }
+    
+    .timeframe-selector {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .timeframe-btn {
+      background: var(--surface-light);
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.375rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .timeframe-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .timeframe-btn:hover:not(.active) {
+      background: var(--surface-lighter);
+      color: var(--text);
+    }
+    
+    #tradingview_chart {
+      height: 400px;
+      width: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    
+    .chart-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .chart-footer a {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .chart-footer a:hover {
+      color: var(--primary);
+    }
+    
+    .symbol-select {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+    }
+    
+    /* Market Section */
+    .market-section {
+      background: var(--surface);
+    }
+    
+    .market-tabs {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+    
+    .market-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .market-tab {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      background: var(--surface-light);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    
+    .market-tab.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .market-tab:hover:not(.active) {
+      background: var(--surface-lighter);
+      color: var(--text);
+    }
+    
+    .search-box {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9375rem;
+      transition: var(--transition);
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    
+    .market-list {
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+    
+    .market-list-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      padding: 1rem 1.5rem;
+      background: var(--surface-light);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+    
+    .market-list-item {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    
+    .market-list-item:last-child {
+      border-bottom: none;
+    }
+    
+    .market-list-item:hover {
+      background: var(--surface-hover);
+    }
+    
+    .coin-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .coin-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .coin-details {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .coin-name {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .coin-symbol {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    
+    .coin-price {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .coin-change {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .change {
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+    
+    .change.up {
+      background: var(--up-bg);
+      color: var(--up);
+    }
+    
+    .change.down {
+      background: var(--down-bg);
+      color: var(--down);
+    }
+    
+    .favorite-star {
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.875rem;
+    }
+    
+    .favorite-star.active {
+      color: var(--gold);
+    }
+    
+    .favorite-star:hover {
+      transform: scale(1.2);
+    }
+    
+    .no-results {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      text-align: center;
+    }
+    
+    .no-results i {
+      font-size: 2rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    
+    .no-results p {
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+    
+    /* Mining Section */
+    .mining-section {
+      background: var(--bg);
+    }
+    
+    .mining-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .mining-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    
+    .mining-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .mining-card-header {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .mining-card-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--radius);
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 1.25rem;
+    }
+    
+    .mining-card-title {
+      font-size: 1.125rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .mining-card-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    
+    .mining-progress {
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress-bar {
+      height: 0.5rem;
+      background: var(--surface-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: var(--radius);
+      width: 70%;
+    }
+    
+    .progress-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+    
+    .mining-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .mining-stat h3 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    
+    .mining-stat p {
+      font-size: 0.9375rem;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    
+    /* Partners Section */
+    .partners-section {
+      background: var(--surface);
+    }
+    
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .partner-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    
+    .partner-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .partner-logo {
+      height: 3rem;
+      width: auto;
+      object-fit: contain;
+      filter: grayscale(100%);
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+    
+    .partner-card:hover .partner-logo {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+    
+    .partner-name {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      background: var(--gradient);
+      padding: 5rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta-content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .cta-title {
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cta-text {
+      font-size: 1.125rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--bg);
+      padding: 5rem 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    
+    .footer-about {
+      max-width: 300px;
+    }
+    
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-logo i {
+      color: var(--primary);
+    }
+    
+    .footer-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .social-link {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      font-size: 1rem;
+    }
+    
+    .social-link:hover {
+      background: var(--gradient);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .footer-links h3 {
+      font-size: 1.125rem;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    .footer-links h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 2.5rem;
+      height: 2px;
+      background: var(--gradient);
+    }
+    
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+    }
+    
+    .footer-links a i {
+      color: var(--primary);
+      font-size: 0.75rem;
+      transition: var(--transition);
+    }
+    
+    .footer-links a:hover {
+      color: var(--text);
+    }
+    
+    .footer-links a:hover i {
+      transform: translateX(3px);
+    }
+    
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    /* Particles */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    /* Animations */
+    @keyframes crypto-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes progress-shine {
+      0% { transform: translateX(-100%) skewX(-30deg); }
+      100% { transform: translateX(300%) skewX(-30deg); }
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+      50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .hero-title {
+        font-size: 2.75rem;
+      }
+      
+      .about-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .mining-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .partners-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .auth-buttons {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .hero {
+        padding: 8rem 0 4rem;
+      }
+      
+      .hero-title {
+        font-size: 2.25rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.125rem;
+      }
+      
+      .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .hero-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+        width: 100%;
+      }
+      
+      .stat-item {
+        justify-content: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .stat-icon {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.8rem;
+      }
+      
+      .stat-number {
+        font-size: 1rem;
+      }
+      
+      .stat-label {
+        font-size: 0.75rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .mining-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .partners-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .market-list-header,
+      .market-list-item {
+        grid-template-columns: 1.5fr 1fr 1fr;
+        padding: 1rem;
+      }
+      
+      .coin-info {
+        gap: 0.75rem;
+      }
+      
+      .coin-icon {
+        width: 1.75rem;
+        height: 1.75rem;
+      }
+      
+      .coin-name {
+        font-size: 0.9375rem;
+      }
+      
+      .coin-symbol {
+        font-size: 0.75rem;
+      }
+      
+      .coin-price,
+      .coin-change {
+        font-size: 0.875rem;
+      }
+      
+      .change {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+      
+      .section-title {
+        font-size: 1.75rem;
+      }
+      
+      .section-subtitle {
+        font-size: 1rem;
+      }
+      
+      .market-tabs {
+        flex-wrap: wrap;
+      }
+      
+      .partners-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-about {
+        max-width: 100%;
+      }
+      
+      .chart-container {
+        padding: 1rem;
+      }
+      
+      #tradingview_chart {
+        height: 300px;
+      }
+      
+      .timeframe-selector {
+        flex-wrap: wrap;
+      }
+      
+      .market-list-header,
+      .market-list-item {
+        grid-template-columns: 1.5fr 1fr 0.8fr;
+      }
+    }
+    
+    @media (max-width: 400px) {
+      .hero-title {
+        font-size: 1.75rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+      
+      .market-list-header,
+      .market-list-item {
+        grid-template-columns: 1.5fr 1fr 0.7fr;
+      }
+      
+      .coin-info {
+        gap: 0.5rem;
+      }
+      
+      .coin-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+
+    /* Modern Loading Overlay Styles */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #020617;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .loading-screen.hidden {
+      display: none;
+    }
+
+    /* Abstract Geometric Background */
+    .geometric-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      opacity: 0.15;
+    }
+
+    .geometric-shape {
+      position: absolute;
+      border: 1px solid #3b82f6;
+      opacity: 0.7;
+    }
+
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      top: -50px;
+      left: -50px;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: float 25s infinite linear;
+    }
+
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      bottom: -30px;
+      right: -30px;
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: float 20s infinite linear reverse;
+    }
+
+    .shape-3 {
+      width: 150px;
+      height: 150px;
+      top: 30%;
+      right: 10%;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: pulse 8s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% {
+        transform: rotate(0deg) translate(0, 0);
+      }
+      100% {
+        transform: rotate(360deg) translate(50px, 50px);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    /* Main Content */
+    .loading-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+    }
+
+    /* Abstract Loading Animation */
+    .loading-animation {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin-bottom: 3rem;
+    }
+
+    .core {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+      animation: core-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes core-pulse {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+      }
+    }
+
+    .orbit {
+      position: absolute;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      animation: orbit-rotate linear infinite;
+    }
+
+    .orbit-1 {
+      width: 120px;
+      height: 120px;
+      top: 40px;
+      left: 40px;
+      border-top-color: #3b82f6;
+      animation-duration: 8s;
+    }
+
+    .orbit-2 {
+      width: 160px;
+      height: 160px;
+      top: 20px;
+      left: 20px;
+      border-right-color: #60a5fa;
+      animation-duration: 12s;
+      animation-direction: reverse;
+    }
+
+    .orbit-3 {
+      width: 200px;
+      height: 200px;
+      top: 0;
+      left: 0;
+      border-bottom-color: #00f0ff;
+      animation-duration: 16s;
+    }
+
+    @keyframes orbit-rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Text Elements */
+    .loading-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .loading-title span {
+      background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .loading-subtitle {
+      font-size: 1rem;
+      color: rgba(248, 250, 252, 0.7);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    /* Progress Indicator */
+    .progress-container {
+      width: 100%;
+      max-width: 300px;
+      height: 6px;
+      background-color: rgba(59, 130, 246, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+      animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    @keyframes progress {
+      0% {
+        width: 0;
+      }
+      50% {
+        width: 80%;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+
+    .status-text {
+      font-size: 0.9rem;
+      color: rgba(248, 250, 252, 0.7);
+      text-align: center;
+      max-width: 300px;
+    }
+
+    .status-text:after {
+      content: '...';
+      animation: dots 1.5s infinite steps(4, end);
+    }
+
+    @keyframes dots {
+      0%, 20% {
+        content: '.';
+      }
+      40% {
+        content: '..';
+      }
+      60%, 100% {
+        content: '...';
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .loading-title {
+        font-size: 2rem;
+      }
+      
+      .loading-subtitle {
+        font-size: 0.9rem;
+      }
+      
+      .loading-animation {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .orbit-1 {
+        width: 90px;
+        height: 90px;
+        top: 30px;
+        left: 30px;
+      }
+      
+      .orbit-2 {
+        width: 120px;
+        height: 120px;
+        top: 15px;
+        left: 15px;
+      }
+      
+      .orbit-3 {
+        width: 150px;
+        height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+    
+  <!-- Modern Loading Overlay -->
+  <div class="loading-screen" id="loadingOverlay">
+    <div class="geometric-bg">
+      <div class="geometric-shape shape-1"></div>
+      <div class="geometric-shape shape-2"></div>
+      <div class="geometric-shape shape-3"></div>
+    </div>
+    
+    <div class="loading-content">
+      <div class="loading-animation">
+        <div class="core"></div>
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+      </div>
+      
+      <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+      <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+      
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      
+      <p class="status-text">Loading trading platform</p>
+    </div>
+  </div>
+      
+      <div class="loading-stats">
+        <span>SECURITY: <span id="securityStatus">ENABLED</span></span>
+        <span>VERSION: 2.1.4</span>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper" id="contentWrapper">
+    <div id="particles-js"></div>
+
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo-container">
+            <a href="index.html" class="logo">
+              <svg class="logo-img" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="20" fill="url(#gradient)"/>
+                <path d="M20 10L26.9282 15.5L26.9282 24.5L20 30L13.0718 24.5L13.0718 15.5L20 10Z" fill="white"/>
+                <circle cx="20" cy="20" r="5" fill="#0096FF"/>
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3b82f6"/>
+                    <stop offset="100%" stop-color="#8b5cf6"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <span class="logo-text">Tripple Exchange</span>
+            </a>
+          </div>
+          
+          <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#market">Market</a>
+            <a href="#mining">Mining</a>
+            <a href="#partners">Partners</a>
+          </div>
+          
+          <div class="auth-buttons">
+            <a href="login.html" class="btn btn-outline">Log In</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+          </div>
+          
+          <button class="mobile-menu-btn" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-links">
+        <a href="#about">
+          <i class="fas fa-info-circle"></i> About
+        </a>
+        <a href="#market">
+          <i class="fas fa-chart-line"></i> Market
+        </a>
+        <a href="#mining">
+          <i class="fas fa-server"></i> Mining
+        </a>
+        <a href="#partners">
+          <i class="fas fa-handshake"></i> Partners
+        </a>
+      </div>
+      
+      <div class="mobile-auth-buttons">
+        <a href="login.html" class="btn btn-outline">
+          <i class="fas fa-sign-in-alt"></i> Log In
+        </a>
+        <a href="signup.html" class="btn btn-primary">
+          <i class="fas fa-user-plus"></i> Sign Up
+        </a>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+          <h1 class="hero-title">Advanced Crypto Trading & Mining Platform</h1>
+          <p class="hero-subtitle">Trade 150+ cryptocurrencies with low fees, high security, and real-time market data. Mine crypto with our powerful cloud solutions.</p>
+          
+          <div class="hero-buttons">
+            <a href="signup.html" class="btn btn-primary btn-lg">
+              <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="login.html" class="btn btn-outline btn-lg">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+          </div>
+          
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div>
+                <div class="stat-number">1.7M+</div>
+                <div class="stat-label">Active Users</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div>
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-globe"></i>
+              </div>
+              <div>
+                <div class="stat-number">150+</div>
+                <div class="stat-label">Countries</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Why Choose Tripple Exchange</h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">We provide the most secure and advanced platform for crypto trading and mining</p>
+        
+        <div class="about-content">
+          <div class="about-text" data-aos="fade-up">
+            <h2>About Our Platform</h2>
+            <p>Tripple Exchange is a leading cryptocurrency platform offering secure trading and mining services to users worldwide. Our mission is to make digital assets accessible to everyone.</p>
+            <p>Founded in 2018, we've grown to become one of the most trusted names in the industry, serving over 1.7 million users across 150+ countries.</p>
+            
+            <div class="about-features">
+              <div class="about-feature" data-aos="fade-up" data-aos-delay="100">
+                <div class="about-feature-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="about-feature-text">
+                  <h3>Bank-Level Security</h3>
+                  <p>Multi-layer protection including cold storage, 2FA, and biometric authentication</p>
+                </div>
+              </div>
+              
+              <div class="about-feature" data-aos="fade-up" data-aos-delay="200">
+                <div class="about-feature-icon">
+                  <i class="fas fa-bolt"></i>
+                </div>
+                <div class="about-feature-text">
+                  <h3>Lightning Fast Trading</h3>
+                  <p>High-performance matching engine processing 1.4M transactions per second</p>
+                </div>
+              </div>
+              
+              <div class="about-feature" data-aos="fade-up" data-aos-delay="300">
+                <div class="about-feature-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="about-feature-text">
+                  <h3>Advanced Analytics</h3>
+                  <p>Real-time charts, indicators, and trading tools for professionals</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- TradingView Widget -->
+          <div class="chart-container" data-aos="fade-up" data-aos-delay="100">
+            <div class="chart-header">
+              <h3>Live Market Chart</h3>
+              <div class="timeframe-selector">
+                <button class="timeframe-btn active" data-timeframe="15">15m</button>
+                <button class="timeframe-btn" data-timeframe="60">1h</button>
+                <button class="timeframe-btn" data-timeframe="D">1D</button>
+                <button class="timeframe-btn" data-timeframe="W">1W</button>
+              </div>
+            </div>
+            <div id="tradingview_chart"></div>
+            <div class="chart-footer">
+              <div class="tradingview-widget-copyright">
+                <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+                  <i class="fas fa-chart-line"></i> Powered by TradingView
+                </a>
+              </div>
+              <div class="symbol-selector">
+                <select id="chartSymbol" class="symbol-select">
+                  <option value="BINANCE:BTCUSDT">BTC/USDT</option>
+                  <option value="BINANCE:ETHUSDT">ETH/USDT</option>
+                  <option value="BINANCE:BNBUSDT">BNB/USDT</option>
+                  <option value="BINANCE:SOLUSDT">SOL/USDT</option>
+                </select>
+              </div>
+            </div>
+            <script type="text/javascript">
+              let widget = new TradingView.widget({
+                "autosize": true,
+                "symbol": "BINANCE:BTCUSDT",
+                "interval": "15",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "enable_publishing": false,
+                "hide_top_toolbar": true,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": false,
+                "container_id": "tradingview_chart",
+                "studies": [
+                  "RSI@tv-basicstudies"
+                ],
+                "overrides": {
+                  "paneProperties.background": "#1a1f2b",
+                  "paneProperties.vertGridProperties.color": "#1e2430",
+                  "paneProperties.horzGridProperties.color": "#1e2430",
+                  "paneProperties.crossHairProperties.color": "#3b82f6",
+                  "mainSeriesProperties.candleStyle.upColor": "#10b981",
+                  "mainSeriesProperties.candleStyle.downColor": "#ef4444",
+                  "mainSeriesProperties.candleStyle.borderUpColor": "#10b981",
+                  "mainSeriesProperties.candleStyle.borderDownColor": "#ef4444",
+                  "mainSeriesProperties.candleStyle.wickUpColor": "#10b981",
+                  "mainSeriesProperties.candleStyle.wickDownColor": "#ef4444"
+                }
+              });
+              
+              // Handle timeframe changes
+              document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                  document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+                  this.classList.add('active');
+                  widget.chart().setResolution(Number(this.dataset.timeframe) || this.dataset.timeframe);
+                });
+              });
+              
+              // Handle symbol changes
+              document.getElementById('chartSymbol').addEventListener('change', function() {
+                widget.chart().setSymbol(this.value, {
+                  interval: document.querySelector('.timeframe-btn.active').dataset.timeframe
+                });
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Market Section -->
+    <section class="section market-section" id="market">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Real-Time Crypto Market</h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Track prices and trends across all major cryptocurrencies with our advanced tools</p>
+
+        <div class="market-tabs" data-aos="fade-up">
+          <div class="market-tab active" data-tab="all">All</div>
+          <div class="market-tab" data-tab="gainers">Gainers</div>
+          <div class="market-tab" data-tab="losers">Losers</div>
+          <div class="market-tab" data-tab="favorites">Favorites</div>
+        </div>
+
+        <div class="search-box" data-aos="fade-up" data-aos-delay="100">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search coins..." id="searchInput" aria-label="Search cryptocurrencies">
+        </div>
+
+        <div class="market-list" data-aos="fade-up" data-aos-delay="200">
+          <div class="market-list-header">
+            <div>Coin</div>
+            <div>Price</div>
+            <div>24h</div>
+          </div>
+          <div id="tradebox"></div>
+          <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
+            <p>No coins match your search</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mining Section -->
+    <section class="section mining-section" id="mining">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Crypto Mining Solutions</h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Earn passive income with our powerful mining machines</p>
+        
+        <div class="mining-grid">
+          <!-- Mining Card 1 -->
+          <div class="mining-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="mining-card-header">
+              <div class="mining-card-icon">
+                <i class="fas fa-server"></i>
+              </div>
+              <div>
+                <h3 class="mining-card-title">ETH Mining Machine</h3>
+                <p class="mining-card-subtitle">Ethereum ASIC Miner</p>
+              </div>
+            </div>
+            
+            <div class="mining-progress">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <div class="progress-text">70% Sold</div>
+            </div>
+            
+            <div class="mining-stats">
+              <div class="mining-stat">
+                <h3>Unit Price</h3>
+                <p>$500.00</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Holding Period</h3>
+                <p>180 Days</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Daily Yield</h3>
+                <p>1.2%</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Total Yield</h3>
+                <p>216%</p>
+              </div>
+            </div>
+            
+            <a href="login.html" class="btn btn-primary">
+              <i class="fas fa-cart-plus"></i> Purchase Now
+            </a>
+          </div>
+          
+          <!-- Mining Card 2 -->
+          <div class="mining-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="mining-card-header">
+              <div class="mining-card-icon">
+                <i class="fas fa-server"></i>
+              </div>
+              <div>
+                <h3 class="mining-card-title">BTC Mining Machine</h3>
+                <p class="mining-card-subtitle">Bitcoin ASIC Miner</p>
+              </div>
+            </div>
+            
+            <div class="mining-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 88%;"></div>
+              </div>
+              <div class="progress-text">88% Sold</div>
+            </div>
+            
+            <div class="mining-stats">
+              <div class="mining-stat">
+                <h3>Unit Price</h3>
+                <p>$1,000.00</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Holding Period</h3>
+                <p>180 Days</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Daily Yield</h3>
+                <p>1.5%</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Total Yield</h3>
+                <p>270%</p>
+              </div>
+            </div>
+            
+            <a href="login.html" class="btn btn-primary">
+              <i class="fas fa-cart-plus"></i> Purchase Now
+            </a>
+          </div>
+          
+          <!-- Mining Card 3 -->
+          <div class="mining-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="mining-card-header">
+              <div class="mining-card-icon">
+                <i class="fas fa-server"></i>
+              </div>
+              <div>
+                <h3 class="mining-card-title">Invite Friend Miner</h3>
+                <p class="mining-card-subtitle">USDT Output</p>
+              </div>
+            </div>
+            
+            <div class="mining-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%;"></div>
+              </div>
+              <div class="progress-text">85% Sold</div>
+            </div>
+            
+            <div class="mining-stats">
+              <div class="mining-stat">
+                <h3>Unit Price</h3>
+                <p>$8,000.00</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Holding Period</h3>
+                <p>100 Days</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Daily Yield</h3>
+                <p>2.0%</p>
+              </div>
+              <div class="mining-stat">
+                <h3>Total Yield</h3>
+                <p>200%</p>
+              </div>
+            </div>
+            
+            <a href="login.html" class="btn btn-primary">
+              <i class="fas fa-cart-plus"></i> Purchase Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="section partners-section" id="partners">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Trusted by Industry Leaders</h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">We collaborate with the best in the industry to provide top-tier services</p>
+        
+        <div class="partners-grid">
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="100">
+            <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" alt="Binance Coin" class="partner-logo" loading="lazy">
+            <p class="partner-name">Binance Coin</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="150">
+            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin" class="partner-logo" loading="lazy">
+            <p class="partner-name">Bitcoin</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum" class="partner-logo" loading="lazy">
+            <p class="partner-name">Ethereum</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="250">
+            <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana" class="partner-logo" loading="lazy">
+            <p class="partner-name">Solana</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="300">
+            <img src="https://cryptologos.cc/logos/polygon-matic-logo.png" alt="Polygon" class="partner-logo" loading="lazy">
+            <p class="partner-name">Polygon</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="350">
+            <img src="https://cryptologos.cc/logos/chainlink-link-logo.png" alt="Chainlink" class="partner-logo" loading="lazy">
+            <p class="partner-name">Chainlink</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="400">
+            <img src="https://cryptologos.cc/logos/avalanche-avax-logo.png" alt="Avalanche" class="partner-logo" loading="lazy">
+            <p class="partner-name">Avalanche</p>
+          </div>
+          
+          <div class="partner-card" data-aos="fade-up" data-aos-delay="450">
+            <img src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png" alt="Polkadot" class="partner-logo" loading="lazy">
+            <p class="partner-name">Polkadot</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+          <h2 class="cta-title">Start Your Crypto Journey Today</h2>
+          <p class="cta-text">Join millions of users trading and mining cryptocurrencies on the most secure platform in the industry.</p>
+          <a href="signup.html" class="btn btn-primary btn-lg">
+            <i class="fas fa-user-plus"></i> Create Free Account
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <i class="fas fa-coins"></i>
+              Tripple Exchange
+            </div>
+            <p>The most secure and intuitive platform for cryptocurrency trading and mining, trusted by millions worldwide.</p>
+            <div class="social-links">
+              <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+          
+          <div class="footer-links">
+            <h3>Company</h3>
+            <ul>
+              <li><a href="#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-links">
+            <h3>Products</h3>
+            <ul>
+              <li><a href="#market"><i class="fas fa-chevron-right"></i> Exchange</a></li>
+              <li><a href="#mining"><i class="fas fa-chevron-right"></i> Mining</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Wallet</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> API</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-links">
+            <h3>Support</h3>
+            <ul>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Security</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Legal</a></li>
+              <li><a href="#"><i class="fas fa-chevron-right"></i> Status</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <p>&copy; 2025 Tripple Exchange. All rights reserved. | Built for the future of finance.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Crypto Trading Loading System
+    class LoadingSystem {
+      constructor() {
+        this.loadingPhases = [
+          { progress: 15, text: 'Initializing Platform...', subtext: 'Loading core modules', security: 'Establishing secure connection...' },
+          { progress: 30, text: 'Loading Market Data...', subtext: 'Fetching latest prices', security: 'Verifying data integrity...' },
+          { progress: 45, text: 'Setting Up Security...', subtext: 'Encrypting connection', security: 'Activating 2FA protocols...' },
+          { progress: 60, text: 'Preparing Dashboard...', subtext: 'Loading charts and widgets', security: 'Scanning for threats...' },
+          { progress: 75, text: 'Finalizing Setup...', subtext: 'Almost there', security: 'Security checks complete' },
+          { progress: 100, text: 'Ready to Trade!', subtext: 'Welcome to Tripple Exchange', security: 'Secure connection established' }
+        ];
+        this.currentPhase = 0;
+        this.loadingTimeout = null;
+        console.log('LoadingSystem: Initialized with', this.loadingPhases.length, 'phases');
+      }
+
+      init() {
+        console.log('Starting loading sequence...');
+        // Ensure the loading overlay is visible
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+          loadingOverlay.style.display = 'flex';
+          loadingOverlay.classList.remove('hidden');
+          console.log('Loading overlay is visible');
+        } else {
+          console.error('Loading overlay element not found!');
+        }
+        this.setupEventListeners();
+        this.simulateLoading();
+      }
+
+      setupEventListeners() {
+        window.addEventListener('load', () => this.completeLoading());
+        setTimeout(() => this.completeLoading(), this.maxLoadingTime);
+      }
+
+      simulateLoading() {
+        if (this.currentPhase >= this.loadingPhases.length) {
+          console.log('All loading phases completed, calling completeLoading()');
+          this.completeLoading();
+          return;
+        }
+
+        const phase = this.loadingPhases[this.currentPhase];
+        console.log(`Loading phase ${this.currentPhase + 1}/${this.loadingPhases.length}:`, phase.text);
+        this.updateProgress(phase.progress, phase.text, phase.subtext, phase.security);
+        
+        this.currentPhase++;
+        const delay = this.currentPhase === this.loadingPhases.length ? 1200 : 800;
+        this.loadingTimeout = setTimeout(() => this.simulateLoading(), delay);
+      }
+
+      updateProgress(progress, text, subtext, security) {
+        const progressBar = document.getElementById('loadingProgress');
+        const loadingText = document.getElementById('loadingText');
+        const loadingSubtext = document.getElementById('loadingSubtext');
+        const securityStatus = document.getElementById('securityStatus');
+        
+        if (progressBar) progressBar.style.width = `${progress}%`;
+        if (loadingText && text) loadingText.textContent = text;
+        if (loadingSubtext && subtext) loadingSubtext.textContent = subtext;
+        if (securityStatus && security) securityStatus.textContent = security;
+      }
+
+      completeLoading() {
+        console.log('Starting completeLoading()...');
+        // Clear any pending timeouts
+        clearTimeout(this.loadingTimeout);
+        
+        // Final update with completion state
+        const finalPhase = this.loadingPhases[this.loadingPhases.length - 1];
+        console.log('Final phase:', finalPhase);
+        this.updateProgress(
+          finalPhase.progress,
+          finalPhase.text,
+          finalPhase.subtext,
+          finalPhase.security
+        );
+        
+        // Add loaded class to body
+        document.body.classList.add('page-loaded');
+        console.log('Added page-loaded class to body');
+        
+        // Hide loading overlay with delay
+        setTimeout(() => {
+          const loadingOverlay = document.getElementById('loadingOverlay');
+          if (loadingOverlay) {
+            console.log('Hiding loading overlay...');
+            loadingOverlay.classList.add('hidden');
+            
+            // Remove loading overlay from DOM after animation completes
+            setTimeout(() => {
+              console.log('Removing loading overlay from DOM');
+              loadingOverlay.remove();
+              
+              // Initialize AOS if available
+              if (typeof AOS !== 'undefined') {
+                console.log('Initializing AOS...');
+                AOS.init({
+                  duration: 800,
+                  once: true,
+                  easing: 'ease-out-cubic'
+                });
+              } else {
+                console.warn('AOS is not defined');
+              }
+              
+              // Initialize particles if available
+              if (typeof particlesJS !== 'undefined') {
+                console.log('Initializing particles...');
+                particlesJS.load('particles-js', 'particles.json');
+              } else {
+                console.warn('particlesJS is not defined');
+              }
+              
+              // Trigger window resize to fix any layout issues
+              console.log('Dispatching resize event...');
+              window.dispatchEvent(new Event('resize'));
+              
+              // Play a subtle sound effect (if enabled)
+              try {
+                console.log('Playing completion sound...');
+                const audio = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+              } catch (e) {
+                console.log('Audio initialization failed:', e);
+              }
+              
+              console.log('Loading completed successfully!');
+            }, 800);
+          } else {
+            console.error('Loading overlay element not found during completion!');
+          }
+        }, 800);
+      }
+    }
+
+    // Initialize loading system
+    document.addEventListener('DOMContentLoaded', () => {
+      new LoadingSystem().init();
+      
+      // Initialize mobile menu toggle
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+      
+      mobileMenuBtn.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+        mobileMenuOverlay.classList.toggle('active');
+        document.body.classList.toggle('no-scroll');
+      });
+      
+      mobileMenuOverlay.addEventListener('click', function() {
+        mobileMenu.classList.remove('active');
+        mobileMenuOverlay.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+      });
+      
+      // Close menu when clicking on a link
+      document.querySelectorAll('.mobile-menu-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('active');
+          mobileMenuOverlay.classList.remove('active');
+          document.body.classList.remove('no-scroll');
+        });
+      });
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Particles initialization
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80 },
+        color: { value: '#3b82f6' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.3 },
+        size: { value: 3 },
+        move: { 
+          enable: true, 
+          speed: 1.5,
+          direction: 'none',
+          random: true,
+          straight: false,
+          out_mode: 'out',
+          bounce: false
+        }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' }
+        }
+      }
+    });
+
+    // Crypto Market Data with API Integration
+    const cryptoData = [
+      {
+        id: 'bitcoin',
+        name: 'Bitcoin',
+        symbol: 'BTC',
+        icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'ethereum',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'solana',
+        name: 'Solana',
+        symbol: 'SOL',
+        icon: 'https://cryptologos.cc/logos/solana-sol-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'binancecoin',
+        name: 'BNB',
+        symbol: 'BNB',
+        icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'ripple',
+        name: 'XRP',
+        symbol: 'XRP',
+        icon: 'https://cryptologos.cc/logos/xrp-xrp-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'dogecoin',
+        name: 'Dogecoin',
+        symbol: 'DOGE',
+        icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'cardano',
+        name: 'Cardano',
+        symbol: 'ADA',
+        icon: 'https://cryptologos.cc/logos/cardano-ada-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'avalanche-2',
+        name: 'Avalanche',
+        symbol: 'AVAX',
+        icon: 'https://cryptologos.cc/logos/avalanche-avax-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'polkadot',
+        name: 'Polkadot',
+        symbol: 'DOT',
+        icon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      },
+      {
+        id: 'chainlink',
+        name: 'Chainlink',
+        symbol: 'LINK',
+        icon: 'https://cryptologos.cc/logos/chainlink-link-logo.png',
+        price: 0,
+        change: 0,
+        volume: 0,
+        marketCap: 0
+      }
+    ];
+
+    let favorites = JSON.parse(localStorage.getItem('cryptoFavorites')) || [];
+
+    // Fetch live crypto prices from CoinGecko API
+    async function fetchCryptoPrices() {
+      try {
+        const ids = cryptoData.map(coin => coin.id).join(',');
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch crypto data');
+        }
+        
+        const data = await response.json();
+        
+        // Update our cryptoData with live prices
+        data.forEach(coinData => {
+          const coin = cryptoData.find(c => c.id === coinData.id);
+          if (coin) {
+            coin.price = coinData.current_price;
+            coin.change = coinData.price_change_percentage_24h;
+            coin.volume = coinData.total_volume / 1000000000; // Convert to billions
+            coin.marketCap = coinData.market_cap / 1000000000; // Convert to billions
+          }
+        });
+        
+        renderCryptoList();
+      } catch (error) {
+        console.error('Error fetching crypto prices:', error);
+        // Fallback to default values if API fails
+        cryptoData.forEach(coin => {
+          coin.price = coin.price || Math.random() * 10000 + 100;
+          coin.change = coin.change || (Math.random() * 10 - 5);
+        });
+        renderCryptoList();
+      }
+    }
+
+    function renderCryptoList(data = cryptoData) {
+      const tradebox = document.getElementById('tradebox');
+      const noResults = document.getElementById('noResults');
+      const activeTab = document.querySelector('.market-tab.active').dataset.tab;
+      
+      // Filter data based on active tab and search
+      let filteredData = [...data];
+      
+      switch(activeTab) {
+        case 'gainers':
+          filteredData = filteredData.filter(coin => coin.change > 0);
+          break;
+        case 'losers':
+          filteredData = filteredData.filter(coin => coin.change < 0);
+          break;
+        case 'favorites':
+          filteredData = filteredData.filter(coin => favorites.includes(coin.id));
+          break;
+      }
+      
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      if (searchTerm) {
+        filteredData = filteredData.filter(coin => 
+          coin.name.toLowerCase().includes(searchTerm) || 
+          coin.symbol.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      if (filteredData.length === 0) {
+        tradebox.innerHTML = '';
+        noResults.style.display = 'flex';
+        return;
+      }
+      
+      noResults.style.display = 'none';
+      tradebox.innerHTML = '';
+      
+      filteredData.forEach((coin, index) => {
+        const isFavorite = favorites.includes(coin.id);
+        const isPositive = coin.change >= 0;
+        
+        const coinElement = document.createElement('div');
+        coinElement.className = 'market-list-item';
+        coinElement.innerHTML = `
+          <div class="coin-info">
+            <img src="${coin.icon}" class="coin-icon" alt="${coin.name} logo" loading="lazy">
+            <div class="coin-details">
+              <div class="coin-name">${coin.name}
+                <i class="fas fa-star favorite-star ${isFavorite ? 'active' : ''}" 
+                   data-id="${coin.id}" 
+                   onclick="toggleFavorite(event, '${coin.id}')" 
+                   aria-label="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}" 
+                   tabindex="0"></i>
+              </div>
+              <div class="coin-symbol">${coin.symbol}/USDT</div>
+            </div>
+          </div>
+          <div class="coin-price" data-coin="${coin.id}">$${coin.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6})}</div>
+          <div class="coin-change" data-coin="${coin.id}">
+            <span class="change ${isPositive ? 'up' : 'down'}">
+              ${isPositive ? '+' : ''}${coin.change.toFixed(2)}%
+            </span>
+          </div>
+        `;
+        
+        tradebox.appendChild(coinElement);
+      });
+    }
+
+    function toggleFavorite(event, coinId) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const star = event.target;
+      const index = favorites.indexOf(coinId);
+      
+      if (index === -1) {
+        favorites.push(coinId);
+        star.classList.add('active');
+      } else {
+        favorites.splice(index, 1);
+        star.classList.remove('active');
+      }
+      
+      localStorage.setItem('cryptoFavorites', JSON.stringify(favorites));
+      renderCryptoList();
+    }
+
+    // Initialize market functionality
+    document.querySelectorAll('.market-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        renderCryptoList();
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+      renderCryptoList();
+    });
+
+    // Initial fetch and periodic updates
+    fetchCryptoPrices();
+    setInterval(fetchCryptoPrices, 60000); // Update every minute
+    
+    // Make functions available globally
+    window.toggleFavorite = toggleFavorite;
+    window.renderCryptoList = renderCryptoList;
+  </script>
+</body>
+</html>

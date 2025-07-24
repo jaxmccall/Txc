@@ -1,0 +1,2970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tripple Exchange | Enhanced Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="./js/auth-manager.js"></script>
+    <style>
+        /* Modern Loading Overlay Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Abstract Geometric Background */
+        .geometric-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid #3b82f6;
+            opacity: 0.7;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: float 25s infinite linear;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -30px;
+            right: -30px;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: float 20s infinite linear reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 10%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: rotate(0deg) translate(0, 0);
+            }
+            100% {
+                transform: rotate(360deg) translate(50px, 50px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Main Content */
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        /* Abstract Loading Animation */
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .core {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            animation: core-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes core-pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+            }
+        }
+
+        .orbit {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 {
+            width: 120px;
+            height: 120px;
+            top: 40px;
+            left: 40px;
+            border-top-color: #3b82f6;
+            animation-duration: 8s;
+        }
+
+        .orbit-2 {
+            width: 160px;
+            height: 160px;
+            top: 20px;
+            left: 20px;
+            border-right-color: #60a5fa;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 200px;
+            height: 200px;
+            top: 0;
+            left: 0;
+            border-bottom-color: #00f0ff;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbit-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text Elements */
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-title span {
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            color: rgba(248, 250, 252, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            transition: width 0.5s ease;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.7);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .status-text:after {
+            content: '...';
+            animation: dots 1.5s infinite steps(4, end);
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal[aria-hidden="false"] {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal[aria-hidden="false"] .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--surface-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .close-modal:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .modal-action-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--surface-light);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .modal-action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .modal-action-card h3 {
+            margin: 1rem 0 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .modal-action-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0 0 1.5rem;
+            line-height: 1.5;
+        }
+
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .action-icon.deposit {
+            background: linear-gradient(135deg, var(--success), #00a884);
+        }
+
+        .action-icon.withdraw {
+            background: linear-gradient(135deg, var(--error), #ff5252);
+        }
+
+        .action-icon.convert {
+            background: linear-gradient(135deg, var(--info), #0984e3);
+        }
+
+        .action-icon.fiat {
+            background: linear-gradient(135deg, var(--primary), #6c5ce7);
+        }
+
+        .action-arrow {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-action-card:hover .action-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Base styles */
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5649c0;
+            --primary-light: #f1effd;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #00b894;
+            --error: #ff7675;
+            --warning: #fdcb6e;
+            --info: #0984e3;
+            --shadow-lg: 0 10px 36px 0 rgba(108, 92, 231, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+                "header header"
+                "menu main"
+                "footer footer";
+        }
+
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 10000;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Header Styles - Enhanced */
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        /* Improved user menu with flex layout - Moved to right */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        /* Notification button styling */
+        .notifications-container {
+            position: relative;
+        }
+
+        .notifications-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notifications-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* User avatar styling */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 1.15rem;
+            transition: filter 0.2s;
+            border: 2px solid var(--surface-light);
+        }
+
+        .user-avatar:hover {
+            filter: brightness(1.1);
+            border-color: var(--primary);
+        }
+
+        /* Notification dropdown - Positioned correctly */
+        .notification-dropdown {
+            position: absolute;
+            top: 3.5rem;
+            right: 0;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            width: 360px;
+            overflow: hidden;
+            z-index: 101;
+            display: none;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification-dropdown .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-dropdown .dropdown-header h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .notification-dropdown .dropdown-header button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .notification-dropdown .dropdown-header button:hover {
+            color: var(--primary);
+        }
+
+        .notification-dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-dropdown li {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .notification-dropdown li:last-child {
+            border-bottom: none;
+        }
+
+        .notification-dropdown li:hover {
+            background: var(--surface-light);
+        }
+
+        .notification-dropdown li.unread {
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-title i {
+            font-size: 0.9rem;
+        }
+
+        .notification-success i {
+            color: var(--success);
+        }
+
+        .notification-warning i {
+            color: var(--warning);
+        }
+
+        .notification-error i {
+            color: var(--error);
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .notification-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .notification-actions button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .notification-actions button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+        }
+
+        /* Menu Styles */
+        #menu {
+            grid-area: menu;
+            background: var(--surface);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            overflow-y: auto;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+        }
+
+        #menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 12px 25px;
+            border-radius: 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+        }
+
+        #menu a:hover {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--text);
+        }
+
+        #menu a.active {
+            background: rgba(108, 92, 231, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        #menu a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary);
+        }
+
+        #menu a i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 77, 77, 0.25);
+            border: 1px solid rgba(255, 77, 77, 0.5);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 25px;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: auto;
+            text-align: left;
+            margin: 20px 15px 0;
+            box-shadow: 0 2px 10px rgba(255, 77, 77, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 77, 77, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .welcome-banner h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-banner p {
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Wallet Summary Cards */
+        .wallet-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .wallet-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .wallet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .wallet-card.total {
+            border-color: var(--primary);
+        }
+
+        .wallet-card.available {
+            border-color: var(--success);
+        }
+
+        .wallet-card.locked {
+            border-color: var(--warning);
+        }
+
+        .card-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-change {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--error);
+        }
+
+        /* Wallet Table */
+        .wallet-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .search-container {
+            position: relative;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            width: 300px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            background: var(--surface);
+            border: 1px solid var(--surface-light);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+            outline: none;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .wallet-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .wallet-table th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--surface-light);
+        }
+
+        .wallet-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--surface-light);
+        }
+
+        .wallet-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .wallet-table tr:hover {
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        .coin-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .coin-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(108, 92, 231, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .coin-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coin-name {
+            font-weight: 600;
+        }
+
+        .coin-symbol {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 3px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        tr:hover .action-buttons {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .action-btn:hover::after {
+            opacity: 1;
+        }
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .action-btn:hover {
+            background: rgba(108, 92, 231, 0.2);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .action-btn.deposit {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .action-btn.deposit:hover {
+            background: rgba(34, 197, 94, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .action-btn.withdraw {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .action-btn.withdraw:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .action-btn.trade {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn.trade:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Enhanced Asset Display */
+        .availability-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 0.5rem;
+        }
+
+        .availability-badge.available {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .coin-network {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+            font-style: italic;
+        }
+
+        .balance-amount {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .balance-status {
+            font-size: 0.75rem;
+            color: var(--success);
+            margin-top: 0.2rem;
+        }
+
+        .usd-amount {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .price-info {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .btn-text {
+            display: none;
+            margin-left: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        .asset-row:hover {
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        /* Base responsive improvements */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Flexible text sizing */
+        .responsive-text {
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+
+        .responsive-title {
+            font-size: clamp(1.25rem, 4vw, 2rem);
+        }
+
+        .responsive-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        /* Flexible container spacing */
+        .responsive-padding {
+            padding: clamp(0.5rem, 2vw, 2rem);
+        }
+
+        .responsive-margin {
+            margin: clamp(0.5rem, 2vw, 2rem);
+        }
+
+        /* Grid improvements */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* Flexible button sizing */
+        .responsive-btn {
+            padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+        }
+
+        /* Action button improvements */
+        .action-btn {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .action-card i {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .action-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .action-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Footer Navigation - Enhanced */
+        .footer-nav {
+            grid-area: footer;
+            background: rgba(15, 23, 42, 0.93);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-nav.active {
+            display: flex;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: var(--transition);
+            border-radius: var(--radius);
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(108, 92, 231, 0.15);
+        }
+
+        .nav-item:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active:hover {
+            color: var(--primary);
+        }
+
+        .nav-item .badge {
+            position: absolute;
+            top: 0;
+            right: 5px;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Enhanced Privacy Toggle */
+        .privacy-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .privacy-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .privacy-toggle i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface-light);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Privacy mode */
+        .privacy-mode .balance-value {
+            filter: blur(6px);
+            transition: filter 0.3s ease;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .privacy-mode .card-value {
+            filter: blur(6px);
+        }
+
+        .privacy-mode .action-card {
+            filter: blur(2px);
+            opacity: 0.8;
+        }
+
+        .privacy-mode .action-card:hover {
+            filter: blur(0);
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "footer";
+                padding-bottom: 60px; /* Add padding for fixed footer */
+            }
+            
+            #menu {
+                position: fixed;
+                left: -240px;
+                top: 73px;
+                height: calc(100vh - 73px);
+                width: 240px;
+                transition: left 0.3s ease;
+                z-index: 99;
+            }
+            
+            #menu.active {
+                left: 0;
+            }
+            
+            #menu.show {
+                left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                padding: 0.5rem;
+                border: none;
+                background: none;
+                color: var(--text);
+                font-size: 1.2rem;
+                transition: var(--transition);
+            }
+            
+            .menu-toggle:hover {
+                color: var(--primary);
+                background: rgba(108, 92, 231, 0.1);
+                border-radius: var(--radius);
+            }
+            
+            .menu-toggle.active {
+                color: var(--primary);
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .welcome-banner {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            
+            .welcome-banner h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-container {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .wallet-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .wallet-table thead,
+            .wallet-table tbody,
+            .wallet-table th,
+            .wallet-table td,
+            .wallet-table tr {
+                display: block;
+            }
+            
+            .wallet-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            .wallet-table tr {
+                border: 1px solid var(--surface-light);
+                border-radius: var(--radius);
+                margin-bottom: 1rem;
+                padding: 1rem;
+                background: var(--surface);
+                position: relative;
+            }
+            
+            .wallet-table td {
+                border: none;
+                position: relative;
+                padding: 0.5rem 0;
+                text-align: left;
+                white-space: normal;
+            }
+            
+            .wallet-table td:before {
+                content: attr(data-label) ": ";
+                font-weight: 600;
+                color: var(--text-secondary);
+                display: inline-block;
+                width: 100px;
+                margin-right: 0.5rem;
+            }
+            
+            .action-buttons {
+                justify-content: flex-start;
+                margin-top: 0.5rem;
+            }
+            
+            .footer-nav {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            
+            .wallet-summary {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .wallet-card {
+                padding: 1.5rem;
+            }
+            
+            .card-value {
+                font-size: 1.4rem;
+            }
+            
+            .welcome-banner {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .welcome-banner h1 {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .coin-cell {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .coin-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                flex-shrink: 0;
+            }
+            
+            .coin-info {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .coin-name {
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+            
+            .coin-symbol {
+                font-size: 0.8rem;
+            }
+            
+            .coin-network {
+                font-size: 0.7rem;
+            }
+            
+            .availability-badge {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.4rem;
+                margin-left: 0.3rem;
+            }
+            
+            .balance-amount,
+            .usd-amount {
+                font-size: 0.9rem;
+            }
+            
+            .balance-status,
+            .price-info {
+                font-size: 0.7rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: stretch;
+            }
+            
+            .action-btn {
+                width: 100%;
+                min-width: auto;
+                height: 36px;
+                font-size: 0.8rem;
+                padding: 0.5rem;
+                justify-content: center;
+            }
+            
+            .btn-text {
+                display: inline;
+                margin-left: 0.4rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .action-card {
+                padding: 1.5rem;
+            }
+            
+            .action-card i {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .action-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .action-card p {
+                font-size: 0.9rem;
+            }
+            
+            .notification-dropdown {
+                width: calc(100vw - 2rem);
+                right: 1rem;
+                left: 1rem;
+                max-height: 60vh;
+            }
+            
+            .privacy-toggle {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .welcome-banner {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .welcome-banner h1 {
+                font-size: 1.2rem;
+            }
+            
+            .wallet-card {
+                padding: 1rem;
+            }
+            
+            .card-value {
+                font-size: 1.2rem;
+            }
+            
+            .wallet-table tr {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .coin-cell {
+                gap: 0.5rem;
+            }
+            
+            .coin-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+                flex-shrink: 0;
+            }
+            
+            .action-btn {
+                height: 32px;
+                font-size: 0.75rem;
+                padding: 0.4rem;
+            }
+            
+            .action-card {
+                padding: 1rem;
+            }
+            
+            .action-card i {
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .action-card h3 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .action-card p {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .welcome-banner {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .wallet-summary {
+                margin-bottom: 1.5rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading Overlay Styles */
+        .loading-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #0a0e14 0%, #161b22 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          opacity: 1;
+          visibility: visible;
+          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          overflow: hidden;
+        }
+        
+        .loading-overlay::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 400%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 150, 255, 0.1),
+            rgba(0, 150, 255, 0.05),
+            transparent
+          );
+          animation: shimmer 3s infinite linear;
+        }
+        
+        .loading-overlay.hidden {
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+        }
+        
+        .loading-container {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2.5rem;
+          background: rgba(13, 17, 23, 0.95);
+          border-radius: 1.25rem;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          max-width: 90%;
+          width: 420px;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .crypto-loader {
+          position: relative;
+          width: 100px;
+          height: 100px;
+          margin: 0 auto 1.5rem;
+        }
+        
+        .crypto-loader-circle {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          border: 2px solid transparent;
+          border-top-color: var(--primary);
+          animation: crypto-spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        
+        .crypto-loader-circle:nth-child(1) {
+          width: 100%;
+          height: 100%;
+          animation-delay: -0.3s;
+          border-width: 3px;
+          border-top-color: var(--primary);
+        }
+        
+        .crypto-loader-circle:nth-child(2) {
+          width: 80%;
+          height: 80%;
+          top: 10%;
+          left: 10%;
+          animation-delay: -0.6s;
+          border-top-color: var(--secondary);
+          border-width: 2px;
+        }
+        
+        .crypto-loader-logo {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(135deg, var(--primary), var(--secondary));
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 1.5rem;
+          font-weight: bold;
+          animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .loading-content {
+          width: 100%;
+          text-align: center;
+        }
+        
+        .loading-progress-container {
+          width: 100%;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 4px;
+          overflow: hidden;
+          margin: 1.5rem 0 1rem;
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+        
+        .loading-progress-bar {
+          height: 100%;
+          width: 0%;
+          background: linear-gradient(90deg, var(--primary), var(--secondary));
+          border-radius: 4px;
+          position: relative;
+          transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
+        }
+        
+        .progress-shine {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.7),
+            transparent
+          );
+          animation: progress-shine 2s infinite;
+          transform: translateX(-100%);
+        }
+        
+        .loading-progress-text {
+          position: absolute;
+          right: -40px;
+          font-size: 0.75rem;
+          color: var(--text-secondary);
+          font-weight: 600;
+          min-width: 35px;
+          text-align: right;
+        }
+        
+        .loading-text {
+          color: #fff;
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          background: linear-gradient(45deg, #fff, var(--primary));
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        
+        .loading-subtext {
+          color: var(--text-secondary);
+          font-size: 0.8125rem;
+          margin-top: 0.25rem;
+          opacity: 0.8;
+        }
+        
+        .loading-stats {
+          display: flex;
+          justify-content: center;
+          gap: 1.5rem;
+          margin-top: 1.5rem;
+          padding-top: 1.5rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .stat-label {
+          font-size: 0.7rem;
+          color: var(--text-secondary);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: var(--primary);
+          font-family: monospace;
+        }
+        
+        @keyframes crypto-spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes progress-shine {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+        
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Menu toggle button */
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+        
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip to content link -->
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+    
+    <!-- Modern Loading Overlay -->
+    <div class="loading-screen" id="loadingOverlay">
+        <div class="geometric-bg">
+            <div class="geometric-shape shape-1"></div>
+            <div class="geometric-shape shape-2"></div>
+            <div class="geometric-shape shape-3"></div>
+        </div>
+        
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="core"></div>
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
+            </div>
+            
+            <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+            <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="loadingProgressBar"></div>
+            </div>
+            
+            <p class="status-text" id="loadingStatusText">Loading wallet interface</p>
+        </div>
+    </div>
+    
+    <!-- Enhanced Header with improved notification and account buttons -->
+    <header class="header">
+        <a href="dashboard.html" class="logo">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Tripple Exchange</span>
+        </a>
+        
+        <div class="header-controls">
+            <div class="user-menu">
+                <!-- Enhanced notifications container -->
+                <div class="notifications-container">
+                    <button class="notifications-btn" id="notificationsBtn" title="Notifications" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge">3</span>
+                    </button>
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="dropdown-header">
+                            <h3>Notifications</h3>
+                            <button id="markAllReadBtn" aria-label="Mark all as read">
+                                <i class="fas fa-check-double"></i> Mark all as read
+                            </button>
+                        </div>
+                        <ul id="notificationsList">
+                            <!-- Notifications will be populated here -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <a href="profile.html" class="user-avatar" id="userAvatar" aria-label="User profile">C</a>
+            </div>
+            
+            <div class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu -->
+    <div id="menu">
+        <a href="./dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="./trade.html"><i class="fas fa-chart-line"></i> Trade</a>
+        <a href="./wallet.html" class="active" aria-current="page"><i class="fas fa-wallet"></i> Wallet</a>
+        <a href="./profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="./activities.html"><i class="fas fa-history"></i> Activity</a>
+        <a href="./notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+        <a href="./settings.html"><i class="fas fa-cog"></i> Settings</a>
+        <a href="./pns.html"><i class="fas fa-shield-alt"></i> Privacy</a>
+        <a href="./kyc.html"><i class="fas fa-id-card"></i> KYC</a>
+        <a href="./referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="./contact.html"><i class="fas fa-question-circle"></i> Support</a>
+        <a href="./terms.html"><i class="fas fa-file-alt"></i> Terms</a>
+        <button onclick="logout()" class="logout-btn" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Welcome Banner -->
+        <section class="welcome-banner fade-in">
+            <div class="welcome-banner responsive-padding">
+                <div>
+                    <h1 class="responsive-title">Your Crypto Wallet <i class="fas fa-wallet"></i></h1>
+                    <p class="responsive-text">Manage your digital assets, track balances, and perform transactions securely</p>
+                </div>
+                <div class="privacy-toggle responsive-btn" id="privacyToggle">
+                    <i class="fas fa-eye"></i>
+                    <span>Hide Balances</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="privacyCheckbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wallet Summary Cards -->
+        <section class="wallet-summary responsive-grid responsive-margin">
+            <div class="wallet-card responsive-padding">
+                <div class="card-title">
+                    <i class="fas fa-wallet"></i>
+                    USDT Balance
+                </div>
+                <div class="card-value usdt-balance" id="totalBalance">0.00 USDT</div>
+                <div class="card-usd usd-format" id="totalBalanceUSD">$0.00</div>
+            </div>
+            
+            <div class="wallet-card responsive-padding">
+                <div class="card-title">
+                    <i class="fas fa-unlock"></i>
+                    Available for Trading
+                </div>
+                <div class="card-value usdt-balance" id="availableBalance">0.00 USDT</div>
+                <div class="card-info">
+                    <i class="fas fa-check-circle"></i>
+                    Ready to trade
+                </div>
+            </div>
+            
+            <div class="wallet-card responsive-padding">
+                <div class="card-title">
+                    <i class="fas fa-bolt"></i>
+                    Quick Actions
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn deposit" onclick="openDeposit('usdt', 'USDT')">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Deposit</span>
+                    </button>
+                    <button class="action-btn withdraw" onclick="openWithdraw('usdt', 'USDT')">
+                        <i class="fas fa-minus"></i> <span class="btn-text">Withdraw</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wallet Assets Table -->
+        <section class="wallet-section fade-in">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-coins"></i> Assets</h2>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search assets..." aria-label="Search assets" id="assetSearch">
+                </div>
+            </div>
+            
+            <table class="wallet-table">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Balance</th>
+                        <th>USD Value</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="assetsTableBody">
+                    <tr class="asset-row">
+                        <td data-label="Asset">
+                            <div class="coin-cell">
+                                <div class="coin-icon usdt-icon">
+                                    ₮
+                                </div>
+                                <div class="coin-info">
+                                    <div class="coin-name">Tether <span class="availability-badge available">Available</span></div>
+                                    <div class="coin-symbol">USDT</div>
+                                    <div class="coin-network">Multi-Network Support</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="balance-value usdt-balance" id="walletUSDTBalance" data-label="Balance">
+                            <div class="balance-amount">0.00 USDT</div>
+                            <div class="balance-status">Available for trading</div>
+                        </td>
+                        <td class="balance-value usd-format" id="walletUSDTValue" data-label="USD Value">
+                            <div class="usd-amount">$0.00</div>
+                            <div class="price-info">≈ $1.00 per USDT</div>
+                        </td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <button class="action-btn trade" title="Trade" onclick="window.location.href='trade.html'">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span class="btn-text">Trade</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" style="text-align: right; font-weight: 600;">Total Value:</td>
+                        <td class="balance-value usd-format" id="totalWalletValue">$0.00</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="wallet-section fade-in">
+            <h2 class="section-title"><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <div class="quick-actions">
+                <div class="action-card" onclick="openDeposit('usdt', 'USDT')">
+                    <i class="fas fa-plus-circle" style="color: var(--success);"></i>
+                    <h3>Deposit USDT</h3>
+                    <p>Add USDT funds to your wallet securely</p>
+                </div>
+                <div class="action-card" onclick="openWithdraw('usdt', 'USDT')">
+                    <i class="fas fa-minus-circle" style="color: var(--error);"></i>
+                    <h3>Withdraw USDT</h3>
+                    <p>Send USDT from your wallet safely</p>
+                </div>
+                <div class="action-card" onclick="window.location.href='trade.html'">
+                    <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                    <h3>Start Trading</h3>
+                    <p>Trade binary options with your USDT</p>
+                </div>
+                <div class="action-card" onclick="window.location.href='activities.html'">
+                    <i class="fas fa-history" style="color: var(--info);"></i>
+                    <h3>Transaction History</h3>
+                    <p>View all your wallet activities</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="depositModalTitle" hidden>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="depositModalTitle">Deposit USDT</h2>
+                <button class="close-modal" aria-label="Close deposit modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Choose your preferred deposit method:</p>
+                <div class="modal-actions-grid">
+                    <a href="deposit-usdt.html" class="modal-action-card">
+                        <div class="action-icon deposit">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3>Deposit Crypto</h3>
+                        <p>Deposit USDT to your wallet using supported networks</p>
+                        <span class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </a>
+                    <a href="deposit-fiat.html" class="modal-action-card">
+                        <div class="action-icon fiat">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <h3>Deposit Fiat</h3>
+                        <p>Add funds using your bank account or card</p>
+                        <span class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="withdrawModalTitle" hidden>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="withdrawModalTitle">Withdraw USDT</h2>
+                <button class="close-modal" aria-label="Close withdraw modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Select withdrawal method:</p>
+                <div class="modal-actions-grid">
+                    <a href="withdraw-usdt.html" class="modal-action-card">
+                        <div class="action-icon withdraw">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <h3>Withdraw USDT</h3>
+                        <p>Send USDT to an external wallet</p>
+                        <span class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </a>
+                    <a href="withdraw-fiat.html" class="modal-action-card">
+                        <div class="action-icon fiat">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3>Withdraw to Bank</h3>
+                        <p>Convert and withdraw funds to your bank account</p>
+                        <span class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Navigation - Enhanced -->
+    <nav class="footer-nav" id="footerNav">
+        <a href="dashboard.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="trade.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Trade</span>
+        </a>
+        <a href="wallet.html" class="nav-item active" aria-label="Wallet" aria-current="page">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // ===== ENHANCED LOADING SYSTEM =====
+        class LoadingSystem {
+            constructor() {
+                this.loadingPhases = [
+                    { progress: 15, text: 'Initializing Wallet...', subtext: 'Loading core modules', security: 'Establishing secure connection...' },
+                    { progress: 30, text: 'Loading Asset Data...', subtext: 'Fetching wallet balances', security: 'Verifying data integrity...' },
+                    { progress: 45, text: 'Setting Up Security...', subtext: 'Encrypting connection', security: 'Activating 2FA protocols...' },
+                    { progress: 60, text: 'Preparing Interface...', subtext: 'Loading wallet components', security: 'Scanning for threats...' },
+                    { progress: 75, text: 'Finalizing Setup...', subtext: 'Almost there', security: 'Security checks complete' },
+                    { progress: 100, text: 'Wallet Ready!', subtext: 'Welcome to your secure wallet', security: 'Secure connection established' }
+                ];
+                this.currentPhase = 0;
+                this.loadingTimeout = null;
+                this.completed = false;
+                console.log('LoadingSystem: Initialized with', this.loadingPhases.length, 'phases');
+            }
+            
+            init() {
+                console.log('LoadingSystem: Starting wallet initialization');
+                this.startLoading();
+                
+                // Set up event listeners
+                window.addEventListener('load', () => {
+                    console.log('LoadingSystem: Window loaded, completing loading');
+                    this.completeLoading();
+                });
+                
+                // Failsafe timeout to prevent stuck loading
+                this.loadingTimeout = setTimeout(() => {
+                    if (!this.completed) {
+                        console.warn('LoadingSystem: Failsafe timeout triggered - forcing completion');
+                        this.completeLoading();
+                    }
+                }, 10000); // 10 seconds max
+            }
+            
+            startLoading() {
+                console.log('LoadingSystem: Starting phase simulation');
+                const interval = setInterval(() => {
+                    if (this.currentPhase < this.loadingPhases.length) {
+                        this.updateProgress(this.loadingPhases[this.currentPhase]);
+                        this.currentPhase++;
+                    } else {
+                        clearInterval(interval);
+                        console.log('LoadingSystem: All phases completed');
+                    }
+                }, 800); // Update every 800ms
+            }
+            
+            updateProgress(phase) {
+                console.log(`LoadingSystem: Phase ${this.currentPhase + 1} - ${phase.text}`);
+                
+                const progressBar = document.getElementById('loadingProgressBar');
+                const statusText = document.getElementById('loadingStatusText');
+                
+                if (progressBar) {
+                    progressBar.style.width = phase.progress + '%';
+                }
+                
+                if (statusText) {
+                    statusText.textContent = phase.text;
+                }
+            }
+            
+            completeLoading() {
+                console.log('LoadingSystem: Completing loading sequence');
+                this.completed = true;
+                
+                if (this.loadingTimeout) {
+                    clearTimeout(this.loadingTimeout);
+                    this.loadingTimeout = null;
+                }
+                
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) {
+                    // Ensure progress bar reaches 100%
+                    const progressBar = document.getElementById('loadingProgressBar');
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                    }
+                    
+                    // Update final status message
+                    const statusText = document.getElementById('loadingStatusText');
+                    if (statusText) {
+                        statusText.textContent = 'Wallet Ready!';
+                    }
+                    
+                    // Add slight delay before hiding to show completion
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        
+                        // Remove overlay after animation completes
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                            console.log('LoadingSystem: Loading overlay removed successfully');
+                        }, 500);
+                    }, 500);
+                }
+            }
+        }
+
+        // Initialize the loading system when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing LoadingSystem');
+            const loadingSystem = new LoadingSystem();
+            loadingSystem.init();
+            
+            // Initialize balance manager if available
+            if (typeof window.balanceManager === 'undefined' && window.BalanceManager) {
+                window.balanceManager = new window.BalanceManager();
+            }
+            
+            // Setup periodic balance updates (every 5 seconds)
+            setInterval(updateWalletBalances, 5000);
+            
+            // Listen for balance updates from other pages
+            window.addEventListener('balanceUpdate', updateWalletBalances);
+            window.addEventListener('forceBalanceSync', updateWalletBalances);
+            
+            // Show footer nav on mobile
+            if (window.innerWidth <= 900) {
+                document.getElementById('footerNav').classList.add('active');
+            }
+        });
+
+        // Update wallet balance displays from balance manager
+        function updateWalletBalances() {
+            if (window.balanceManager) {
+                const usdtBalance = window.balanceManager.getUSDTBalance();
+                const formattedUSDT = `${usdtBalance.toFixed(2)} USDT`;
+                const formattedUSD = `$${usdtBalance.toFixed(2)}`;
+                
+                // Update all balance display elements
+                const balanceElements = {
+                    'totalBalance': formattedUSDT,
+                    'totalBalanceUSD': formattedUSD,
+                    'availableBalance': formattedUSDT,
+                    'walletUSDTBalance': formattedUSDT,
+                    'walletUSDTValue': formattedUSD,
+                    'totalWalletValue': formattedUSD
+                };
+                
+                Object.entries(balanceElements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                });
+                
+                // Update privacy toggle if active
+                if (document.getElementById('privacyCheckbox').checked) {
+                    hideBalances();
+                }
+            }
+        }
+        
+        // Privacy toggle functionality
+        function togglePrivacy() {
+            const checkbox = document.getElementById('privacyCheckbox');
+            const toggleText = document.querySelector('#privacyToggle span');
+            const toggleIcon = document.querySelector('#privacyToggle i');
+            
+            if (checkbox.checked) {
+                hideBalances();
+                toggleText.textContent = 'Show Balances';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                showBalances();
+                toggleText.textContent = 'Hide Balances';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+        
+        // Hide balance values
+        function hideBalances() {
+            document.querySelectorAll('.balance-value, .usdt-balance, .usd-format').forEach(element => {
+                if (!element.dataset.originalValue) {
+                    element.dataset.originalValue = element.textContent;
+                }
+                element.textContent = '••••••';
+            });
+        }
+        
+        // Show balance values
+        function showBalances() {
+            document.querySelectorAll('.balance-value, .usdt-balance, .usd-format').forEach(element => {
+                if (element.dataset.originalValue) {
+                    element.textContent = element.dataset.originalValue;
+                }
+            });
+            // Refresh with current values
+            updateWalletBalances();
+        }
+
+        // Toggle menu for mobile devices
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('show');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('menu');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Modal functions
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.hidden = false;
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                // Focus on the first focusable element
+                const focusable = modal.querySelector('button, [href], [tabindex]:not([tabindex="-1"])');
+                if (focusable) focusable.focus();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.hidden = true;
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close modal when clicking on overlay or close button
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this || e.target.classList.contains('close-modal')) {
+                    closeModal(this.id);
+                }
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (!modal.hidden) {
+                        closeModal(modal.id);
+                    }
+                });
+            }
+        });
+
+        // Notification system
+        let notifications = [
+            {
+                id: 1,
+                title: "Deposit Received",
+                message: "Your deposit of 0.5 BTC has been confirmed and added to your wallet",
+                icon: "fas fa-arrow-down",
+                time: "10 minutes ago",
+                read: false,
+                type: "success"
+            },
+            {
+                id: 2,
+                title: "Security Alert",
+                message: "We detected a login from a new device. If this wasn't you, please secure your account",
+                icon: "fas fa-shield-alt",
+                time: "2 hours ago",
+                read: false,
+                type: "warning"
+            },
+            {
+                id: 3,
+                title: "System Maintenance",
+                message: "Scheduled maintenance will occur this Sunday from 2:00 AM to 4:00 AM UTC",
+                icon: "fas fa-tools",
+                time: "1 day ago",
+                read: false,
+                type: "info"
+            },
+            {
+                id: 4,
+                title: "New Feature: Convert Coins",
+                message: "You can now easily convert between different cryptocurrencies",
+                icon: "fas fa-exchange-alt",
+                time: "2 days ago",
+                read: true,
+                type: "info"
+            }
+        ];
+
+        // Render notifications
+        function renderNotifications() {
+            const notificationsList = document.getElementById('notificationsList');
+            const badge = document.getElementById('notificationBadge');
+            
+            // Count unread notifications
+            const unreadCount = notifications.filter(n => !n.read).length;
+            badge.textContent = unreadCount;
+            
+            // Show/hide badge based on unread count
+            badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+            
+            // Clear notifications list
+            notificationsList.innerHTML = '';
+            
+            // Add notifications to the list
+            notifications.forEach(notification => {
+                const li = document.createElement('li');
+                li.className = notification.read ? '' : 'unread';
+                
+                li.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-title ${'notification-' + notification.type}">
+                            <i class="${notification.icon}"></i>
+                            ${notification.title}
+                        </div>
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-time">
+                            <i class="far fa-clock"></i> ${notification.time}
+                        </div>
+                    </div>
+                    <div class="notification-actions">
+                        <button class="mark-read-btn" data-id="${notification.id}" title="Mark as read" aria-label="Mark as read">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                `;
+                
+                notificationsList.appendChild(li);
+            });
+            
+            // Add event listeners to mark as read buttons
+            document.querySelectorAll('.mark-read-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    markAsRead(id);
+                });
+            });
+        }
+        
+        function markAsRead(id) {
+            const notification = notifications.find(n => n.id === id);
+            if (notification) {
+                notification.read = true;
+                renderNotifications();
+            }
+        }
+        
+        function markAllAsRead() {
+            notifications.forEach(n => n.read = true);
+            renderNotifications();
+        }
+        
+        // Toggle notifications dropdown
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            const isVisible = dropdown.classList.contains('show');
+            
+            if (isVisible) {
+                dropdown.classList.remove('show');
+            } else {
+                dropdown.classList.add('show');
+                renderNotifications();
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('notificationDropdown');
+            const notificationsBtn = document.getElementById('notificationsBtn');
+            
+            if (dropdown.classList.contains('show') && 
+                !dropdown.contains(e.target) && 
+                !notificationsBtn.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        // Toggle privacy mode with better state management
+        function togglePrivacyMode() {
+            const isPrivacyMode = !document.body.classList.toggle('privacy-mode');
+            const privacyToggle = document.getElementById('privacyToggle');
+            const icon = privacyToggle.querySelector('i');
+            const text = privacyToggle.querySelector('span');
+            
+            // Update icon and text based on new state
+            if (isPrivacyMode) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                text.textContent = 'Hide Balances';
+            } else {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                text.textContent = 'Show Balances';
+            }
+            
+            // Save preference to localStorage
+            localStorage.setItem('privacyMode', isPrivacyMode.toString());
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up notification button
+            document.getElementById('notificationsBtn').addEventListener('click', toggleNotifications);
+            
+            // Set up mark all as read button
+            document.getElementById('markAllReadBtn').addEventListener('click', markAllAsRead);
+            
+            // Render initial notifications badge
+            renderNotifications();
+            
+            // Set up privacy toggle with saved preference
+            const privacyCheckbox = document.getElementById('privacyCheckbox');
+            const savedPrivacyMode = localStorage.getItem('privacyMode') === 'false';
+            
+            if (savedPrivacyMode) {
+                privacyCheckbox.checked = true;
+                document.body.classList.add('privacy-mode');
+                hideBalances();
+                
+                const privacyToggle = document.getElementById('privacyToggle');
+                const icon = privacyToggle.querySelector('i');
+                const text = privacyToggle.querySelector('span');
+                
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                text.textContent = 'Show Balances';
+            }
+            
+            privacyCheckbox.addEventListener('change', togglePrivacyMode);
+
+            // Initialize asset search
+            const assetSearch = document.getElementById('assetSearch');
+            if (assetSearch) {
+                assetSearch.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('.wallet-table tbody tr');
+                    
+                    rows.forEach(row => {
+                        const coinName = row.querySelector('.coin-name')?.textContent?.toLowerCase() || '';
+                        const coinSymbol = row.querySelector('.coin-symbol')?.textContent?.toLowerCase() || '';
+                        
+                        if (coinName.includes(searchTerm) || coinSymbol.includes(searchTerm)) {
+                            row.style.display = '';
+                            row.classList.add('search-match');
+                        } else {
+                            row.style.display = 'none';
+                            row.classList.remove('search-match');
+                        }
+                    });
+                });
+            }
+
+            // Add click handler for entire row
+            document.querySelectorAll('.wallet-table tbody tr').forEach(row => {
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function(e) {
+                    // Only trigger if not clicking on action buttons
+                    if (!e.target.closest('.action-btn')) {
+                        window.location.href = 'trade.html';
+                    }
+                });
+            });
+            
+            // Add hover effects to action cards
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow-lg)';
+                });
+            });
+            
+            // Responsive adjustments for footer
+            window.addEventListener('resize', function() {
+                if (window.innerWidth <= 900) {
+                    document.getElementById('footerNav').classList.add('active');
+                } else {
+                    document.getElementById('footerNav').classList.remove('active');
+                }
+            });
+        });
+
+        // Simulate logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear user session data
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('userSession');
+                localStorage.removeItem('tripple_usdt_balance');
+                localStorage.removeItem('tripple_transactions');
+                
+                // Show logout message
+                alert('You have been logged out successfully!');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Action functions
+        function openDeposit(assetId, symbol) {
+            const modal = document.getElementById('depositModal');
+            if (modal) {
+                const title = modal.querySelector('h2');
+                if (title && symbol) {
+                    title.textContent = `Deposit ${symbol}`;
+                }
+                showModal('depositModal');
+                console.log(`Opening deposit for ${symbol || 'general deposit'}`);
+            }
+        }
+
+        function openWithdraw(assetId, symbol) {
+            const modal = document.getElementById('withdrawModal');
+            if (modal) {
+                const title = modal.querySelector('h2');
+                if (title && symbol) {
+                    title.textContent = `Withdraw ${symbol}`;
+                }
+                showModal('withdrawModal');
+                console.log(`Opening withdrawal for ${symbol || 'general withdrawal'}`);
+            }
+        }
+
+        // Handle window resize for responsive footer
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 900) {
+                document.getElementById('footerNav').classList.add('active');
+            } else {
+                document.getElementById('footerNav').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

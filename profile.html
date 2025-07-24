@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Tripple Exchange</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./js/auth-manager.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5649c0;
+            --primary-light: #f1effd;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #00b894;
+            --error: #ff7675;
+            --warning: #fdcb6e;
+            --info: #0984e3;
+            --shadow-lg: 0 10px 36px 0 rgba(108, 92, 231, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+                "header header"
+                "menu main"
+                "footer footer";
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 280px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .user-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-dropdown-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--surface-light);
+        }
+        
+        .user-dropdown-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .user-dropdown-info {
+            min-width: 0;
+        }
+        
+        .user-dropdown-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0.25rem 0;
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .user-dropdown-item i {
+            width: 24px;
+            margin-right: 0.75rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .user-dropdown-item:hover {
+            background: var(--surface-light);
+            color: var(--primary);
+        }
+        
+        .user-dropdown-item:hover i {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .user-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 12px 12px 0 0;
+                box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            .user-dropdown.show {
+                animation: slideUp 0.3s ease-out;
+            }
+            
+            @keyframes slideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+        }
+
+        .notifications-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .notifications-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 1.15rem;
+            transition: filter 0.2s;
+        }
+
+        .user-avatar:hover {
+            filter: brightness(1.1);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Menu Styles */
+        #menu {
+            grid-area: menu;
+            background: var(--surface);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            overflow-y: auto;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+        }
+
+        #menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 12px 25px;
+            border-radius: 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+        }
+
+        #menu a:hover {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--text);
+        }
+
+        #menu a.active {
+            background: rgba(108, 92, 231, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        #menu a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary);
+        }
+
+        #menu a i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--surface-light);
+            margin: 15px 25px;
+        }
+
+        .menu-header {
+            padding: 15px 25px 5px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submenu {
+            padding-left: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu.active {
+            max-height: 500px;
+        }
+
+        .submenu a {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 77, 77, 0.25);
+            border: 1px solid rgba(255, 77, 77, 0.5);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 25px;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: auto;
+            text-align: left;
+            margin: 20px 15px 0;
+            box-shadow: 0 2px 10px rgba(255, 77, 77, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 77, 77, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Profile Styles */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--surface);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+
+        .avatar-edit:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            text-align: center;
+            min-width: 140px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .profile-section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--surface-light);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-edit {
+            background: var(--surface-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .info-item {
+            position: relative;
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: var(--surface);
+            transition: var(--transition);
+        }
+
+        .info-edit {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .info-edit:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-lighter);
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .security-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .security-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--info);
+        }
+
+        .security-name {
+            font-weight: 600;
+        }
+
+        .security-status {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface-light);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: var(--bg);
+            transition: var(--transition);
+        }
+
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.login {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .activity-icon.trade {
+            background: linear-gradient(135deg, var(--success), var(--info));
+        }
+
+        .activity-icon.withdraw {
+            background: linear-gradient(135deg, var(--warning), var(--error));
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "footer";
+            }
+            
+            #menu {
+                position: fixed;
+                left: -240px;
+                top: 73px;
+                height: calc(100vh - 73px);
+                width: 240px;
+                transition: left 0.3s ease;
+                z-index: 99;
+            }
+            
+            #menu.show {
+                left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                min-width: 100px;
+            }
+        }
+        
+        /* Loading Overlay Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e14 0%, #161b22 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .loading-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem;
+            background: rgba(13, 17, 23, 0.95);
+            border-radius: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            width: 420px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crypto-loader {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .crypto-loader-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            animation: crypto-spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        
+        .crypto-loader-circle:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation-delay: -0.3s;
+            border-width: 3px;
+            border-top-color: var(--primary);
+        }
+        
+        .crypto-loader-circle:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation-delay: -0.6s;
+            border-top-color: var(--secondary);
+            border-width: 2px;
+        }
+        
+        .crypto-loader-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .loading-content {
+            text-align: center;
+            width: 100%;
+        }
+        
+        .loading-text {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            min-height: 1.2rem;
+        }
+        
+        .loading-progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            position: relative;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .progress-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: shine 1.5s infinite;
+        }
+        
+        .loading-progress-text {
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 35px;
+            text-align: right;
+        }
+        
+        .loading-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.25rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        @keyframes crypto-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+        
+        @keyframes shine {
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Modern Loading Overlay Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        /* Abstract Geometric Background */
+        .geometric-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid #3b82f6;
+            opacity: 0.7;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: float 25s infinite linear;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -30px;
+            right: -30px;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: float 20s infinite linear reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 10%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: rotate(0deg) translate(0, 0);
+            }
+            100% {
+                transform: rotate(360deg) translate(50px, 50px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Main Content */
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        /* Abstract Loading Animation */
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .core {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            animation: core-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes core-pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+            }
+        }
+
+        .orbit {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 {
+            width: 120px;
+            height: 120px;
+            top: 40px;
+            left: 40px;
+            border-top-color: #3b82f6;
+            animation-duration: 8s;
+        }
+
+        .orbit-2 {
+            width: 160px;
+            height: 160px;
+            top: 20px;
+            left: 20px;
+            border-right-color: #60a5fa;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 200px;
+            height: 200px;
+            top: 0;
+            left: 0;
+            border-bottom-color: #00f0ff;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbit-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text Elements */
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-title span {
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            color: rgba(248, 250, 252, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 80%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.7);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .status-text:after {
+            content: '...';
+            animation: dots 1.5s infinite steps(4, end);
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .loading-title {
+                font-size: 2rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .loading-animation {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .orbit-1 {
+                width: 90px;
+                height: 90px;
+                top: 30px;
+                left: 30px;
+            }
+            
+            .orbit-2 {
+                width: 120px;
+                height: 120px;
+                top: 15px;
+                left: 15px;
+            }
+            
+            .orbit-3 {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modern Loading Overlay -->
+    <div class="loading-screen" id="loadingOverlay">
+        <div class="geometric-bg">
+            <div class="geometric-shape shape-1"></div>
+            <div class="geometric-shape shape-2"></div>
+            <div class="geometric-shape shape-3"></div>
+        </div>
+        
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="core"></div>
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
+            </div>
+            
+            <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+            <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            
+            <p class="status-text">Loading profile settings</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/" class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>CryptoTrade Pro</span>
+            </a>
+            <div class="user-menu">
+                <button class="notifications-btn" id="notificationsBtn" aria-label="Notifications">
+                    <i class="far fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-avatar" id="userAvatar" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="User menu">
+                    JD
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-avatar">JD</div>
+                        <div class="user-dropdown-info">
+                            <div class="user-dropdown-name">John Doe</div>
+                            <div class="user-dropdown-email">john.doe@cryptotrade.pro</div>
+                        </div>
+                    </div>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="profile.html" class="user-dropdown-item active">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <a href="settings.html" class="user-dropdown-item">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="security.html" class="user-dropdown-item">
+                        <i class="fas fa-lock"></i> Security
+                    </a>
+                    <div class="user-dropdown-divider"></div>
+                    <button class="user-dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu -->
+    <div id="menu">
+        <a href="./dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="./trade.html"><i class="fas fa-chart-line"></i> Trade</a>
+        <a href="./wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
+        <a href="./profile.html" class="active" aria-current="page"><i class="fas fa-user"></i> Profile</a>
+        <a href="./activities.html"><i class="fas fa-history"></i> Activity</a>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-header">Settings</div>
+        <a href="./settings.html">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+        
+        <div class="menu-divider"></div>
+        
+        <button class="logout-btn" id="logoutBtn" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">
+                <div id="avatarInitials">JD</div>
+                <div class="avatar-edit" id="avatarEdit">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name">John Doe</h1>
+                <div class="profile-email">john.doe@cryptotrade.pro</div>
+                <div class="verification-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Verified Account
+                </div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-value">$32,967</div>
+                    <div class="stat-label">Balance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">128</div>
+                    <div class="stat-label">Trades</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="creditScore">100</div>
+                    <div class="stat-label">Credit Score <span class="info-tooltip" title="Your credit score out of 100 based on account activity and history"><i class="fas fa-info-circle"></i></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-section" id="personalInfoSection">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-user-circle"></i> Personal Information</h2>
+                    <button class="btn btn-edit" id="editProfileBtn"><i class="fas fa-edit"></i> Edit</button>
+                </div>
+                <div class="info-grid" id="profileInfoGrid">
+                    <div class="info-item">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value" data-field="fullName">John Doe</div>
+                        <input type="text" class="info-edit" data-field="fullName" value="John Doe" style="display: none;">
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value" data-field="email">john.doe@cryptotrade.pro</div>
+                        <input type="email" class="info-edit" data-field="email" value="john.doe@cryptotrade.pro" style="display: none;">
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value" data-field="phone">+1 (555) 123-4567</div>
+                        <input type="tel" class="info-edit" data-field="phone" value="+1 (555) 123-4567" style="display: none;">
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Country</div>
+                        <div class="info-value" data-field="country">United States</div>
+                        <select class="info-edit" data-field="country" style="display: none;">
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Japan">Japan</option>
+                        </select>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Account ID</div>
+                        <div class="info-value">CTP-8596-7342</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Member Since</div>
+                        <div class="info-value">Jan 15, 2022</div>
+                    </div>
+                </div>
+                <div class="form-actions" style="display: none; margin-top: 1.5rem; justify-content: flex-end; gap: 1rem;" id="profileFormActions">
+                    <button class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
+                    <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title"><i class="fas fa-shield-alt"></i> Security</h2>
+                <div class="security-grid">
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div>
+                                <div class="security-name">Password</div>
+                                <div class="security-status">Last changed 3 months ago</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm" style="background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: var(--radius);">Change</button>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div>
+                                <div class="security-name">Two-Factor Authentication</div>
+                                <div class="security-status">Protect your account with an extra layer of security</div>
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="security-name">Email Notifications</div>
+                                <div class="security-status">Receive important account notifications</div>
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title"><i class="fas fa-history"></i> Recent Activity</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon login">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">Successful Login</div>
+                            <div class="activity-desc">New York, United States • Chrome Browser</div>
+                            <div class="activity-time">Today at 09:42 AM</div>
+                        </div>
+                        <div class="status-badge status-success">Secure</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon trade">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">Successful Trade</div>
+                            <div class="activity-desc">BTC/USDT • $1,200 Profit</div>
+                            <div class="activity-time">Yesterday at 02:15 PM</div>
+                        </div>
+                        <div class="status-badge status-success">Completed</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon withdraw">
+                            <i class="fas fa-money-check-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">Withdrawal Request</div>
+                            <div class="activity-desc">$5,000 to Bank Account • Processing</div>
+                            <div class="activity-time">Jan 12, 2023 at 10:30 AM</div>
+                        </div>
+                        <div class="status-badge status-warning">Pending</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon login">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">Security Update</div>
+                            <div class="activity-desc">Two-Factor Authentication Enabled</div>
+                            <div class="activity-time">Jan 5, 2023 at 04:20 PM</div>
+                        </div>
+                        <div class="status-badge status-success">Completed</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title"><i class="fas fa-wallet"></i> Wallet Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Primary Wallet</div>
+                        <div class="info-value">0x1a2b3c4d5e6f...7g8h9i0j</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Connected Wallets</div>
+                        <div class="info-value">3 Wallets</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Deposit</div>
+                        <div class="info-value">$5,000 • Jan 10, 2023</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Withdrawal</div>
+                        <div class="info-value">$3,000 • Dec 28, 2022</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Deposits</div>
+                        <div class="info-value">$42,500</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Withdrawals</div>
+                        <div class="info-value">$18,300</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize loading system
+            initLoadingSystem();
+            
+            // Initialize UI components
+            initUIComponents();
+        });
+        
+        // Initialize loading system
+        function initLoadingSystem() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.classList.remove('hidden');
+            }
+            
+            // Simulate loading progress
+            let progress = 0;
+            const progressBar = document.getElementById('loadingProgress');
+            const progressText = document.getElementById('loadingProgressText');
+            const loadingText = document.getElementById('loadingText');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+            const securityStatus = document.getElementById('securityStatus');
+            
+            const loadingInterval = setInterval(() => {
+                progress += 10;
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (progressText) progressText.textContent = `${progress}%`;
+                
+                if (progress === 30) {
+                    loadingText.textContent = 'LOADING PERSONAL DATA';
+                    loadingSubtext.textContent = 'Retrieving your profile information';
+                } else if (progress === 60) {
+                    loadingText.textContent = 'VERIFYING SECURITY';
+                    loadingSubtext.textContent = 'Checking account protection';
+                } else if (progress === 90) {
+                    loadingText.textContent = 'FINALIZING PROFILE';
+                    loadingSubtext.textContent = 'Almost ready';
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        loadingOverlay.classList.add('hidden');
+                    }, 500);
+                }
+            }, 300);
+        }
+        
+        // User profile data
+        let userProfile = {
+            fullName: 'John Doe',
+            email: 'john.doe@cryptotrade.pro',
+            phone: '+1 (555) 123-4567',
+            country: 'United States',
+            accountId: 'CTP-8596-7342',
+            memberSince: 'Jan 15, 2022',
+            creditScore: 100
+        };
+
+        // Initialize UI components
+        function initUIComponents() {
+            // Toggle mobile menu
+            const menuToggle = document.getElementById('menuToggle');
+            const menu = document.getElementById('menu');
+            
+            if (menuToggle && menu) {
+                menuToggle.addEventListener('click', () => {
+                    menu.classList.toggle('show');
+                    menuToggle.setAttribute('aria-expanded', menu.classList.contains('show'));
+                });
+            }
+            
+            // Initialize user dropdown
+            const userAvatar = document.getElementById('userAvatar');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userAvatar && userDropdown) {
+                // Toggle dropdown on avatar click
+                userAvatar.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isExpanded = userAvatar.getAttribute('aria-expanded') === 'true';
+                    userAvatar.setAttribute('aria-expanded', !isExpanded);
+                    userDropdown.classList.toggle('show', !isExpanded);
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userAvatar.setAttribute('aria-expanded', 'false');
+                        userDropdown.classList.remove('show');
+                    }
+                });
+                
+                // Close dropdown on Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && userDropdown.classList.contains('show')) {
+                        userAvatar.setAttribute('aria-expanded', 'false');
+                        userDropdown.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Handle logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            // Initialize tooltips
+            const tooltipTriggers = document.querySelectorAll('[data-tooltip]');
+            tooltipTriggers.forEach(trigger => {
+                const tooltip = document.createElement('span');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = trigger.getAttribute('data-tooltip');
+                trigger.appendChild(tooltip);
+                
+                // Position tooltip
+                const updateTooltipPosition = () => {
+                    const rect = trigger.getBoundingClientRect();
+                    const tooltipRect = tooltip.getBoundingClientRect();
+                    
+                    // Position below the element
+                    tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                    tooltip.style.left = `${rect.left + (rect.width - tooltipRect.width) / 2}px`;
+                };
+                
+                trigger.addEventListener('mouseenter', () => {
+                    tooltip.classList.add('show');
+                    updateTooltipPosition();
+                });
+                
+                trigger.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('show');
+                });
+                
+                // Update position on window resize
+                window.addEventListener('resize', updateTooltipPosition);
+            });
+            
+            // Initialize credit score tooltip
+            const creditScoreTooltip = document.getElementById('creditScoreTooltip');
+            const creditScoreInfo = document.getElementById('creditScoreInfo');
+            
+            if (creditScoreInfo && creditScoreTooltip) {
+                creditScoreInfo.addEventListener('mouseenter', () => {
+                    creditScoreTooltip.style.display = 'block';
+                    positionTooltip(creditScoreInfo, creditScoreTooltip);
+                });
+                
+                creditScoreInfo.addEventListener('mouseleave', () => {
+                    creditScoreTooltip.style.display = 'none';
+                });
+                
+                // Update tooltip position on scroll
+                window.addEventListener('scroll', () => {
+                    if (creditScoreTooltip.style.display === 'block') {
+                        positionTooltip(creditScoreInfo, creditScoreTooltip);
+                    }
+                });
+            }
+            
+            // Profile edit functionality
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const saveProfileBtn = document.getElementById('saveProfileBtn');
+            const profileFormActions = document.getElementById('profileFormActions');
+
+            if (editProfileBtn && cancelEditBtn && saveProfileBtn) {
+                // Edit button click
+                editProfileBtn.addEventListener('click', function() {
+                    toggleEditMode(true);
+                });
+
+                // Cancel button click
+                cancelEditBtn.addEventListener('click', function() {
+                    toggleEditMode(false);
+                    // Reset form to original values
+                    updateFormValues(userProfile);
+                });
+
+                // Save button click
+                saveProfileBtn.addEventListener('click', function() {
+                    if (validateForm()) {
+                        saveProfile();
+                        toggleEditMode(false);
+                    }
+                });
+            }
+
+            // Load user data
+            loadUserData();
+        }
+
+        // Toggle edit mode
+        function toggleEditMode(editMode) {
+            const infoValues = document.querySelectorAll('.info-value');
+            const editInputs = document.querySelectorAll('.info-edit');
+            const formActions = document.getElementById('profileFormActions');
+            const editBtn = document.getElementById('editProfileBtn');
+
+            infoValues.forEach(item => {
+                item.style.display = editMode ? 'none' : 'block';
+            });
+
+            editInputs.forEach(input => {
+                input.style.display = editMode ? 'block' : 'none';
+            });
+
+            if (formActions) {
+                formActions.style.display = editMode ? 'flex' : 'none';
+            }
+
+            if (editBtn) {
+                editBtn.style.display = editMode ? 'none' : 'flex';
+            }
+        }
+
+        // Update form values from user data
+        function updateFormValues(data) {
+            Object.keys(data).forEach(key => {
+                const valueElement = document.querySelector(`.info-value[data-field="${key}"]`);
+                const inputElement = document.querySelector(`.info-edit[data-field="${key}"]`);
+                
+                if (valueElement && inputElement) {
+                    valueElement.textContent = data[key];
+                    
+                    if (inputElement.tagName === 'SELECT') {
+                        inputElement.value = data[key];
+                    } else {
+                        inputElement.value = data[key];
+                    }
+                }
+            });
+        }
+
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            const emailInput = document.querySelector('.info-edit[data-field="email"]');
+            
+            if (emailInput && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                alert('Please enter a valid email address');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Save profile data
+        function saveProfile() {
+            const updatedData = { ...userProfile };
+            let hasChanges = false;
+            
+            document.querySelectorAll('.info-edit').forEach(input => {
+                const field = input.dataset.field;
+                if (field && updatedData.hasOwnProperty(field) && updatedData[field] !== input.value) {
+                    updatedData[field] = input.value;
+                    hasChanges = true;
+                }
+            });
+
+            if (hasChanges) {
+                // In a real app, this would be an API call to save the data
+                userProfile = { ...updatedData };
+                updateDisplayedValues();
+                
+                // Show success message
+                alert('Profile updated successfully!');
+                
+                // In a real app, sync with other pages here
+                syncProfileData(userProfile);
+            }
+        }
+
+        // Update displayed values after save
+        function updateDisplayedValues() {
+            Object.keys(userProfile).forEach(key => {
+                const valueElement = document.querySelector(`.info-value[data-field="${key}"]`);
+                if (valueElement) {
+                    valueElement.textContent = userProfile[key];
+                }
+            });
+
+            // Update credit score display
+            const creditScoreElement = document.getElementById('creditScore');
+            if (creditScoreElement) {
+                creditScoreElement.textContent = userProfile.creditScore;
+            }
+        }
+
+        // Load user data (in a real app, this would be an API call)
+        function loadUserData() {
+            // In a real app, you would fetch this from your backend
+            updateFormValues(userProfile);
+            
+            // Set credit score
+            const creditScoreElement = document.getElementById('creditScore');
+            if (creditScoreElement) {
+                creditScoreElement.textContent = userProfile.creditScore;
+            }
+        }
+
+        // Sync profile data with other pages
+        function syncProfileData(profileData) {
+            // In a real app, you would use a state management solution or emit an event
+            // For now, we'll just save to localStorage as a simple example
+            localStorage.setItem('userProfile', JSON.stringify(profileData));
+            
+            // You could also use BroadcastChannel to notify other tabs
+            if (typeof BroadcastChannel !== 'undefined') {
+                const channel = new BroadcastChannel('profile_updates');
+                channel.postMessage({ type: 'PROFILE_UPDATED', data: profileData });
+            }
+        }
+        
+        // Toggle menu for mobile devices
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('show');
+        }
+        
+        // Handle logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('You have been logged out');
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Loading overlay functions
+        function hideLoadingOverlay() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 500);
+            }
+        }
+
+        function showLoadingOverlay() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.style.opacity = '1';
+            }
+        }
+
+        // Hide loading overlay after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                hideLoadingOverlay();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripple Exchange - Security Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="./js/auth-manager.js"></script>
+  <style>
+  
+        /* Modern Loading Overlay Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        /* Abstract Geometric Background */
+        .geometric-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid #3b82f6;
+            opacity: 0.7;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: float 25s infinite linear;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -30px;
+            right: -30px;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: float 20s infinite linear reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 10%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: rotate(0deg) translate(0, 0);
+            }
+            100% {
+                transform: rotate(360deg) translate(50px, 50px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Main Content */
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        /* Abstract Loading Animation */
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .core {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            animation: core-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes core-pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+            }
+        }
+
+        .orbit {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 {
+            width: 120px;
+            height: 120px;
+            top: 40px;
+            left: 40px;
+            border-top-color: #3b82f6;
+            animation-duration: 8s;
+        }
+
+        .orbit-2 {
+            width: 160px;
+            height: 160px;
+            top: 20px;
+            left: 20px;
+            border-right-color: #60a5fa;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 200px;
+            height: 200px;
+            top: 0;
+            left: 0;
+            border-bottom-color: #00f0ff;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbit-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text Elements */
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-title span {
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            color: rgba(248, 250, 252, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 80%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.7);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .status-text:after {
+            content: '...';
+            animation: dots 1.5s infinite steps(4, end);
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .loading-title {
+                font-size: 2rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .loading-animation {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .orbit-1 {
+                width: 90px;
+                height: 90px;
+                top: 30px;
+                left: 30px;
+            }
+            
+            .orbit-2 {
+                width: 120px;
+                height: 120px;
+                top: 15px;
+                left: 15px;
+            }
+            
+            .orbit-3 {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+    :root {
+      --primary: #0096ff;
+      --primary-light: #00b3ff;
+      --success: #00ff7f;
+      --warning: #f59e0b;
+      --danger: #ff4d4d;
+      --background: #0d1117;
+      --card-bg: #1f2633;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 150, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 179, 255, 0.05) 0%, transparent 20%);
+      line-height: 1.6;
+    }
+
+    .settings-container {
+      max-width: 1000px;
+      margin: 50px auto 100px;
+      padding: 0 25px;
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .settings-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .card-title {
+      font-size: 18px;
+      margin-bottom: 25px;
+      color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .security-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #3a4255;
+    }
+
+    .security-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .security-title {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .security-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      flex-shrink: 0;
+      margin-left: 15px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #3a4255;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 150, 255, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 150, 255, 0.1);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      background: #2b3242;
+      border: 1px solid #3a4255;
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .security-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .toggle-switch {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+    
+    <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+    <div class="geometric-bg">
+      <div class="geometric-shape shape-1"></div>
+      <div class="geometric-shape shape-2"></div>
+      <div class="geometric-shape shape-3"></div>
+    </div>
+    <div class="loading-content">
+      <div class="loading-animation">
+        <div class="core"></div>
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+      </div>
+      <h1 class="loading-title"><span>TRIPPLE EXCHANGE</span></h1>
+      <p class="loading-subtitle">CRYPTO TRADING PLATFORM</p>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      <p class="status-text">Loading security settings</p>
+    </div>
+  </div>
+
+<!-- Wrap all your content in this (except loading overlay) -->
+<div class="content-wrapper" id="contentWrapper">
+  <!-- ALL YOUR EXISTING CONTENT GOES HERE -->
+  <div class="settings-container">
+    <div class="settings-header">
+      <h1>Security Settings</h1>
+      <a href="dashboard.html" class="btn btn-outline">Back to Profile</a>
+    </div>
+
+    <div class="settings-card">
+      <div class="card-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Account Security
+      </div>
+
+      <div class="security-item">
+        <div class="security-info">
+          <div class="security-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Password
+          </div>
+          <div class="security-description">Last changed <span id="last-password-change">3 months ago</span></div>
+        </div>
+        <button class="btn btn-outline" id="change-password-btn">Change Password</button>
+      </div>
+
+      <div class="security-item">
+        <div class="security-info">
+          <div class="security-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Two-Factor Authentication
+          </div>
+          <div class="security-description">Add an extra layer of security to your account</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="two-factor-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="security-item">
+        <div class="security-info">
+          <div class="security-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Active Sessions
+          </div>
+          <div class="security-description"><span id="active-sessions">3</span> devices currently signed in</div>
+        </div>
+        <button class="btn btn-outline" id="view-sessions-btn">Manage Sessions</button>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="card-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        Security Alerts
+      </div>
+
+      <div class="security-item">
+        <div class="security-info">
+          <div class="security-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Login Notifications
+          </div>
+          <div class="security-description">Receive alerts for new sign-ins</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="login-alerts-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div class="modal" id="password-modal">
+      <div class="modal-content">
+        <h3>Change Password</h3>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="current-password">
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="new-password">
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confirm-password">
+        </div>
+        <button class="btn btn-primary" id="save-password-btn">Update Password</button>
+        <button class="btn btn-outline" id="cancel-password-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      
+              // Modern Loading overlay functions
+        function showLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Initialize page with modern loading overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loading overlay initially
+            showLoadingOverlay();
+            
+            // Hide loading overlay after a short delay
+            setTimeout(function() {
+                hideLoadingOverlay();
+            }, 3000);
+        });
+    // Cross-platform synchronization system
+    const syncChannel = new BroadcastChannel('settings-sync');
+    const SETTINGS_KEY = 'cryptonet-settings-v1';
+
+    const defaultSettings = {
+      twoFactorEnabled: false,
+      loginAlerts: true,
+      lastPasswordChange: '3 months ago',
+      activeSessions: 3
+    };
+
+    let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || defaultSettings;
+
+    // Sync across all tabs/windows
+    function syncSettings() {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      syncChannel.postMessage({ type: 'settings-update', data: settings });
+      showToast('Settings updated across all devices');
+    }
+
+    // Receive updates from other tabs
+    syncChannel.addEventListener('message', (event) => {
+      if (event.data.type === 'settings-update') {
+        settings = event.data.data;
+        updateSettingsUI();
+      }
+    });
+
+    function updateSettingsUI() {
+      document.getElementById('two-factor-toggle').checked = settings.twoFactorEnabled;
+      document.getElementById('login-alerts-toggle').checked = settings.loginAlerts;
+      document.getElementById('last-password-change').textContent = settings.lastPasswordChange;
+      document.getElementById('active-sessions').textContent = settings.activeSessions;
+    }
+
+    // Event Listeners
+    document.getElementById('two-factor-toggle').addEventListener('change', function() {
+      settings.twoFactorEnabled = this.checked;
+      syncSettings();
+    });
+
+    document.getElementById('login-alerts-toggle').addEventListener('change', function() {
+      settings.loginAlerts = this.checked;
+      syncSettings();
+    });
+
+    document.getElementById('change-password-btn').addEventListener('click', () => {
+      document.getElementById('password-modal').classList.add('show');
+    });
+
+    document.getElementById('cancel-password-btn').addEventListener('click', () => {
+      document.getElementById('password-modal').classList.remove('show');
+    });
+
+    document.getElementById('save-password-btn').addEventListener('click', function() {
+      const newPass = document.getElementById('new-password').value;
+      const confirmPass = document.getElementById('confirm-password').value;
+      
+      if (newPass !== confirmPass) {
+        alert('Passwords do not match!');
+        return;
+      }
+      
+      settings.lastPasswordChange = new Date().toLocaleDateString();
+      syncSettings();
+      document.getElementById('password-modal').classList.remove('show');
+    });
+
+    // Initialize UI
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSettingsUI();
+      
+      window.addEventListener('storage', (event) => {
+        if (event.key === SETTINGS_KEY) {
+          settings = JSON.parse(event.newValue);
+          updateSettingsUI();
+        }
+      });
+    });
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.backgroundColor = 'var(--card-bg)';
+      toast.style.color = 'white';
+      toast.style.padding = '12px 24px';
+      toast.style.borderRadius = '8px';
+      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

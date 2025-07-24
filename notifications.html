@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tripple Exchange - All Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./js/notifications.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5649c0;
+            --primary-light: #f1effd;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #00b894;
+            --error: #ff7675;
+            --warning: #fdcb6e;
+            --info: #0984e3;
+            --border: #334155;
+            --shadow-lg: 0 10px 36px 0 rgba(108, 92, 231, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .unread-count {
+            background: var(--error);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+
+        .filter-tabs-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .filter-tab {
+            padding: 1rem 0;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+            font-weight: 500;
+            position: relative;
+        }
+
+        .filter-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .filter-tab:hover:not(.active) {
+            color: var(--text);
+        }
+
+        .filter-tab .count {
+            background: var(--surface-light);
+            color: var(--text-secondary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+
+        .filter-tab.active .count {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .notifications-toolbar {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        /* Notifications List */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notification-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-card.unread {
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(108, 92, 231, 0.05), transparent);
+        }
+
+        .notification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notification-icon.success {
+            background: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+
+        .notification-icon.warning {
+            background: rgba(253, 203, 110, 0.2);
+            color: var(--warning);
+        }
+
+        .notification-icon.error {
+            background: rgba(255, 118, 117, 0.2);
+            color: var(--error);
+        }
+
+        .notification-icon.info {
+            background: rgba(9, 132, 227, 0.2);
+            color: var(--info);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-message {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .notification-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .notification-time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .notification-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        .action-btn.mark-read {
+            color: var(--success);
+        }
+
+        .action-btn.mark-unread {
+            color: var(--warning);
+        }
+
+        .action-btn.delete {
+            color: var(--error);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Loading State */
+        .loading-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--surface-light);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .filter-tabs {
+                padding: 0 1rem;
+            }
+
+            .filter-tabs-content {
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .notifications-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .toolbar-right {
+                margin-left: 0;
+            }
+
+            .notification-card {
+                padding: 1rem;
+            }
+
+            .notification-header {
+                gap: 0.75rem;
+            }
+
+            .notification-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .notification-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Notification Type Badges */
+        .notification-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .notification-type.trade {
+            background: rgba(108, 92, 231, 0.2);
+            color: var(--primary);
+        }
+
+        .notification-type.security {
+            background: rgba(255, 118, 117, 0.2);
+            color: var(--error);
+        }
+
+        .notification-type.system {
+            background: rgba(9, 132, 227, 0.2);
+            color: var(--info);
+        }
+
+        .notification-type.deposit {
+            background: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()" aria-label="Go back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="page-title">All Notifications</h1>
+            </div>
+            <div class="header-actions">
+                <div class="notification-stats">
+                    <span id="totalCount">0</span> notifications
+                    <span class="unread-count" id="unreadCount">0</span> unread
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Tabs -->
+    <nav class="filter-tabs">
+        <div class="filter-tabs-content">
+            <a href="#" class="filter-tab active" data-filter="all">
+                All <span class="count" id="allCount">0</span>
+            </a>
+            <a href="#" class="filter-tab" data-filter="unread">
+                Unread <span class="count" id="unreadTabCount">0</span>
+            </a>
+            <a href="#" class="filter-tab" data-filter="trade">
+                Trading <span class="count" id="tradeCount">0</span>
+            </a>
+            <a href="#" class="filter-tab" data-filter="security">
+                Security <span class="count" id="securityCount">0</span>
+            </a>
+            <a href="#" class="filter-tab" data-filter="system">
+                System <span class="count" id="systemCount">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Toolbar -->
+        <div class="notifications-toolbar">
+            <div class="toolbar-left">
+                <button class="btn btn-primary" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double"></i>
+                    Mark All as Read
+                </button>
+                <button class="btn btn-outline" onclick="refreshNotifications()">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn btn-secondary" onclick="clearAllRead()">
+                    <i class="fas fa-trash-alt"></i>
+                    Clear Read
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="notifications-list" id="notificationsList">
+            <!-- Notifications will be dynamically inserted here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-bell-slash"></i>
+            <h3>No notifications found</h3>
+            <p>You're all caught up! Check back later for new notifications.</p>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let currentFilter = 'all';
+        let allNotifications = [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize shared notification system
+            if (typeof window.notificationManager === 'undefined' && window.NotificationManager) {
+                window.notificationManager = new window.NotificationManager();
+                window.notificationManager.init();
+            }
+
+            // Load and display notifications
+            loadNotifications();
+
+            // Setup filter tabs
+            setupFilterTabs();
+
+            // Setup periodic refresh
+            setInterval(refreshNotifications, 30000); // Refresh every 30 seconds
+        });
+
+        // Load notifications from the shared system
+        function loadNotifications() {
+            showLoading();
+            
+            // Get notifications from the shared notification manager
+            if (window.notificationManager) {
+                allNotifications = window.notificationManager.notifications || [];
+            } else {
+                // Fallback to localStorage
+                allNotifications = JSON.parse(localStorage.getItem('tripple_notifications') || '[]');
+            }
+
+            // Add some sample notifications if none exist
+            if (allNotifications.length === 0) {
+                allNotifications = getSampleNotifications();
+            }
+
+            // Update UI
+            updateNotificationCounts();
+            renderNotifications();
+            hideLoading();
+        }
+
+        // Get sample notifications
+        function getSampleNotifications() {
+            return [
+                {
+                    id: 1,
+                    title: "Trade Completed Successfully",
+                    message: "Your BTC/USDT buy order has been executed. You earned 45.50 USDT profit from your 5-minute contract.",
+                    icon: "fas fa-chart-line",
+                    time: "2 minutes ago",
+                    read: false,
+                    type: "success",
+                    category: "trade",
+                    timestamp: Date.now() - 120000
+                },
+                {
+                    id: 2,
+                    title: "Deposit Confirmed",
+                    message: "Your deposit of 1,500.00 USDT has been confirmed and added to your wallet balance.",
+                    icon: "fas fa-arrow-down",
+                    time: "15 minutes ago",
+                    read: false,
+                    type: "success",
+                    category: "deposit",
+                    timestamp: Date.now() - 900000
+                },
+                {
+                    id: 3,
+                    title: "Security Alert",
+                    message: "We detected a login from a new device (Chrome on Windows). If this wasn't you, please secure your account immediately.",
+                    icon: "fas fa-shield-alt",
+                    time: "1 hour ago",
+                    read: false,
+                    type: "warning",
+                    category: "security",
+                    timestamp: Date.now() - 3600000
+                },
+                {
+                    id: 4,
+                    title: "System Maintenance Scheduled",
+                    message: "Scheduled maintenance will occur this Sunday from 2:00 AM to 4:00 AM UTC. Trading will be temporarily unavailable.",
+                    icon: "fas fa-tools",
+                    time: "3 hours ago",
+                    read: true,
+                    type: "info",
+                    category: "system",
+                    timestamp: Date.now() - 10800000
+                },
+                {
+                    id: 5,
+                    title: "New Feature: Advanced Charts",
+                    message: "We've added advanced charting tools to help you make better trading decisions. Check them out on the trade page!",
+                    icon: "fas fa-star",
+                    time: "1 day ago",
+                    read: true,
+                    type: "info",
+                    category: "system",
+                    timestamp: Date.now() - 86400000
+                }
+            ];
+        }
+
+        // Setup filter tabs
+        function setupFilterTabs() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active tab
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update current filter
+                    currentFilter = this.dataset.filter;
+                    
+                    // Re-render notifications
+                    renderNotifications();
+                });
+            });
+        }
+
+        // Update notification counts
+        function updateNotificationCounts() {
+            const totalCount = allNotifications.length;
+            const unreadCount = allNotifications.filter(n => !n.read).length;
+            const tradeCount = allNotifications.filter(n => n.category === 'trade').length;
+            const securityCount = allNotifications.filter(n => n.category === 'security').length;
+            const systemCount = allNotifications.filter(n => n.category === 'system').length;
+
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('unreadCount').textContent = unreadCount;
+            document.getElementById('allCount').textContent = totalCount;
+            document.getElementById('unreadTabCount').textContent = unreadCount;
+            document.getElementById('tradeCount').textContent = tradeCount;
+            document.getElementById('securityCount').textContent = securityCount;
+            document.getElementById('systemCount').textContent = systemCount;
+
+            // Hide unread badge if no unread notifications
+            const unreadBadge = document.getElementById('unreadCount');
+            unreadBadge.style.display = unreadCount > 0 ? 'inline' : 'none';
+        }
+
+        // Render notifications based on current filter
+        function renderNotifications() {
+            const container = document.getElementById('notificationsList');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Filter notifications
+            let filteredNotifications = allNotifications;
+            
+            switch (currentFilter) {
+                case 'unread':
+                    filteredNotifications = allNotifications.filter(n => !n.read);
+                    break;
+                case 'trade':
+                    filteredNotifications = allNotifications.filter(n => n.category === 'trade');
+                    break;
+                case 'security':
+                    filteredNotifications = allNotifications.filter(n => n.category === 'security');
+                    break;
+                case 'system':
+                    filteredNotifications = allNotifications.filter(n => n.category === 'system');
+                    break;
+                default:
+                    // Show all notifications
+                    break;
+            }
+
+            // Sort by timestamp (newest first)
+            filteredNotifications.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            // Clear container
+            container.innerHTML = '';
+
+            // Show empty state if no notifications
+            if (filteredNotifications.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            // Hide empty state and show notifications
+            container.style.display = 'flex';
+            emptyState.style.display = 'none';
+
+            // Render each notification
+            filteredNotifications.forEach(notification => {
+                const notificationElement = createNotificationElement(notification);
+                container.appendChild(notificationElement);
+            });
+        }
+
+        // Create notification element
+        function createNotificationElement(notification) {
+            const div = document.createElement('div');
+            div.className = `notification-card ${!notification.read ? 'unread' : ''}`;
+            div.dataset.id = notification.id;
+
+            div.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-icon ${notification.type}">
+                        <i class="${notification.icon}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notification.title}</div>
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-meta">
+                            <div class="notification-time">
+                                <i class="far fa-clock"></i>
+                                ${notification.time}
+                            </div>
+                            <div class="notification-actions">
+                                <span class="notification-type ${notification.category}">${notification.category}</span>
+                                ${!notification.read ? 
+                                    `<button class="action-btn mark-read" onclick="markAsRead(${notification.id})" title="Mark as read">
+                                        <i class="fas fa-check"></i>
+                                    </button>` : 
+                                    `<button class="action-btn mark-unread" onclick="markAsUnread(${notification.id})" title="Mark as unread">
+                                        <i class="fas fa-undo"></i>
+                                    </button>`
+                                }
+                                <button class="action-btn delete" onclick="deleteNotification(${notification.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return div;
+        }
+
+        // Mark notification as read
+        function markAsRead(id) {
+            const notification = allNotifications.find(n => n.id === id);
+            if (notification) {
+                notification.read = true;
+                saveNotifications();
+                updateNotificationCounts();
+                renderNotifications();
+                
+                // Update shared notification system
+                if (window.notificationManager) {
+                    window.notificationManager.markAsRead(id);
+                }
+            }
+        }
+
+        // Mark notification as unread
+        function markAsUnread(id) {
+            const notification = allNotifications.find(n => n.id === id);
+            if (notification) {
+                notification.read = false;
+                saveNotifications();
+                updateNotificationCounts();
+                renderNotifications();
+            }
+        }
+
+        // Delete notification
+        function deleteNotification(id) {
+            if (confirm('Are you sure you want to delete this notification?')) {
+                allNotifications = allNotifications.filter(n => n.id !== id);
+                saveNotifications();
+                updateNotificationCounts();
+                renderNotifications();
+            }
+        }
+
+        // Mark all notifications as read
+        function markAllAsRead() {
+            allNotifications.forEach(n => n.read = true);
+            saveNotifications();
+            updateNotificationCounts();
+            renderNotifications();
+            
+            // Update shared notification system
+            if (window.notificationManager) {
+                window.notificationManager.markAllAsRead();
+            }
+        }
+
+        // Clear all read notifications
+        function clearAllRead() {
+            if (confirm('Are you sure you want to delete all read notifications?')) {
+                allNotifications = allNotifications.filter(n => !n.read);
+                saveNotifications();
+                updateNotificationCounts();
+                renderNotifications();
+            }
+        }
+
+        // Refresh notifications
+        function refreshNotifications() {
+            loadNotifications();
+        }
+
+        // Save notifications to localStorage
+        function saveNotifications() {
+            localStorage.setItem('tripple_notifications', JSON.stringify(allNotifications));
+        }
+
+        // Show loading state
+        function showLoading() {
+            document.getElementById('loadingState').style.display = 'flex';
+            document.getElementById('notificationsList').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+        }
+
+        // Go back to previous page
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>

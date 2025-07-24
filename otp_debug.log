@@ -1,0 +1,196 @@
+Array
+(
+    [LSPHP_ProcessGroup] => on
+    [PATH] => /usr/local/bin:/bin:/usr/bin
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-GB,en-US;q=0.9,en;q=0.8
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 57
+    [HTTP_COOKIE] => _ga=GA1.2.778892270.1747863682; PHPSESSID=uahf3gp14ned99tmf0bl5n4ad7; _gid=GA1.2.388564967.1748130768; _ga_9Q6H0QETRF=GS2.2.s1748231448$o7$g0$t1748231448$j60$l0$h0$d3ErG0cvCrCV0VloDtLpuCNznBQxe4quF6A
+    [HTTP_HOST] => trippleexchange.com
+    [HTTP_REFERER] => https://trippleexchange.com/signup.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://trippleexchange.com
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_PRIORITY] => u=1, i
+    [DOCUMENT_ROOT] => /home/u925878138/domains/trippleexchange.com/public_html
+    [REMOTE_ADDR] => 84.17.45.112
+    [REMOTE_PORT] => 51418
+    [SERVER_ADDR] => 212.85.28.181
+    [SERVER_NAME] => trippleexchange.com
+    [SERVER_ADMIN] => 
+    [SERVER_PORT] => 443
+    [REQUEST_SCHEME] => https
+    [REQUEST_URI] => /send_signup_otp.php
+    [HTTPS] => on
+    [CRAWLER_USLEEP] => 1000
+    [CRAWLER_LOAD_LIMIT_ENFORCE] => 25
+    [H_PLATFORM] => Hostinger
+    [H_TYPE] => shared
+    [H_CANARY] => false
+    [H_STAGING] => false
+    [X_SPDY] => HTTP3
+    [SSL_PROTOCOL] => QUIC
+    [SSL_CIPHER] => TLS_AES_128_GCM_SHA256
+    [SSL_CIPHER_USEKEYSIZE] => 128
+    [SSL_CIPHER_ALGKEYSIZE] => 128
+    [SCRIPT_FILENAME] => /home/u925878138/domains/trippleexchange.com/public_html/send_signup_otp.php
+    [QUERY_STRING] => 
+    [SCRIPT_URI] => https://trippleexchange.com/send_signup_otp.php
+    [SCRIPT_URL] => /send_signup_otp.php
+    [SCRIPT_NAME] => /send_signup_otp.php
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [SERVER_SOFTWARE] => LiteSpeed
+    [REQUEST_METHOD] => POST
+    [X-LSCACHE] => on,crawler,esi,combine
+    [PHP_SELF] => /send_signup_otp.php
+    [REQUEST_TIME_FLOAT] => 1748303235.912
+    [REQUEST_TIME] => 1748303235
+)
+
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50"}Array
+(
+    [LSPHP_ProcessGroup] => on
+    [PATH] => /usr/local/bin:/bin:/usr/bin
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-GB,en-US;q=0.9,en;q=0.8
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 57
+    [HTTP_COOKIE] => _ga=GA1.2.778892270.1747863682; PHPSESSID=uahf3gp14ned99tmf0bl5n4ad7; _gid=GA1.2.388564967.1748130768; _ga_9Q6H0QETRF=GS2.2.s1748231448$o7$g0$t1748231448$j60$l0$h0$d3ErG0cvCrCV0VloDtLpuCNznBQxe4quF6A
+    [HTTP_HOST] => trippleexchange.com
+    [HTTP_REFERER] => https://trippleexchange.com/signup.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://trippleexchange.com
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_PRIORITY] => u=1, i
+    [DOCUMENT_ROOT] => /home/u925878138/domains/trippleexchange.com/public_html
+    [REMOTE_ADDR] => 84.17.45.112
+    [REMOTE_PORT] => 58298
+    [SERVER_ADDR] => 212.85.28.181
+    [SERVER_NAME] => trippleexchange.com
+    [SERVER_ADMIN] => 
+    [SERVER_PORT] => 443
+    [REQUEST_SCHEME] => https
+    [REQUEST_URI] => /send_signup_otp.php
+    [HTTPS] => on
+    [CRAWLER_USLEEP] => 1000
+    [CRAWLER_LOAD_LIMIT_ENFORCE] => 25
+    [H_PLATFORM] => Hostinger
+    [H_TYPE] => shared
+    [H_CANARY] => false
+    [H_STAGING] => false
+    [X_SPDY] => HTTP3
+    [SSL_PROTOCOL] => QUIC
+    [SSL_CIPHER] => TLS_AES_128_GCM_SHA256
+    [SSL_CIPHER_USEKEYSIZE] => 128
+    [SSL_CIPHER_ALGKEYSIZE] => 128
+    [SCRIPT_FILENAME] => /home/u925878138/domains/trippleexchange.com/public_html/send_signup_otp.php
+    [QUERY_STRING] => 
+    [SCRIPT_URI] => https://trippleexchange.com/send_signup_otp.php
+    [SCRIPT_URL] => /send_signup_otp.php
+    [SCRIPT_NAME] => /send_signup_otp.php
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [SERVER_SOFTWARE] => LiteSpeed
+    [REQUEST_METHOD] => POST
+    [X-LSCACHE] => on,crawler,esi,combine
+    [PHP_SELF] => /send_signup_otp.php
+    [REQUEST_TIME_FLOAT] => 1748303340.2462
+    [REQUEST_TIME] => 1748303340
+)
+
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50"}
+
+2025-05-26T23:50:17+00:00
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50"}
+2025-05-26T23:50:22+00:00
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50"}
+2025-05-26T23:50:31+00:00
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50","method":"email"}
+2025-05-26T23:54:55+00:00
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50","method":"email"}
+2025-05-26T23:55:10+00:00
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50","method":"email"}
+2025-05-27T05:12:13+00:00
+
+2025-05-29T04:43:07+00:00
+{"email":"jaxmccall2@yahoo.com","username":"Jax11","method":"email"}
+2025-05-30T01:10:32+00:00
+{"email":"jaxmccall25@proton.me","username":"jaxmccal50","method":"email"}
+2025-06-05T03:37:24+00:00
+{"email":"cc570m48kr@zudpck.com","username":"marsmars","method":"email"}
+2025-06-15T02:54:59+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:04:22+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:04:30+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:08:40+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:08:47+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:16:45+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:21:05+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:22:24+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:28:07+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T03:41:09+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T03:41:35+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T03:42:01+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T03:47:37+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:03:26+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:27:48+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:28:16+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:30:47+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:31:10+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:31:14+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T04:31:30+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T19:42:57+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T19:53:22+00:00
+{"email":"jaxmccall25@gmail.com","username":"jax","method":"email"}
+2025-06-15T22:22:05+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-15T22:28:49+00:00
+{"email":"jaxmccall25@proton.me","username":"jax","method":"email"}
+2025-06-15T22:29:57+00:00
+{"email":"jaxmccall50@gmail.com","username":"jaxmccall50@gmail.com","method":"email"}
+2025-06-15T23:55:44+00:00
+{"email":"jaxmccall50@gmail.com","username":"jax","method":"email"}
+2025-06-16T01:20:49+00:00
+{"email":"jaxmccall50@gmail.com","otp":"132747","username":"jax","timestamp":1750036844355,"client_id":"signup_1750036844355"}
+2025-06-16T01:46:50+00:00
+
+2025-06-16T01:51:31+00:00
+
+2025-06-16T01:52:56+00:00
+
+2025-06-16T01:55:44+00:00
+
+2025-06-16T02:09:43+00:00
+

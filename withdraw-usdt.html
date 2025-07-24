@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tripple Exchange - Withdraw USDT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./js/balance-manager.js"></script>
+    <script src="./js/auth-manager.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5649c0;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #00b894;
+            --error: #ff7675;
+            --warning: #fdcb6e;
+            --border: #334155;
+            --shadow-lg: 0 10px 36px 0 rgba(108, 92, 231, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .balance-display {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .current-balance {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .withdraw-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .usdt-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .usdt-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #26a17b, #2dd4bf);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .usdt-info h2 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .usdt-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Available Balance */
+        .balance-section {
+            background: var(--surface-light);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .balance-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-usd {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Network Selection */
+        .network-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .network-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .network-option {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            flex: 1;
+            text-align: center;
+        }
+
+        .network-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .network-option:hover:not(.active) {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        /* Withdrawal Form */
+        .withdraw-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface-light);
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Amount Input with Quick Select */
+        .amount-section {
+            position: relative;
+        }
+
+        .quick-amounts {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-amount {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .quick-amount:hover {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .max-btn {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .max-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Fee Information */
+        .fee-info {
+            background: rgba(253, 203, 110, 0.1);
+            border: 1px solid rgba(253, 203, 110, 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .fee-row:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            border-top: 1px solid rgba(253, 203, 110, 0.3);
+            padding-top: 0.5rem;
+        }
+
+        /* Withdraw Button */
+        .withdraw-btn {
+            padding: 1rem;
+            background: var(--error);
+            border: none;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .withdraw-btn:hover:not(:disabled) {
+            background: #e74c3c;
+            transform: translateY(-1px);
+        }
+
+        .withdraw-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+            display: none;
+            text-align: center;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(0, 184, 148, 0.1);
+            border: 1px solid rgba(0, 184, 148, 0.3);
+            color: var(--success);
+        }
+
+        .message.error {
+            background: rgba(255, 118, 117, 0.1);
+            border: 1px solid rgba(255, 118, 117, 0.3);
+            color: var(--error);
+        }
+
+        /* Important Notes */
+        .important-notes {
+            background: rgba(255, 118, 117, 0.1);
+            border: 1px solid rgba(255, 118, 117, 0.3);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .important-notes h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .important-notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .important-notes li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .important-notes li::before {
+            content: "•";
+            color: var(--error);
+            position: absolute;
+            left: 0;
+        }
+
+        /* Responsive Design */
+        /* Base responsive improvements */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Flexible text sizing */
+        .responsive-text {
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+
+        .responsive-title {
+            font-size: clamp(1.25rem, 4vw, 2rem);
+        }
+
+        .responsive-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        /* Flexible container spacing */
+        .responsive-padding {
+            padding: clamp(0.5rem, 2vw, 2rem);
+        }
+
+        .responsive-margin {
+            margin: clamp(0.5rem, 2vw, 2rem);
+        }
+
+        /* Grid improvements */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* Flexible button sizing */
+        .responsive-btn {
+            padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .withdraw-card {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .withdraw-header {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            
+            .withdraw-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .withdraw-card {
+                padding: 1rem;
+                max-width: 100%;
+            }
+            
+            .withdraw-form {
+                padding: 1.5rem;
+            }
+            
+            .amount-section {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .network-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            
+            .withdraw-header {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .withdraw-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .withdraw-card {
+                padding: 0.75rem;
+            }
+            
+            .withdraw-form {
+                padding: 1.5rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .form-input {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+            
+            .amount-section {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .quick-amount {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .network-option {
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .network-option h3 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .network-option p {
+                font-size: 0.85rem;
+            }
+            
+            .fee-info {
+                padding: 1rem;
+                margin: 1rem 0;
+                font-size: 0.9rem;
+            }
+            
+            .withdraw-btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .balance-display {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .important-notes {
+                padding: 1rem;
+                margin: 1rem 0;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .withdraw-header {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .withdraw-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .withdraw-card {
+                padding: 0.5rem;
+            }
+            
+            .withdraw-form {
+                padding: 1rem;
+            }
+            
+            .form-input {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .quick-amount {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+            
+            .network-option {
+                padding: 0.75rem;
+            }
+            
+            .withdraw-btn {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .fee-info,
+            .balance-display,
+            .important-notes {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .withdraw-header {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .amount-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .withdraw-card {
+                padding: 1.5rem;
+            }
+
+            .network-options {
+                flex-direction: column;
+            }
+
+            .quick-amounts {
+                justify-content: center;
+            }
+        }
+
+        /* Modern Loading Overlay Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        /* Abstract Geometric Background */
+        .geometric-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid #3b82f6;
+            opacity: 0.7;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: float 25s infinite linear;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -30px;
+            right: -30px;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: float 20s infinite linear reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 10%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: rotate(0deg) translate(0, 0);
+            }
+            100% {
+                transform: rotate(360deg) translate(50px, 50px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Main Content */
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        /* Abstract Loading Animation */
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .core {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            animation: core-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes core-pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+            }
+        }
+
+        .orbit {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 {
+            width: 120px;
+            height: 120px;
+            top: 40px;
+            left: 40px;
+            border-top-color: #3b82f6;
+            animation-duration: 8s;
+        }
+
+        .orbit-2 {
+            width: 160px;
+            height: 160px;
+            top: 20px;
+            left: 20px;
+            border-right-color: #60a5fa;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 200px;
+            height: 200px;
+            top: 0;
+            left: 0;
+            border-bottom-color: #00f0ff;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbit-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text Elements */
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-title span {
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            color: rgba(248, 250, 252, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 80%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.7);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .status-text:after {
+            content: '...';
+            animation: dots 1.5s infinite steps(4, end);
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .loading-title {
+                font-size: 2rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .loading-animation {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .orbit-1 {
+                width: 90px;
+                height: 90px;
+                top: 30px;
+                left: 30px;
+            }
+            
+            .orbit-2 {
+                width: 120px;
+                height: 120px;
+                top: 15px;
+                left: 15px;
+            }
+            
+            .orbit-3 {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Loading Overlay -->
+    <div class="loading-screen" id="loadingOverlay">
+        <div class="geometric-bg">
+            <div class="geometric-shape shape-1"></div>
+            <div class="geometric-shape shape-2"></div>
+            <div class="geometric-shape shape-3"></div>
+        </div>
+        
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="core"></div>
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
+            </div>
+            
+            <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+            <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            
+            <p class="status-text">Loading withdrawal interface</p>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()" aria-label="Go back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="page-title">Withdraw USDT</h1>
+            </div>
+            <div class="balance-display">
+                Total Balance: <span class="current-balance" id="totalBalance">$0.00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="withdraw-card">
+            <!-- USDT Header -->
+            <div class="usdt-header">
+                <div class="usdt-icon">₮</div>
+                <div class="usdt-info">
+                    <h2>Withdraw Tether (USDT)</h2>
+                    <p>Send USDT to external wallet address</p>
+                </div>
+            </div>
+
+            <!-- Available Balance -->
+            <div class="balance-section">
+                <div class="balance-label">Available USDT Balance</div>
+                <div class="balance-amount" id="usdtBalance">0.00 USDT</div>
+                <div class="balance-usd" id="usdtBalanceUSD">≈ $0.00</div>
+            </div>
+
+            <!-- Network Selection -->
+            <div class="network-section">
+                <h3 class="section-title">Select Network</h3>
+                <div class="network-options">
+                    <button class="network-option active" data-network="trc20" data-fee="1">
+                        TRC20 (Tron)<br><small>Fee: 1 USDT</small>
+                    </button>
+                    <button class="network-option" data-network="erc20" data-fee="5">
+                        ERC20 (Ethereum)<br><small>Fee: 5 USDT</small>
+                    </button>
+                    <button class="network-option" data-network="bep20" data-fee="0.5">
+                        BEP20 (BSC)<br><small>Fee: 0.5 USDT</small>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Withdrawal Form -->
+            <form class="withdraw-form" onsubmit="processWithdrawal(event)">
+                <div class="form-group">
+                    <label class="form-label" for="recipientAddress">Recipient Address</label>
+                    <input type="text" class="form-input" id="recipientAddress" placeholder="Enter USDT wallet address" required>
+                    <div class="error-message" id="addressError"></div>
+                </div>
+
+                <div class="form-group amount-section">
+                    <label class="form-label" for="withdrawAmount">Amount (USDT)</label>
+                    <input type="number" class="form-input" id="withdrawAmount" placeholder="0.00" min="10" step="0.01" required>
+                    <div class="quick-amounts">
+                        <button type="button" class="quick-amount" onclick="setQuickAmount(50)">50</button>
+                        <button type="button" class="quick-amount" onclick="setQuickAmount(100)">100</button>
+                        <button type="button" class="quick-amount" onclick="setQuickAmount(500)">500</button>
+                        <button type="button" class="quick-amount" onclick="setQuickAmount(1000)">1000</button>
+                        <button type="button" class="quick-amount max-btn" onclick="setMaxAmount()">MAX</button>
+                    </div>
+                    <div class="error-message" id="amountError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="memo">Memo/Tag (Optional)</label>
+                    <input type="text" class="form-input" id="memo" placeholder="Enter memo if required">
+                </div>
+
+                <!-- Fee Information -->
+                <div class="fee-info" id="feeInfo">
+                    <div class="fee-row">
+                        <span>Withdrawal Amount:</span>
+                        <span id="withdrawalAmount">0.00 USDT</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>Network Fee:</span>
+                        <span id="networkFee">1.00 USDT</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>You will receive:</span>
+                        <span id="receiveAmount">0.00 USDT</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="withdraw-btn" id="withdrawBtn">
+                    <i class="fas fa-arrow-up"></i> Withdraw USDT
+                </button>
+
+                <div class="message" id="resultMessage"></div>
+            </form>
+
+            <!-- Important Notes -->
+            <div class="important-notes">
+                <h3><i class="fas fa-exclamation-triangle"></i> Important Withdrawal Information</h3>
+                <ul>
+                    <li>Minimum withdrawal: 10 USDT</li>
+                    <li>Ensure the recipient address matches the selected network</li>
+                    <li>Double-check the address - transactions cannot be reversed</li>
+                    <li>Include memo/tag if required by the receiving platform</li>
+                    <li>Withdrawals are processed within 24 hours</li>
+                    <li>Network fees are deducted from your withdrawal amount</li>
+                    <li>Contact support if you need assistance</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let selectedNetwork = 'trc20';
+        let networkFee = 1;
+        let availableBalance = 0;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize balance manager
+            if (window.balanceManager) {
+                updateBalanceDisplay();
+                
+                // Listen for balance updates
+                window.balanceManager.addListener(updateBalanceDisplay);
+            }
+
+            // Setup network selection
+            setupNetworkSelection();
+            
+            // Setup amount input listener
+            document.getElementById('withdrawAmount').addEventListener('input', updateFeeCalculation);
+        });
+
+        // Update balance display
+        function updateBalanceDisplay() {
+            if (window.balanceManager) {
+                const totalBalance = window.balanceManager.getTotalBalanceUSD();
+                const usdtBalance = window.balanceManager.getBalance('USDT');
+                
+                document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;
+                document.getElementById('usdtBalance').textContent = `${usdtBalance.toFixed(2)} USDT`;
+                document.getElementById('usdtBalanceUSD').textContent = `≈ $${usdtBalance.toFixed(2)}`;
+                
+                availableBalance = usdtBalance;
+                updateFeeCalculation();
+            }
+        }
+
+        // Setup network selection
+        function setupNetworkSelection() {
+            document.querySelectorAll('.network-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    document.querySelectorAll('.network-option').forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    
+                    // Update selected network and fee
+                    selectedNetwork = this.dataset.network;
+                    networkFee = parseFloat(this.dataset.fee);
+                    
+                    // Update fee display
+                    document.getElementById('networkFee').textContent = `${networkFee.toFixed(2)} USDT`;
+                    updateFeeCalculation();
+                });
+            });
+        }
+
+        // Set quick amount
+        function setQuickAmount(amount) {
+            document.getElementById('withdrawAmount').value = amount;
+            updateFeeCalculation();
+        }
+
+        // Set maximum amount
+        function setMaxAmount() {
+            const maxAmount = Math.max(0, availableBalance - networkFee);
+            document.getElementById('withdrawAmount').value = maxAmount.toFixed(2);
+            updateFeeCalculation();
+        }
+
+        // Update fee calculation
+        function updateFeeCalculation() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+            const receiveAmount = Math.max(0, amount - networkFee);
+            
+            document.getElementById('withdrawalAmount').textContent = `${amount.toFixed(2)} USDT`;
+            document.getElementById('receiveAmount').textContent = `${receiveAmount.toFixed(2)} USDT`;
+            
+            // Enable/disable withdraw button
+            const withdrawBtn = document.getElementById('withdrawBtn');
+            if (amount >= 10 && amount <= availableBalance) {
+                withdrawBtn.disabled = false;
+            } else {
+                withdrawBtn.disabled = true;
+            }
+        }
+
+        // Validate address format
+        function validateAddress(address, network) {
+            switch(network) {
+                case 'trc20':
+                    return address.startsWith('T') && address.length === 34;
+                case 'erc20':
+                case 'bep20':
+                    return address.startsWith('0x') && address.length === 42;
+                default:
+                    return false;
+            }
+        }
+
+        // Process withdrawal
+        function processWithdrawal(event) {
+            event.preventDefault();
+            
+            const address = document.getElementById('recipientAddress').value.trim();
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const memo = document.getElementById('memo').value.trim();
+            const resultMessage = document.getElementById('resultMessage');
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(msg => msg.classList.remove('show'));
+            document.querySelectorAll('.form-input').forEach(input => input.classList.remove('error'));
+            
+            // Validate inputs
+            let hasErrors = false;
+            
+            if (!address) {
+                showError('addressError', 'Recipient address is required');
+                document.getElementById('recipientAddress').classList.add('error');
+                hasErrors = true;
+            } else if (!validateAddress(address, selectedNetwork)) {
+                showError('addressError', `Invalid ${selectedNetwork.toUpperCase()} address format`);
+                document.getElementById('recipientAddress').classList.add('error');
+                hasErrors = true;
+            }
+            
+            if (!amount || amount < 10) {
+                showError('amountError', 'Minimum withdrawal amount is 10 USDT');
+                document.getElementById('withdrawAmount').classList.add('error');
+                hasErrors = true;
+            } else if (amount > availableBalance) {
+                showError('amountError', 'Amount exceeds available balance');
+                document.getElementById('withdrawAmount').classList.add('error');
+                hasErrors = true;
+            }
+            
+            if (hasErrors) return;
+            
+            // Process withdrawal through balance manager
+            if (window.balanceManager) {
+                try {
+                    // Confirm withdrawal
+                    const confirmed = confirm(`Confirm withdrawal of ${amount} USDT to ${address}?\n\nNetwork: ${selectedNetwork.toUpperCase()}\nFee: ${networkFee} USDT\nYou will receive: ${(amount - networkFee).toFixed(2)} USDT`);
+                    
+                    if (!confirmed) return;
+                    
+                    // Process withdrawal
+                    window.balanceManager.processWithdrawal('USDT', amount);
+                    
+                    // Show success message
+                    showMessage('success', `Withdrawal successful! ${amount} USDT has been sent to ${address.substring(0, 10)}...${address.substring(address.length - 10)}`);
+                    
+                    // Clear form
+                    document.getElementById('recipientAddress').value = '';
+                    document.getElementById('withdrawAmount').value = '';
+                    document.getElementById('memo').value = '';
+                    
+                    // Update balance display
+                    updateBalanceDisplay();
+                    
+                } catch (error) {
+                    showMessage('error', 'Error processing withdrawal: ' + error.message);
+                }
+            }
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Show result message
+        function showMessage(type, message) {
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.textContent = message;
+            resultMessage.className = `message ${type} show`;
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                resultMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        // Go back to previous page
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+    <script>
+        // Loading overlay functions
+        function showLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loading overlay initially
+            showLoadingOverlay();
+            
+            // Hide loading overlay after a short delay
+            setTimeout(function() {
+                hideLoadingOverlay();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

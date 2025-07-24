@@ -1,0 +1,341 @@
+<!-- Modern Loading Overlay Template for Tripple Exchange -->
+<!-- This template contains the HTML and CSS for the new loading overlay design -->
+
+<!-- HTML Structure -->
+<div class="loading-screen" id="loadingOverlay">
+    <div class="geometric-bg">
+        <div class="geometric-shape shape-1"></div>
+        <div class="geometric-shape shape-2"></div>
+        <div class="geometric-shape shape-3"></div>
+    </div>
+    
+    <div class="loading-content">
+        <div class="loading-animation">
+            <div class="core"></div>
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-3"></div>
+        </div>
+        
+        <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+        <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <p class="status-text">Initializing secure connection</p>
+    </div>
+</div>
+
+<!-- CSS Styles -->
+<style>
+/* Modern Loading Overlay Styles */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #020617;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-screen.hidden {
+    display: none;
+}
+
+/* Abstract Geometric Background */
+.geometric-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    opacity: 0.15;
+}
+
+.geometric-shape {
+    position: absolute;
+    border: 1px solid #3b82f6;
+    opacity: 0.7;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -50px;
+    left: -50px;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    animation: float 25s infinite linear;
+}
+
+.shape-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -30px;
+    right: -30px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    animation: float 20s infinite linear reverse;
+}
+
+.shape-3 {
+    width: 150px;
+    height: 150px;
+    top: 30%;
+    right: 10%;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: pulse 8s infinite ease-in-out;
+}
+
+@keyframes float {
+    0% {
+        transform: rotate(0deg) translate(0, 0);
+    }
+    100% {
+        transform: rotate(360deg) translate(50px, 50px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Main Content */
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+}
+
+/* Abstract Loading Animation */
+.loading-animation {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 3rem;
+}
+
+.core {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+    animation: core-pulse 3s infinite ease-in-out;
+}
+
+@keyframes core-pulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+    }
+}
+
+.orbit {
+    position: absolute;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    animation: orbit-rotate linear infinite;
+}
+
+.orbit-1 {
+    width: 120px;
+    height: 120px;
+    top: 40px;
+    left: 40px;
+    border-top-color: #3b82f6;
+    animation-duration: 8s;
+}
+
+.orbit-2 {
+    width: 160px;
+    height: 160px;
+    top: 20px;
+    left: 20px;
+    border-right-color: #60a5fa;
+    animation-duration: 12s;
+    animation-direction: reverse;
+}
+
+.orbit-3 {
+    width: 200px;
+    height: 200px;
+    top: 0;
+    left: 0;
+    border-bottom-color: #00f0ff;
+    animation-duration: 16s;
+}
+
+@keyframes orbit-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Text Elements */
+.loading-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.loading-title span {
+    background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.loading-subtitle {
+    font-size: 1rem;
+    color: rgba(248, 250, 252, 0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+/* Progress Indicator */
+.progress-container {
+    width: 100%;
+    max-width: 300px;
+    height: 6px;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+    animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes progress {
+    0% {
+        width: 0;
+    }
+    50% {
+        width: 80%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.status-text {
+    font-size: 0.9rem;
+    color: rgba(248, 250, 252, 0.7);
+    text-align: center;
+    max-width: 300px;
+}
+
+.status-text:after {
+    content: '...';
+    animation: dots 1.5s infinite steps(4, end);
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40% {
+        content: '..';
+    }
+    60%, 100% {
+        content: '...';
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .loading-title {
+        font-size: 2rem;
+    }
+    
+    .loading-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .loading-animation {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .orbit-1 {
+        width: 90px;
+        height: 90px;
+        top: 30px;
+        left: 30px;
+    }
+    
+    .orbit-2 {
+        width: 120px;
+        height: 120px;
+        top: 15px;
+        left: 15px;
+    }
+    
+    .orbit-3 {
+        width: 150px;
+        height: 150px;
+    }
+}
+</style>
+
+<!-- JavaScript for loading overlay control -->
+<script>
+// Simple loading overlay functions
+function hideLoadingOverlay() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+        loadingOverlay.classList.add('hidden');
+    }
+}
+
+function showLoadingOverlay() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.classList.remove('hidden');
+    }
+}
+
+// Auto-hide loading overlay after 3 seconds to prevent getting stuck
+document.addEventListener('DOMContentLoaded', function() {
+    showLoadingOverlay();
+    setTimeout(() => {
+        hideLoadingOverlay();
+    }, 3000);
+});
+</script>

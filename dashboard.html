@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
+    <title>Tripple Exchange - Secure Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="./js/notifications.js"></script>
+    <script src="./js/balance-manager.js"></script>
+    <script src="./js/auth-manager.js"></script>
+    <style>
+        /* Mobile-first CSS with responsive enhancements */
+        :root {
+            --primary: #0096FF;
+            --primary-hover: #0080e0;
+            --primary-light: rgba(0, 150, 255, 0.1);
+            --primary-dark: #0066cc;
+            --secondary: #00e5ff;
+            --secondary-dark: #00b8d4;
+            --bg: #0a0e14;
+            --surface: #0d1117;
+            --surface-light: #161b22;
+            --surface-lighter: #21262d;
+            --text: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-light: rgba(255, 255, 255, 0.7);
+            --success: #00c853;
+            --error: #ff3d00;
+            --warning: #ffab00;
+            --info: #0096FF;
+            --border: #30363d;
+            --border-light: rgba(48, 54, 61, 0.5);
+            --shadow-lg: 0 10px 36px 0 rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 10000;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Header Styles - Mobile First */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(15, 23, 42, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.4rem;
+        }
+        
+        /* Menu Toggle Styles */
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+        
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        /* Sidebar Navigation - Mobile */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            padding: 80px 0 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-nav li {
+            margin: 0;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .sidebar-nav i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .notifications-container {
+            position: relative;
+        }
+
+        .notifications-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notifications-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 1rem;
+            transition: filter 0.2s;
+        }
+
+        .user-avatar:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Main Content Styles - Mobile First */
+        .main-content {
+            flex: 1;
+            padding: 1rem;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+
+        /* Welcome Banner - Mobile */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .welcome-banner h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            font-weight: 700;
+        }
+
+        .welcome-banner p {
+            opacity: 0.9;
+            max-width: 600px;
+            font-size: 0.9rem;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            background: rgba(0, 184, 148, 0.15);
+            color: var(--success);
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Total Balance - Mobile */
+        .total-balance {
+            background: var(--surface);
+            padding: 1.2rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 9px rgba(108, 92, 231, 0.09);
+            position: relative;
+        }
+
+        .total-balance .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-balance .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .balance-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 0.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.9rem;
+            min-height: 44px; /* Better touch target */
+        }
+
+        .balance-action-btn.deposit {
+            background: rgba(0, 184, 148, 0.15);
+            color: var(--success);
+        }
+
+        .balance-action-btn.deposit:hover {
+            background: rgba(0, 184, 148, 0.25);
+        }
+
+        .balance-action-btn.withdraw {
+            background: rgba(255, 118, 117, 0.15);
+            color: var(--error);
+        }
+
+        .balance-action-btn.withdraw:hover {
+            background: rgba(255, 118, 117, 0.25);
+        }
+
+        /* Assets Section - Mobile */
+        .assets-section h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assets-section h2 i {
+            font-size: 1rem;
+        }
+
+        .assets-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .asset-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            box-shadow: 0 2px 9px rgba(108, 92, 231, 0.09);
+        }
+
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 0.7em;
+        }
+
+        .asset-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(108, 92, 231, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .asset-info {
+            flex: 1;
+        }
+
+        .asset-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .asset-symbol {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+
+        .asset-change {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .positive {
+            background: rgba(16, 185, 129, 0.14);
+            color: var(--success);
+        }
+
+        .negative {
+            background: rgba(239, 68, 68, 0.16);
+            color: var(--error);
+        }
+
+        .asset-balance {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0.5rem 0 0.2rem 0;
+        }
+
+        .asset-value {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .asset-price {
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .asset-actions {
+            display: flex;
+            gap: 0.8em;
+            margin-top: 1em;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4em;
+            padding: 0.7rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.9rem;
+            flex: 1;
+            min-height: 44px; /* Better touch target */
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+        }
+
+        /* Price update indicator */
+        .price-update {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+            background: rgba(108, 92, 231, 0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+            color: var(--primary);
+            margin-top: 0.5rem;
+        }
+
+        /* Notification Dropdown - Mobile */
+        .notification-dropdown {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            left: 10px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            z-index: 101;
+            display: none;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+        }
+
+        .notification-dropdown .dropdown-header {
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-dropdown .dropdown-header h3 {
+            font-size: 1rem;
+            color: var(--primary);
+        }
+
+        .notification-dropdown .dropdown-header button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .notification-dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-dropdown li {
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .notification-title i {
+            font-size: 0.8rem;
+        }
+
+        .notification-message {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Bottom Navigation - Mobile */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0.5rem 0;
+            z-index: 1000;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+            padding: 0.5rem 0.3rem;
+            border-radius: 8px;
+            flex: 1;
+            max-width: 80px;
+        }
+
+        .footer-nav .nav-item.active {
+            color: var(--primary);
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .footer-nav .nav-item i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Loading Overlay - Mobile */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading-animation {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 2rem;
+        }
+
+        .core {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .orbit {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 {
+            width: 90px;
+            height: 90px;
+            top: 30px;
+            left: 30px;
+            border-top-color: #3b82f6;
+            animation-duration: 8s;
+        }
+
+        .orbit-2 {
+            width: 120px;
+            height: 120px;
+            top: 15px;
+            left: 15px;
+            border-right-color: #60a5fa;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 150px;
+            height: 150px;
+            top: 0;
+            left: 0;
+            border-bottom-color: #00f0ff;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbit-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .loading-title span {
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .loading-subtitle {
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.7);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 250px;
+            height: 4px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        @keyframes progress {
+            0% { width: 0; }
+            50% { width: 80%; }
+            100% { width: 100%; }
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            color: rgba(248, 250, 252, 0.7);
+            text-align: center;
+            max-width: 250px;
+        }
+
+        /* Modal - Mobile */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .conversion-modal {
+            background: var(--surface);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: var(--radius);
+            background: var(--bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .balance-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 0.8rem;
+        }
+
+        /* Tablet Styles */
+        @media (min-width: 600px) {
+            .header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .logo {
+                font-size: 1.4rem;
+            }
+            
+            .welcome-banner {
+                padding: 2rem;
+            }
+            
+            .welcome-banner h1 {
+                font-size: 1.75rem;
+            }
+            
+            .total-balance {
+                padding: 1.5rem;
+            }
+            
+            .total-balance .amount {
+                font-size: 1.8rem;
+            }
+            
+            .assets-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+            }
+            
+            .notification-dropdown {
+                width: 350px;
+                right: 1rem;
+                left: auto;
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 900px) {
+            body {
+                display: grid;
+                grid-template-columns: 240px 1fr;
+                grid-template-rows: auto 1fr auto;
+                grid-template-areas:
+                    "header header"
+                    "menu main"
+                    "footer footer";
+            }
+            
+            .header {
+                grid-area: header;
+                padding: 1rem 2rem;
+            }
+            
+            .menu-toggle {
+                display: none;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            #menu {
+                grid-area: menu;
+                background: var(--surface);
+                padding: 30px 0;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+                z-index: 10;
+                overflow-y: auto;
+                position: sticky;
+                top: 73px;
+                height: calc(100vh - 73px);
+            }
+            
+            .main-content {
+                grid-area: main;
+                padding: 2rem;
+                padding-bottom: 0;
+            }
+            
+            .footer-nav {
+                display: none;
+            }
+            
+            .assets-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .notification-dropdown {
+                width: 380px;
+            }
+        }
+
+        /* Large Desktop Styles */
+        @media (min-width: 1200px) {
+            .assets-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modern Loading Overlay -->
+    <div class="loading-screen" id="loadingOverlay">
+        <div class="loading-animation">
+            <div class="core"></div>
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-3"></div>
+        </div>
+        
+        <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+        <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <p class="status-text">Initializing secure connection</p>
+    </div>
+
+    <!-- Conversion Modal -->
+    <div class="modal-overlay" id="conversionModal">
+        <div class="conversion-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Convert Assets</h3>
+                <button class="close-modal" id="closeModal" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="assetSelect">Asset to Convert</label>
+                    <select class="form-control" id="assetSelect" aria-required="true">
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="convertAmount">Amount</label>
+                    <input type="number" class="form-control" id="convertAmount" placeholder="Enter amount" aria-required="true">
+                    <div class="balance-info">
+                        <span>Available:</span>
+                        <span id="availableBalance">0.00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-modal" id="cancelConvert">Cancel</button>
+                <button class="btn btn-primary btn-modal" id="confirmConvert">Convert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <a href="dashboard.html" class="logo">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Tripple Exchange</span>
+        </a>
+        
+        <div class="user-menu">
+            <div class="notifications-container">
+                <button class="notifications-btn" id="notificationsBtn" onclick="toggleNotifications()" title="Notifications" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </button>
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="dropdown-header">
+                        <h3>Notifications</h3>
+                        <button id="markAllReadBtn" aria-label="Mark all as read">
+                            <i class="fas fa-check-double"></i> Mark all
+                        </button>
+                    </div>
+                    <ul id="notificationsList">
+                        <!-- Notifications will be populated here -->
+                    </ul>
+                </div>
+            </div>
+            
+            <a href="profile.html" class="user-avatar" id="userAvatar" aria-label="User profile">C</a>
+        </div>
+    </header>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
+    <nav class="sidebar" id="sidebar">
+        <ul class="sidebar-nav">
+            <li><a href="dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="wallet.html"><i class="fas fa-wallet"></i> Wallet</a></li>
+            <li><a href="trade.html"><i class="fas fa-chart-line"></i> Trade</a></li>
+            <li><a href="deposit-usdt.html"><i class="fas fa-arrow-down"></i> Deposit</a></li>
+            <li><a href="withdraw-usdt.html"><i class="fas fa-arrow-up"></i> Withdraw</a></li>
+            <li><a href="activities.html"><i class="fas fa-history"></i> Activities</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Welcome Banner -->
+        <section class="welcome-banner fade-in">
+            <h1>Welcome, <span id="usernameDisplay">CryptoTrader</span>! 👋</h1>
+            <p>Track your portfolio and stay updated with the latest market movements.</p>
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i> 2FA Enabled
+            </div>
+        </section>
+
+        <!-- Total Balance -->
+        <div class="total-balance fade-in">
+            <div class="label">Total Portfolio Value</div>
+            <div class="amount" id="totalBalance">$0.00</div>
+            
+            <div class="balance-actions">
+                <button class="balance-action-btn deposit" onclick="window.location.href='deposit-usdt.html'">
+                    <i class="fas fa-arrow-down"></i> Deposit
+                </button>
+                <button class="balance-action-btn withdraw" onclick="window.location.href='withdraw-usdt.html'">
+                    <i class="fas fa-arrow-up"></i> Withdraw
+                </button>
+            </div>
+        </div>
+
+        <!-- Assets Grid -->
+        <section class="assets-section">
+            <h2><i class="fas fa-coins"></i> Your Assets</h2>
+            <div class="assets-grid" id="assetsGrid">
+                <!-- Assets will be dynamically inserted here -->
+            </div>
+            <div class="price-update" id="priceUpdate">
+                <i class="fas fa-sync-alt"></i> Prices update every 60 seconds
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+        <a href="dashboard.html" class="nav-item active" aria-label="Dashboard" data-page="dashboard">
+            <i class="fas fa-chart-pie"></i>
+            <span>Home</span>
+        </a>
+        <a href="trade.html" class="nav-item" aria-label="Trade" data-page="trade">
+            <i class="fas fa-chart-line"></i>
+            <span>Trade</span>
+        </a>
+        <a href="wallet.html" class="nav-item" aria-label="Wallet" data-page="wallet">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="profile.html" class="nav-item" aria-label="Profile" data-page="profile">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+    
+    <script>
+        // Initialize all major cryptocurrency assets with zero balances (except USDT)
+        function initializeAssets() {
+            // Get current USDT balance from balance manager
+            const currentBalance = window.balanceManager ? window.balanceManager.getBalance() : 0;
+            
+            assets = [
+                {
+                    id: 'usdt',
+                    name: 'Tether',
+                    symbol: 'USDT',
+                    icon: 'dollar-sign',
+                    balance: currentBalance,
+                    currentPrice: 1.00,
+                    change24h: 0.01,
+                    value: currentBalance * 1.00
+                },
+                {
+                    id: 'btc',
+                    name: 'Bitcoin',
+                    symbol: 'BTC',
+                    icon: 'btc',
+                    balance: 0,
+                    currentPrice: 63428.75,
+                    change24h: 2.45,
+                    value: 0
+                },
+                {
+                    id: 'eth',
+                    name: 'Ethereum',
+                    symbol: 'ETH',
+                    icon: 'ethereum',
+                    balance: 0,
+                    currentPrice: 3456.78,
+                    change24h: 1.89,
+                    value: 0
+                },
+                {
+                    id: 'bnb',
+                    name: 'BNB',
+                    symbol: 'BNB',
+                    icon: 'coins',
+                    balance: 0,
+                    currentPrice: 542.12,
+                    change24h: -0.67,
+                    value: 0
+                },
+                {
+                    id: 'ada',
+                    name: 'Cardano',
+                    symbol: 'ADA',
+                    icon: 'coins',
+                    balance: 0,
+                    currentPrice: 0.89,
+                    change24h: 3.21,
+                    value: 0
+                }
+            ];
+        }
+        
+        // Refresh USDT balance from balance manager
+        function refreshUSDTBalance() {
+            if (window.balanceManager && assets.length > 0) {
+                const currentBalance = window.balanceManager.getBalance();
+                const usdtAsset = assets.find(asset => asset.id === 'usdt');
+                if (usdtAsset) {
+                    usdtAsset.balance = currentBalance;
+                    usdtAsset.value = currentBalance * 1.00;
+                    
+                    // Update total balance display
+                    const totalBalance = assets.reduce((sum, asset) => sum + asset.value, 0);
+                    const totalBalanceElement = document.getElementById('totalBalance');
+                    if (totalBalanceElement) {
+                        totalBalanceElement.textContent = `$${totalBalance.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}`;
+                    }
+                    
+                    // Re-render assets grid
+                    renderAssets();
+                }
+            }
+        }
+        
+        // Listen for balance updates from balance manager
+        function setupBalanceSync() {
+            if (window.balanceManager) {
+                // Set up periodic sync every 5 seconds
+                setInterval(refreshUSDTBalance, 5000);
+            } else {
+                // Retry setup after 1 second if balance manager not ready
+                setTimeout(setupBalanceSync, 1000);
+            }
+        }
+        
+        // Initialize user data
+        const userData = {
+            id: 1,
+            username: 'User',
+            email: 'user@tripple-exchange.com',
+            locale: 'en',
+            country: 'US'
+        };
+
+        // Enhanced Loading System with multiple fallbacks
+        class LoadingSystem {
+            constructor() {
+                this.loadingPhases = [
+                    { progress: 15, text: 'Initializing Dashboard...' },
+                    { progress: 30, text: 'Loading Market Data...' },
+                    { progress: 45, text: 'Setting Up Security...' },
+                    { progress: 60, text: 'Preparing Interface...' },
+                    { progress: 75, text: 'Finalizing Setup...' },
+                    { progress: 100, text: 'Dashboard Ready!' }
+                ];
+                this.currentPhase = 0;
+                this.loadingTimeout = null;
+                this.maxLoadingTime = 5000; // 5 seconds max
+                this.minLoadingTime = 2000; // Minimum 2 seconds to prevent flash
+                this.loadingStartTime = Date.now();
+            }
+
+            init() {
+                this.showLoading();
+                this.setupEventListeners();
+                this.simulateLoading();
+            }
+
+            setupEventListeners() {
+                // Fallback if window load completes before our loading sequence
+                window.addEventListener('load', () => {
+                    const elapsed = Date.now() - this.loadingStartTime;
+                    const remaining = Math.max(0, this.minLoadingTime - elapsed);
+                    setTimeout(() => this.completeLoading(), remaining);
+                });
+                
+                // Absolute maximum loading time fallback
+                setTimeout(() => this.completeLoading(), this.maxLoadingTime);
+            }
+
+            simulateLoading() {
+                if (this.currentPhase >= this.loadingPhases.length) {
+                    const elapsed = Date.now() - this.loadingStartTime;
+                    const remaining = Math.max(0, this.minLoadingTime - elapsed);
+                    setTimeout(() => this.completeLoading(), remaining);
+                    return;
+                }
+
+                const phase = this.loadingPhases[this.currentPhase];
+                this.updateProgress(phase.progress, phase.text);
+                
+                this.currentPhase++;
+                const delay = this.currentPhase === this.loadingPhases.length ? 1000 : 600;
+                this.loadingTimeout = setTimeout(() => this.simulateLoading(), delay);
+            }
+
+            updateProgress(progress, text) {
+                const progressBar = document.querySelector('.progress-bar');
+                const statusText = document.querySelector('.status-text');
+                
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (statusText && text) statusText.textContent = text;
+            }
+
+            showLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                    loadingOverlay.classList.remove('hidden');
+                }
+            }
+
+            completeLoading() {
+                // Clear any pending timeouts
+                clearTimeout(this.loadingTimeout);
+                
+                // Hide loading overlay with delay
+                setTimeout(() => {
+                    const loadingOverlay = document.getElementById('loadingOverlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.classList.add('hidden');
+                        
+                        // Remove loading overlay from DOM after animation completes
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 500);
+                    }
+                }, 500);
+            }
+        }
+
+        // Utility: Render asset icon class from asset icon string
+        function getAssetIconClass(icon) {
+            if (icon === 'btc') return 'fab fa-btc';
+            if (icon === 'ethereum') return 'fab fa-ethereum';
+            if (icon === 'dollar-sign') return 'fas fa-dollar-sign';
+            return 'fas fa-coins';
+        }
+        
+        // Initialize notifications
+        function initNotifications() {
+            const savedNotifications = localStorage.getItem('dashboardNotifications');
+            if (savedNotifications) {
+                notifications = JSON.parse(savedNotifications);
+            } else {
+                // Default notifications
+                notifications = [
+                    {
+                        id: 1,
+                        title: "Welcome to Tripple Exchange",
+                        message: "Your account has been successfully created",
+                        icon: "fa-check-circle",
+                        time: "Just now",
+                        read: false,
+                        type: "success"
+                    },
+                    {
+                        id: 2,
+                        title: "Account Setup",
+                        message: "Your account balance is currently $0.00. Please contact admin to add funds.",
+                        icon: "fa-info-circle",
+                        time: "Just now",
+                        read: false,
+                        type: "info"
+                    },
+                    {
+                        id: 3,
+                        title: "Security Alert",
+                        message: "Enable 2FA for better account security",
+                        icon: "fa-shield-alt",
+                        time: "Just now",
+                        read: false,
+                        type: "warning"
+                    }
+                ];
+                saveNotifications();
+            }
+        }
+        
+        // Save notifications to localStorage
+        function saveNotifications() {
+            localStorage.setItem('dashboardNotifications', JSON.stringify(notifications));
+        }
+        
+        // Render notifications
+        function renderNotifications() {
+            const notificationsList = document.getElementById('notificationsList');
+            if (!notificationsList) return;
+            
+            notificationsList.innerHTML = notifications.map(notification => `
+                <li class="${notification.read ? '' : 'unread'}" role="menuitem">
+                    <div class="notification-content">
+                        <div class="notification-title">
+                            <i class="fas ${notification.icon}"></i>
+                            ${notification.title}
+                        </div>
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-time">
+                            <i class="far fa-clock"></i> ${notification.time}
+                        </div>
+                    </div>
+                    <div class="notification-actions">
+                        <button class="mark-read-btn" data-id="${notification.id}" title="Mark as read" aria-label="Mark as read">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </li>
+            `).join('');
+            
+            // Update badge count
+            const unreadCount = notifications.filter(n => !n.read).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+        }
+
+        // Render assets grid
+        function renderAssets() {
+            const assetsGrid = document.getElementById('assetsGrid');
+            if (!assetsGrid) return;
+            
+            // Sort assets to show USDT first
+            const sortedAssets = [...assets].sort((a, b) => 
+                a.id === 'usdt' ? -1 : b.id === 'usdt' ? 1 : 0
+            );
+            
+            assetsGrid.innerHTML = sortedAssets.map(asset => `
+                <div class="asset-card fade-in">
+                    <div class="asset-header">
+                        <div class="asset-icon">
+                            <i class="${getAssetIconClass(asset.icon)}" aria-hidden="true"></i>
+                        </div>
+                        <div class="asset-info">
+                            <div class="asset-name">${asset.name}</div>
+                            <div class="asset-symbol">${asset.symbol}</div>
+                        </div>
+                        <span class="asset-change ${asset.change24h >= 0 ? 'positive' : 'negative'} ${asset.id}-change">
+                            ${asset.change24h >= 0 ? '+' : ''}${asset.change24h.toFixed(2)}%
+                        </span>
+                    </div>
+                    <div class="asset-balance">${asset.balance.toLocaleString('en-US', {
+                        maximumFractionDigits: 8
+                    })} ${asset.symbol}</div>
+                    <div class="asset-value">$${asset.value.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}</div>
+                    <div class="asset-price">
+                        <span>Price:</span>
+                        <span>$${asset.currentPrice.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}</span>
+                    </div>
+                    <div class="asset-actions">
+                        <button class="btn btn-outline" ${asset.balance <= 0 ? 'disabled' : ''} 
+                            onclick="openConversionModal('${asset.id}')" aria-label="Convert ${asset.name}">
+                            <i class="fas fa-exchange-alt"></i> Convert
+                        </button>
+                        <button class="btn btn-primary" onclick="tradeAsset('${asset.id}')" aria-label="Trade ${asset.name}">
+                            <i class="fas fa-chart-line"></i> Trade
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle menu for mobile devices
+        window.toggleMenu = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (sidebar && overlay && menuToggle) {
+                const isActive = sidebar.classList.contains('active');
+                
+                if (isActive) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                    menuToggle.classList.add('active');
+                    menuToggle.setAttribute('aria-expanded', 'true');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        };
+
+        // Toggle notification dropdown
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.classList.toggle('show');
+            const isExpanded = dropdown.classList.contains('show');
+            document.getElementById('notificationsBtn').setAttribute('aria-expanded', isExpanded);
+        }
+
+        // Mark notification as read
+        function markAsRead(notificationId) {
+            const notification = notifications.find(n => n.id === notificationId);
+            if (notification) {
+                notification.read = true;
+                saveNotifications();
+                renderNotifications();
+            }
+        }
+
+        // Mark all notifications as read
+        function markAllAsRead() {
+            notifications.forEach(n => n.read = true);
+            saveNotifications();
+            renderNotifications();
+        }
+
+        // Handle logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userSession');
+                localStorage.removeItem('dashboardNotifications');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Open conversion modal
+        function openConversionModal(assetId) {
+            const asset = assets.find(a => a.id === assetId);
+            if (!asset || asset.balance <= 0) return;
+            
+            currentConversionAsset = asset;
+            
+            // Populate asset select
+            const assetSelect = document.getElementById('assetSelect');
+            assetSelect.innerHTML = '';
+            
+            assets.filter(a => a.id !== 'usdt').forEach(a => {
+                const option = document.createElement('option');
+                option.value = a.id;
+                option.textContent = `${a.name} (${a.symbol})`;
+                option.selected = a.id === assetId;
+                assetSelect.appendChild(option);
+            });
+            
+            // Set available balance
+            document.getElementById('availableBalance').textContent = 
+                `${asset.balance.toFixed(8)} ${asset.symbol}`;
+            
+            // Reset input
+            document.getElementById('convertAmount').value = '';
+            
+            // Show modal
+            document.getElementById('conversionModal').classList.add('active');
+            document.getElementById('convertAmount').focus();
+        }
+
+        // Trade asset
+        function tradeAsset(coin) {
+            window.location.href = `trade.html?asset=${coin}`;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize loading system
+            new LoadingSystem().init();
+            
+            // Set username safely
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            if (usernameDisplay) {
+                usernameDisplay.textContent = userData.username;
+            }
+            
+            // Initialize notifications
+            initNotifications();
+            
+            // Initialize all cryptocurrency assets (zero balances except USDT)
+            initializeAssets();
+            
+            // Render notifications
+            renderNotifications();
+            
+            // Render assets grid
+            renderAssets();
+            
+            // Setup balance synchronization with balance manager
+            setupBalanceSync();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Notification dropdown toggle
+            const notificationsBtn = document.getElementById('notificationsBtn');
+            notificationsBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleNotifications();
+            });
+
+            // Mark all as read button
+            document.getElementById('markAllReadBtn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                markAllAsRead();
+            });
+
+            // Close notification dropdown on document click
+            document.addEventListener('click', function (e) {
+                const dropdown = document.getElementById('notificationDropdown');
+                if (dropdown && !dropdown.contains(e.target) && e.target !== notificationsBtn) {
+                    dropdown.classList.remove('show');
+                    notificationsBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Handle notification actions
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.mark-read-btn')) {
+                    const btn = e.target.closest('.mark-read-btn');
+                    const notificationId = parseInt(btn.dataset.id);
+                    markAsRead(notificationId);
+                }
+            });
+            
+            // Conversion modal
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('conversionModal').classList.remove('active');
+            });
+            
+            document.getElementById('cancelConvert').addEventListener('click', function() {
+                document.getElementById('conversionModal').classList.remove('active');
+            });
+            
+            // Close modal on overlay click
+            document.getElementById('conversionModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
+            // Keyboard navigation for modals and dropdowns
+            document.addEventListener('keydown', function(e) {
+                // Close modal on ESC
+                if (e.key === 'Escape' && document.getElementById('conversionModal').classList.contains('active')) {
+                    document.getElementById('conversionModal').classList.remove('active');
+                }
+                
+                // Close dropdowns on ESC
+                if (e.key === 'Escape') {
+                    const dropdown = document.getElementById('notificationDropdown');
+                    if (dropdown) {
+                        dropdown.classList.remove('show');
+                        document.getElementById('notificationsBtn').setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

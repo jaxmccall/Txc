@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripple Exchange - Withdraw</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+  
+  /* ===== Loading System ===== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-animation {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 30px;
+}
+
+.loading-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 140px;
+  height: 140px;
+  border: 3px solid rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #0096FF;
+  animation: spin 2s linear infinite;
+}
+
+.loading-progress-container {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0096FF, #00BFFF);
+  transition: width 0.4s ease;
+}
+
+.loading-text {
+  color: #bbb;
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+  max-width: 80%;
+}
+
+/* Animation for content after load */
+.content-wrapper {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.page-loaded .content-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+    :root {
+      --primary: #0096FF;
+      --primary-light: #00BFFF;
+      --background: #0d1117;
+      --surface: #1f2633;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --error: #ff4444;
+      --success: #00C851;
+      --warning: #ffbb33;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      padding: 15px 30px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 20;
+      gap: 20px;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .back-btn {
+      background: rgba(0, 150, 255, 0.1);
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 150, 255, 0.2);
+      transform: translateX(-2px);
+    }
+
+    .back-btn svg {
+      width: 18px;
+      height: 18px;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+    }
+
+    .menu-toggle {
+      font-size: 26px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .withdraw-container {
+      max-width: 1200px;
+      margin: 120px auto 100px;
+      padding: 0 20px;
+    }
+
+    .withdraw-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .withdraw-header h1 {
+      font-size: 32px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .wallet-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 150, 255, 0.1);
+    }
+
+    .wallet-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,150,255,0.1);
+    }
+
+    .wallet-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .wallet-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: rgba(0,150,255,0.1);
+      padding: 10px;
+    }
+
+    .balance-info {
+      margin: 15px 0;
+      padding: 12px;
+      background: rgba(0, 150, 255, 0.05);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .balance-amount {
+      font-weight: 600;
+      color: var(--primary-light);
+      font-size: 16px;
+    }
+
+    .network-selector {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .network-pill {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(0,150,255,0.1);
+      color: var(--primary-light);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .network-pill.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0,150,255,0.1);
+      border: 1px solid rgba(0,150,255,0.2);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0,150,255,0.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: scale(0.98);
+      box-shadow: 0 5px 15px rgba(0,150,255,0.3);
+    }
+
+    .submit-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .memo-note {
+      color: var(--primary-light);
+      font-size: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .fee-info {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 5px;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .success-message {
+      color: var(--success);
+      font-size: 14px;
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      background: rgba(0, 200, 81, 0.1);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .withdraw-note {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 1px solid rgba(0,150,255,0.1);
+    }
+
+    .kyc-alert {
+      background: rgba(255, 187, 51, 0.1);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .kyc-alert-icon {
+      font-size: 24px;
+    }
+
+    .kyc-alert-content {
+      flex: 1;
+    }
+
+    .kyc-alert-btn {
+      background: var(--warning);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .kyc-alert-btn:hover {
+      background: #ffaa00;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 20px;
+      }
+      
+      .menu-toggle {
+        display: block;
+      }
+
+      .back-btn {
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+
+      .back-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .kyc-alert {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body onclick="closeMenuOutside(event)">
+    
+    <!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-animation">
+    <img src="./images/logo.png" alt="Loading" class="loading-logo">
+    <div class="loading-spinner"></div>
+  </div>
+  <div class="loading-progress-container">
+    <div class="loading-progress-bar" id="loadingProgress"></div>
+  </div>
+  <div class="loading-text" id="loadingText">Initializing application...</div>
+</div>
+
+<!-- Wrap all your content in this (except loading overlay) -->
+<div class="content-wrapper" id="contentWrapper">
+  <!-- ALL YOUR EXISTING CONTENT GOES HERE -->
+</div>
+  <div id="particles-js"></div>
+  
+  <header>
+    <div class="header-content">
+      <button class="back-btn" onclick="location.href='dashboard.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+      </button>
+      <img src="./images/logo.png" alt="Tripple Exchange Logo" style="height: 50px;">
+      <div class="menu-toggle" onclick="toggleMenu(event)">&#9776;</div>
+    </div>
+  </header>
+
+  <div class="withdraw-container">
+    <div class="withdraw-header">
+      <h1>Withdraw Cryptocurrency</h1>
+      <p>Transfer your funds to external wallets</p>
+    </div>
+
+    <!-- KYC Verification Alert (shown if user is not verified) -->
+    <div class="kyc-alert" id="kycAlert" style="display: none;">
+      <div class="kyc-alert-icon">⚠️</div>
+      <div class="kyc-alert-content">
+        <strong>KYC Verification Required</strong><br>
+        To comply with financial regulations, you must complete identity verification before making withdrawals.
+      </div>
+      <button class="kyc-alert-btn" onclick="location.href='kyc.html'">Complete Verification</button>
+    </div>
+
+    <div class="wallet-grid">
+      <!-- Bitcoin -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/btc.png" class="wallet-icon" alt="BTC">
+          <div>
+            <h3>Bitcoin (BTC)</h3>
+            <div class="network-pill active">Native</div>
+          </div>
+        </div>
+        <div class="balance-info">
+          Available: <span class="balance-amount">0.125 BTC</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient Address</label>
+          <input type="text" class="form-input" placeholder="Enter BTC address" id="btc-address">
+          <div class="error-message" id="btc-error"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" placeholder="0.00" id="btc-amount">
+          <div class="fee-info">Network fee: 0.0005 BTC</div>
+        </div>
+        <button class="submit-btn" onclick="submitWithdrawal('btc')">Withdraw BTC</button>
+        <div class="success-message" id="btc-success"></div>
+      </div>
+
+      <!-- Ethereum -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/eth.png" class="wallet-icon" alt="ETH">
+          <div>
+            <h3>Ethereum (ETH)</h3>
+            <div class="network-pill active">ERC20</div>
+          </div>
+        </div>
+        <div class="balance-info">
+          Available: <span class="balance-amount">2.75 ETH</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient Address</label>
+          <input type="text" class="form-input" placeholder="Enter ETH address" id="eth-address">
+          <div class="error-message" id="eth-error"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" placeholder="0.00" id="eth-amount">
+          <div class="fee-info">Network fee: 0.01 ETH</div>
+        </div>
+        <button class="submit-btn" onclick="submitWithdrawal('eth')">Withdraw ETH</button>
+        <div class="success-message" id="eth-success"></div>
+      </div>
+
+      <!-- Tether -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/usdt.png" class="wallet-icon" alt="USDT">
+          <div>
+            <h3>Tether (USDT)</h3>
+            <div class="network-selector">
+              <div class="network-pill active" data-network="trc20">TRC20</div>
+              <div class="network-pill" data-network="erc20">ERC20</div>
+              <div class="network-pill" data-network="bep20">BEP20</div>
+            </div>
+          </div>
+        </div>
+        <div class="balance-info">
+          Available: <span class="balance-amount">1,250.00 USDT</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient Address</label>
+          <input type="text" class="form-input" placeholder="Enter USDT address" id="usdt-address">
+          <div class="error-message" id="usdt-error"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" placeholder="0.00" id="usdt-amount">
+          <div class="fee-info" id="usdt-fee">Network fee: 1 USDT (TRC20)</div>
+        </div>
+        <div class="memo-note" id="usdt-memo">Memo/Tag: <input type="text" class="form-input" placeholder="Optional" id="usdt-memo-input"></div>
+        <button class="submit-btn" onclick="submitWithdrawal('usdt')">Withdraw USDT</button>
+        <div class="success-message" id="usdt-success"></div>
+      </div>
+
+      <!-- BNB -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/bnb.png" class="wallet-icon" alt="BNB">
+          <div>
+            <h3>Binance Coin (BNB)</h3>
+            <div class="network-pill active">BEP20</div>
+          </div>
+        </div>
+        <div class="balance-info">
+          Available: <span class="balance-amount">5.2 BNB</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient Address</label>
+          <input type="text" class="form-input" placeholder="Enter BNB address" id="bnb-address">
+          <div class="error-message" id="bnb-error"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" placeholder="0.00" id="bnb-amount">
+          <div class="fee-info">Network fee: 0.005 BNB</div>
+        </div>
+        <button class="submit-btn" onclick="submitWithdrawal('bnb')">Withdraw BNB</button>
+        <div class="success-message" id="bnb-success"></div>
+      </div>
+
+      <!-- USDC -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/usdc.png" class="wallet-icon" alt="USDC">
+          <div>
+            <h3>USD Coin (USDC)</h3>
+            <div class="network-selector">
+              <div class="network-pill active" data-network="erc20">ERC20</div>
+              <div class="network-pill" data-network="trc20">TRC20</div>
+              <div class="network-pill" data-network="polygon">Polygon</div>
+            </div>
+          </div>
+        </div>
+        <div class="balance-info">
+          Available: <span class="balance-amount">750.00 USDC</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient Address</label>
+          <input type="text" class="form-input" placeholder="Enter USDC address" id="usdc-address">
+          <div class="error-message" id="usdc-error"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" placeholder="0.00" id="usdc-amount">
+          <div class="fee-info" id="usdc-fee">Network fee: 5 USDC (ERC20)</div>
+        </div>
+        <button class="submit-btn" onclick="submitWithdrawal('usdc')">Withdraw USDC</button>
+        <div class="success-message" id="usdc-success"></div>
+      </div>
+
+      <!-- XRP -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/xrp.png" class="wallet-icon" alt="XRP">
+          <div>
+            <h3>Ripple (XRP)</h3>
+            <div class="network-pill active">XRP Ledger</div>
+          </div>
+        </div>
+        <div class="balance-info">
+          Available: <span class="balance-amount">1,200 XRP</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient Address</label>
+          <input type="text" class="form-input" placeholder="Enter XRP address" id="xrp-address">
+          <div class="error-message" id="xrp-error"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-input" placeholder="0.00" id="xrp-amount">
+          <div class="fee-info">Network fee: 0.1 XRP</div>
+        </div>
+        <div class="memo-note" id="xrp-memo">Destination Tag: <input type="text" class="form-input" placeholder="Required" id="xrp-memo-input"></div>
+        <button class="submit-btn" onclick="submitWithdrawal('xrp')">Withdraw XRP</button>
+        <div class="success-message" id="xrp-success"></div>
+      </div>
+    </div>
+
+    <div class="withdraw-note">
+      ⚠️ Important: All withdrawals require admin confirmation for security. Processing time: 5-30 minutes after approval.<br>
+      Always double-check recipient addresses. Minimum withdrawal amounts apply. Fees vary by network.
+    </div>
+
+    <!-- Admin Confirmation Status -->
+    <div class="admin-status-container" id="adminStatusContainer" style="display: none;">
+      <div class="admin-status-card">
+        <div class="status-header">
+          <i class="fas fa-shield-alt"></i>
+          <h3>Withdrawal Status</h3>
+        </div>
+        <div class="status-content" id="statusContent">
+          <div class="status-item pending" id="statusPending">
+            <i class="fas fa-clock"></i>
+            <span>Pending Admin Approval</span>
+          </div>
+          <div class="status-item approved" id="statusApproved" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <span>Approved - Processing</span>
+          </div>
+          <div class="status-item completed" id="statusCompleted" style="display: none;">
+            <i class="fas fa-check-double"></i>
+            <span>Transaction Completed</span>
+          </div>
+        </div>
+        <div class="transaction-details" id="transactionDetails">
+          <p><strong>Transaction ID:</strong> <span id="txId">-</span></p>
+          <p><strong>Amount:</strong> <span id="txAmount">-</span></p>
+          <p><strong>Address:</strong> <span id="txAddress">-</span></p>
+          <p><strong>Network:</strong> <span id="txNetwork">-</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      
+      // ===== Loading System =====
+class LoadingSystem {
+  constructor() {
+    this.minLoadingTime = 1500; // Minimum loading time in ms
+    this.maxLoadingTime = 3000; // Maximum loading time in ms
+    this.startTime = null;
+    this.loadingPhases = [
+      { progress: 20, text: "Loading security modules..." },
+      { progress: 40, text: "Initializing wallet services..." },
+      { progress: 60, text: "Syncing with blockchain..." },
+      { progress: 80, text: "Finalizing setup..." },
+      { progress: 95, text: "Ready to go!" }
+    ];
+  }
+
+  init() {
+    this.startTime = Date.now();
+    this.setupLoadingBar();
+    this.setupEventListeners();
+    this.simulateLoading();
+  }
+
+  setupLoadingBar() {
+    const progressBar = document.getElementById('loadingProgress');
+    progressBar.style.transition = `width ${this.minLoadingTime/1000}s ease`;
+  }
+
+  setupEventListeners() {
+    window.addEventListener('load', () => this.completeLoading());
+    setTimeout(() => this.completeLoading(), this.maxLoadingTime);
+  }
+
+  simulateLoading() {
+    let currentPhase = 0;
+    const phaseInterval = setInterval(() => {
+      if (currentPhase >= this.loadingPhases.length) {
+        clearInterval(phaseInterval);
+        return;
+      }
+      const phase = this.loadingPhases[currentPhase];
+      this.updateProgress(phase.progress, phase.text);
+      currentPhase++;
+    }, this.minLoadingTime / this.loadingPhases.length);
+  }
+
+  updateProgress(percent, text) {
+    document.getElementById('loadingProgress').style.width = `${percent}%`;
+    if (text) document.getElementById('loadingText').textContent = text;
+  }
+
+  completeLoading() {
+    const elapsed = Date.now() - this.startTime;
+    const remainingTime = Math.max(0, this.minLoadingTime - elapsed);
+    
+    setTimeout(() => {
+      this.updateProgress(100, "Ready!");
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        document.body.classList.add('page-loaded');
+        document.querySelectorAll('button, a, input').forEach(el => {
+          el.style.pointerEvents = 'auto';
+        });
+      }, 300);
+    }, remainingTime);
+  }
+}
+
+// Initialize loading system
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button, a, input').forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+  new LoadingSystem().init();
+});
+
+// Enhanced page navigation
+function navigateWithTransition(url) {
+  document.body.classList.remove('page-loaded');
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  document.getElementById('loadingProgress').style.width = '0%';
+  new LoadingSystem().init();
+  setTimeout(() => {
+    window.location.href = url;
+  }, 300);
+}
+    // Check KYC status (in a real app, this would come from your backend)
+    const kycStatus = {
+      verified: false, // Change to true to test verified state
+      level: 0 // 0 = not verified, 1 = basic, 2 = full
+    };
+
+    // Network fees data
+    const networkFees = {
+      usdt: {
+        trc20: { fee: 1, note: "1 USDT (TRC20)" },
+        erc20: { fee: 10, note: "10 USDT (ERC20)" },
+        bep20: { fee: 0.8, note: "0.8 USDT (BEP20)" }
+      },
+      usdc: {
+        erc20: { fee: 5, note: "5 USDC (ERC20)" },
+        trc20: { fee: 1, note: "1 USDC (TRC20)" },
+        polygon: { fee: 0.1, note: "0.1 USDC (Polygon)" }
+      }
+    };
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show KYC alert if not verified
+      if (!kycStatus.verified) {
+        document.getElementById('kycAlert').style.display = 'flex';
+        disableWithdrawalForms();
+      }
+
+      // Initialize memo fields for coins that need them
+      document.getElementById('usdt-memo').style.display = 'none';
+      document.getElementById('xrp-memo').style.display = 'block';
+    });
+
+    // Disable all withdrawal forms if KYC isn't complete
+    function disableWithdrawalForms() {
+      document.querySelectorAll('.submit-btn').forEach(btn => {
+        btn.disabled = true;
+      });
+      document.querySelectorAll('.form-input').forEach(input => {
+        input.disabled = true;
+      });
+    }
+
+    // Handle network switching
+    document.querySelectorAll('.network-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        const card = this.closest('.wallet-card');
+        const currency = card.querySelector('h3').textContent.split(' ')[0].toLowerCase();
+        
+        // Update active network
+        this.parentElement.querySelectorAll('.network-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update fee info if applicable
+        if (networkFees[currency]) {
+          const network = this.dataset.network;
+          const feeInfo = card.querySelector('.fee-info');
+          feeInfo.textContent = `Network fee: ${networkFees[currency][network].note}`;
+        }
+      });
+    });
+
+    // Validate address format (simplified for demo)
+    function validateAddress(currency, address) {
+      if (!address) return false;
+      
+      // Very basic validation for demo purposes
+      const patterns = {
+        btc: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/,
+        eth: /^0x[a-fA-F0-9]{40}$/,
+        usdt: {
+          trc20: /^T[a-zA-HJ-NP-Z0-9]{33}$/,
+          erc20: /^0x[a-fA-F0-9]{40}$/,
+          bep20: /^(0x[a-fA-F0-9]{40}|bnb1[a-z0-9]{38})$/
+        },
+        bnb: /^(bnb1[a-z0-9]{38}|0x[a-fA-F0-9]{40})$/,
+        usdc: {
+          erc20: /^0x[a-fA-F0-9]{40}$/,
+          trc20: /^T[a-zA-HJ-NP-Z0-9]{33}$/,
+          polygon: /^0x[a-fA-F0-9]{40}$/
+        },
+        xrp: /^r[0-9a-zA-Z]{24,34}$/
+      };
+      
+      if (currency === 'usdt' || currency === 'usdc') {
+        const network = document.querySelector(`#${currency}-address`).closest('.wallet-card')
+          .querySelector('.network-pill.active').dataset.network;
+        return patterns[currency][network].test(address);
+      }
+      
+      return patterns[currency].test(address);
+    }
+
+    // Validate amount (simplified for demo)
+    function validateAmount(currency, amount) {
+      if (!amount || isNaN(amount) || amount <= 0) return false;
+      
+      // Check against minimum withdrawal amounts
+      const minAmounts = {
+        btc: 0.001,
+        eth: 0.01,
+        usdt: 10,
+        bnb: 0.1,
+        usdc: 10,
+        xrp: 20
+      };
+      
+      return amount >= minAmounts[currency];
+    }
+
+    // Submit withdrawal request with admin confirmation
+    function submitWithdrawal(currency) {
+      // Check KYC status first
+      if (!kycStatus.verified) {
+        alert('Please complete KYC verification before making withdrawals.');
+        return;
+      }
+
+      const address = document.getElementById(`${currency}-address`).value.trim();
+      const amount = parseFloat(document.getElementById(`${currency}-amount`).value);
+      const errorElement = document.getElementById(`${currency}-error`);
+      const successElement = document.getElementById(`${currency}-success`);
+
+      // Clear previous messages
+      errorElement.style.display = 'none';
+      successElement.style.display = 'none';
+
+      // Validate inputs
+      if (!validateAddress(currency, address)) {
+        errorElement.textContent = 'Invalid address format';
+        errorElement.style.display = 'block';
+        return;
+      }
+
+      if (!validateAmount(currency, amount)) {
+        errorElement.textContent = `Minimum withdrawal: ${getMinAmount(currency)}`;
+        errorElement.style.display = 'block';
+        return;
+      }
+
+      // Get memo/tag if applicable
+      let memo = '';
+      if (currency === 'usdt' || currency === 'xrp') {
+        const memoInput = document.getElementById(`${currency}-memo-input`);
+        if (memoInput) {
+          memo = memoInput.value.trim();
+        }
+      }
+
+      // Get network for multi-network currencies
+      let network = 'native';
+      const networkPill = document.querySelector(`#${currency}-address`).closest('.wallet-card').querySelector('.network-pill.active');
+      if (networkPill && networkPill.dataset.network) {
+        network = networkPill.dataset.network;
+      }
+
+      // Simulate withdrawal submission
+      const btn = document.querySelector(`#${currency}-amount`).closest('.wallet-card').querySelector('.submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      // Simulate API call to backend
+      setTimeout(() => {
+        // Generate transaction ID
+        const txId = generateTransactionId();
+        
+        // Show success message
+        successElement.innerHTML = `
+          <strong>Withdrawal Request Submitted!</strong><br>
+          Transaction ID: <code>${txId}</code><br>
+          Your ${currency.toUpperCase()} withdrawal is pending admin approval.
+        `;
+        successElement.style.display = 'block';
+        
+        // Show admin status container
+        showAdminStatus(txId, currency, amount, address, network);
+        
+        // Reset form
+        document.getElementById(`${currency}-address`).value = '';
+        document.getElementById(`${currency}-amount`).value = '';
+        if (memo && document.getElementById(`${currency}-memo-input`)) {
+          document.getElementById(`${currency}-memo-input`).value = '';
+        }
+        
+        btn.disabled = false;
+        btn.textContent = `Withdraw ${currency.toUpperCase()}`;
+        
+        // Simulate admin approval process
+        simulateAdminApproval(txId);
+        
+      }, 2000);
+
+      function getMinAmount(currency) {
+        const minAmounts = {
+          btc: '0.001 BTC',
+          eth: '0.01 ETH',
+          usdt: '10 USDT',
+          bnb: '0.1 BNB',
+          usdc: '10 USDC',
+          xrp: '20 XRP'
+        };
+        return minAmounts[currency] || '0';
+      }
+    }
+
+    // Generate unique transaction ID
+    function generateTransactionId() {
+      const timestamp = Date.now().toString(36);
+      const random = Math.random().toString(36).substr(2, 5);
+      return `TX${timestamp}${random}`.toUpperCase();
+    }
+
+    // Show admin confirmation status
+    function showAdminStatus(txId, currency, amount, address, network) {
+      const container = document.getElementById('adminStatusContainer');
+      const txIdElement = document.getElementById('txId');
+      const txAmountElement = document.getElementById('txAmount');
+      const txAddressElement = document.getElementById('txAddress');
+      const txNetworkElement = document.getElementById('txNetwork');
+      
+      // Update transaction details
+      txIdElement.textContent = txId;
+      txAmountElement.textContent = `${amount} ${currency.toUpperCase()}`;
+      txAddressElement.textContent = address;
+      txNetworkElement.textContent = network.toUpperCase();
+      
+      // Show container
+      container.style.display = 'block';
+      
+      // Scroll to status
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Simulate admin approval process
+    function simulateAdminApproval(txId) {
+      // After 10 seconds, simulate admin approval
+      setTimeout(() => {
+        document.getElementById('statusPending').style.display = 'none';
+        document.getElementById('statusApproved').style.display = 'flex';
+        
+        // Show notification
+        showNotification('Withdrawal Approved', `Transaction ${txId} has been approved by admin and is now processing.`, 'success');
+        
+        // After another 15 seconds, simulate completion
+        setTimeout(() => {
+          document.getElementById('statusApproved').style.display = 'none';
+          document.getElementById('statusCompleted').style.display = 'flex';
+          
+          // Show completion notification
+          showNotification('Withdrawal Completed', `Transaction ${txId} has been successfully processed and sent to your wallet.`, 'success');
+        }, 15000);
+      }, 10000);
+    }
+
+    // Show notification system
+    function showNotification(title, message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.innerHTML = `
+        <div class="notification-content">
+          <div class="notification-title">${title}</div>
+          <div class="notification-message">${message}</div>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+      `;
+      
+      // Add styles if not already added
+      if (!document.querySelector('#notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notification-styles';
+        styles.textContent = `
+          .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            max-width: 400px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          }
+          .notification-success { border-left: 4px solid var(--success); }
+          .notification-info { border-left: 4px solid var(--primary); }
+          .notification-warning { border-left: 4px solid var(--warning); }
+          .notification-error { border-left: 4px solid var(--error); }
+          .notification-content { display: flex; flex-direction: column; gap: 5px; }
+          .notification-title { font-weight: 600; color: var(--text-primary); }
+          .notification-message { font-size: 14px; color: var(--text-secondary); }
+          .notification-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+          }
+          @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+        `;
+        document.head.appendChild(styles);
+      }
+      
+      // Add to page
+      document.body.appendChild(notification);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+
+    // Particles JS
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 60 },
+        color: { value: '#0096FF' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.3 },
+        size: { value: 3 },
+        move: { enable: true, speed: 1.5 }
+      }
+    });
+
+    // Mobile menu toggle
+    function toggleMenu(event) {
+      event.stopPropagation();
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('show');
+    }
+
+    function closeMenuOutside(event) {
+      const menu = document.getElementById('menu');
+      if (!event.target.closest('#menu') && !event.target.closest('.menu-toggle') && window.innerWidth <= 768) {
+        menu.classList.remove('show');
+      }
+    }
+  </script>
+</body>
+</html>

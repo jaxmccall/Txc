@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripple Exchange - Contact Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="./js/auth-manager.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+  
+  /* ===== Loading System ===== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-animation {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 30px;
+}
+
+.loading-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 140px;
+  height: 140px;
+  border: 3px solid rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #0096FF;
+  animation: spin 2s linear infinite;
+}
+
+.loading-progress-container {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0096FF, #00BFFF);
+  transition: width 0.4s ease;
+}
+
+.loading-text {
+  color: #bbb;
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+  max-width: 80%;
+}
+
+/* Animation for content after load */
+.content-wrapper {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.page-loaded .content-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0d1117;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: white;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px 40px;
+      background: #1f2633;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      position: fixed;
+      top: 0;
+      z-index: 20;
+    }
+
+    .menu-toggle {
+      font-size: 26px;
+      cursor: pointer;
+      display: none;
+    }
+
+    #menu {
+      background: #1f2633;
+      padding: 150px 20px 20px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    #menu a {
+      color: #bbb;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 12px 20px;
+      border-radius: 10px;
+    }
+
+    #menu a:hover {
+      background: #0096FF;
+      color: white;
+    }
+
+    #menu a.active {
+      background: #0096FF;
+      color: white;
+    }
+
+    .content {
+      margin-top: 120px;
+      width: 90%;
+      max-width: 800px;
+      padding: 20px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contact-container {
+      background: #1f2633;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 20px rgba(0,150,255,0.5);
+    }
+
+    h1 {
+      color: #0096FF;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .contact-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .contact-card {
+      background: #2b3242;
+      border-radius: 15px;
+      padding: 20px;
+      flex: 1;
+      min-width: 200px;
+      transition: transform 0.3s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .contact-card h3 {
+      color: #0096FF;
+      margin-top: 0;
+    }
+
+    .contact-icon {
+      font-size: 24px;
+      margin-right: 10px;
+      color: #00BFFF;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: none;
+      background: #2b3242;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #0096FF, #00BFFF);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      align-self: center;
+      font-size: 16px;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #00BFFF, #0096FF);
+      transform: scale(1.05);
+    }
+
+    .faq-section {
+      margin-top: 40px;
+    }
+
+    .faq-item {
+      background: #1f2633;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .faq-question {
+      color: #0096FF;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      margin-top: 10px;
+      color: #bbb;
+      display: none;
+    }
+
+    .faq-answer.show {
+      display: block;
+    }
+
+    /* Live Chat Widget Styles */
+    .chat-widget {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      background: #1f2633;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      overflow: hidden;
+      z-index: 1000;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .chat-widget.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .chat-header {
+      background: #0096FF;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .chat-header h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .chat-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .chat-body {
+      height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .chat-message {
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .chat-message.user {
+      align-self: flex-end;
+      background: #0096FF;
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+
+    .chat-message.agent {
+      align-self: flex-start;
+      background: #2b3242;
+      color: white;
+      border-bottom-left-radius: 5px;
+    }
+
+    .chat-message.system {
+      align-self: center;
+      background: rgba(255,255,255,0.1);
+      color: #bbb;
+      font-size: 12px;
+      text-align: center;
+      padding: 5px 10px;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #2b3242;
+      background: #1f2633;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 20px;
+      background: #2b3242;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .chat-input button {
+      background: #0096FF;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .chat-input button:hover {
+      background: #00BFFF;
+    }
+
+    .chat-launcher {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: #0096FF;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,150,255,0.4);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .chat-launcher:hover {
+      transform: scale(1.1);
+      background: #00BFFF;
+    }
+
+    .chat-launcher i {
+      color: white;
+      font-size: 24px;
+    }
+
+    .chat-status {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #00ff7f;
+      border: 2px solid #1f2633;
+    }
+
+    .chat-status.offline {
+      background: #ff4d4d;
+    }
+
+    /* MOBILE ONLY */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      #menu {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      #menu.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      .contact-methods {
+        flex-direction: column;
+      }
+      .chat-widget {
+        width: calc(100% - 40px);
+        right: 20px;
+        bottom: 80px;
+      }
+      .chat-launcher {
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+
+    .footer-nav {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #1f2633;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 20px 0;
+      position: fixed;
+      border-radius: 10px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
+      z-index: 5;
+    }
+    
+    .footer-nav a {
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .footer-nav img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+    
+    .footer-nav .trade {
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .trade-simple {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #0096FF, #00BFFF);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,150,255,0.4);
+    }
+    
+    .trade-simple:hover {
+      background: linear-gradient(135deg, #0080FF, #00A5FF);
+      box-shadow: 0 6px 15px rgba(0,150,255,0.6);
+    }
+  </style>
+</head>
+
+<body onclick="closeMenuOutside(event)">
+    
+    <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+    <div class="geometric-bg">
+      <div class="geometric-shape shape-1"></div>
+      <div class="geometric-shape shape-2"></div>
+      <div class="geometric-shape shape-3"></div>
+    </div>
+    <div class="loading-content">
+      <div class="loading-animation">
+        <div class="core"></div>
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+      </div>
+      <h1 class="loading-title"><span>TRIPPLE EXCHANGE</span></h1>
+      <p class="loading-subtitle">CRYPTO TRADING PLATFORM</p>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      <p class="status-text">Loading support center</p>
+    </div>
+  </div>
+
+<!-- Wrap all your content in this (except loading overlay) -->
+<div class="content-wrapper" id="contentWrapper">
+  <!-- ALL YOUR EXISTING CONTENT GOES HERE -->
+</div>
+<div id="particles-js"></div>
+
+<header>
+  <div class="menu-toggle" onclick="toggleMenu(event)">&#9776;</div>
+  <img src="./images/logo.png" alt="Tripple Exchange Logo" style="height: 80px;">
+  <div></div>
+</header>
+
+<div id="menu">
+  <a href="./dashboard.html">Dashboard</a>
+  <a href="./profile.html">Profile Overview</a>
+  <a href="./activities.html">Recent Activity</a>
+  <a href="./settings.html">Settings</a>
+  <a href="./pns.html">Privacy & Security</a>
+  <a href="./kyc.html">KYC Verification</a>
+  <a href="./referral.html">Referral Program</a>
+  <a href="./contact.html" class="active">Contact Support</a>
+  <a href="./terms.html">Terms & Conditions</a>
+</div>
+
+<div class="content">
+  <div class="contact-container">
+    <h1>Contact Support</h1>
+    
+    <div class="contact-methods">
+      <div class="contact-card">
+        <h3><i class="contact-icon">📧</i> Email Support</h3>
+        <p>For general inquiries and account questions</p>
+        <p><strong>support@cryptonet.example</strong></p>
+        <p>Response time: 24-48 hours</p>
+      </div>
+      
+      <div class="contact-card">
+        <h3><i class="contact-icon">💬</i> Live Chat</h3>
+        <p>Instant help from our support team</p>
+        <p><strong>Available 24/7</strong></p>
+        <button class="submit-btn" style="margin-top: 10px;" onclick="openLiveChat()">Start Chat</button>
+      </div>
+      
+      <div class="contact-card">
+        <h3><i class="contact-icon">📞</i> Phone Support</h3>
+        <p>For urgent matters and verification</p>
+        <p><strong>+1 (800) 123-4567</strong></p>
+        <p>Mon-Fri: 9AM-5PM EST</p>
+      </div>
+    </div>
+    
+    <div class="contact-form">
+      <h2 style="text-align: center;">Send us a message</h2>
+      <form id="supportForm">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" required>
+            <option value="">Select an option</option>
+            <option value="account">Account Issues</option>
+            <option value="transaction">Transaction Problems</option>
+            <option value="verification">Verification Help</option>
+            <option value="technical">Technical Support</option>
+            <option value="other">Other Inquiry</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+    </div>
+  </div>
+  
+  <div class="faq-section">
+    <h2 style="text-align: center; color: #0096FF;">Frequently Asked Questions</h2>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        How do I reset my password?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        You can reset your password by clicking on "Forgot Password" on the login page. 
+        You'll receive an email with instructions to create a new password.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        Why is my transaction pending?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Transactions may be pending due to network congestion or additional verification requirements. 
+        Most transactions complete within 30 minutes to 2 hours.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        How do I complete KYC verification?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        Go to your profile settings and select "Complete Verification". 
+        You'll need to provide a government-issued ID and a selfie for identity confirmation.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        What are the withdrawal limits?
+        <span>+</span>
+      </div>
+      <div class="faq-answer">
+        For unverified accounts: $1,000 daily. Basic verification: $10,000 daily. 
+        Full verification: $50,000 daily. Institutional accounts have higher limits.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Live Chat Widget -->
+<div class="chat-widget" id="chatWidget">
+  <div class="chat-header" onclick="toggleChat()">
+    <h3>Support Chat</h3>
+    <div class="chat-status" id="chatStatus"></div>
+    <button class="chat-close">&times;</button>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="chat-message system">
+      Welcome to Tripple Exchange Support! An agent will be with you shortly.
+    </div>
+    <div class="chat-message agent">
+      Hello! Thank you for contacting Tripple Exchange support. How can I help you today?
+    </div>
+  </div>
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<div class="chat-launcher" onclick="toggleChat()">
+  <i>💬</i>
+  <div class="chat-status" id="launcherStatus"></div>
+</div>
+
+<br><br><br><br>
+
+<div class="footer-nav">
+    <a href="./trade.html">
+      <button class="trade-simple">Trade</button>
+    </a>
+    <a href="./market.html">
+      <div style="background: #1f2633; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#e74f4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 17l6-6 4 4 8-8" />
+          <circle cx="3" cy="17" r="1.5" fill="#00BFFF"/>
+          <circle cx="9" cy="11" r="1.5" fill="#00BFFF"/>
+          <circle cx="13" cy="15" r="1.5" fill="#00BFFF"/>
+          <circle cx="21" cy="7" r="1.5" fill="#e74f4f"/>
+        </svg>
+      </div>
+    </a>
+    <a href="./mining.html" class="trade">
+      <img src="./images/gear.png" alt="Mining Machine">
+    </a>
+    <a href="./notification.html">
+      <div style="background: #1f2633; width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0096FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+      </div>
+    </a>
+</div>
+
+<script>
+    
+    // ===== Loading System =====
+class LoadingSystem {
+  constructor() {
+    this.minLoadingTime = 1500; // Minimum loading time in ms
+    this.maxLoadingTime = 3000; // Maximum loading time in ms
+    this.startTime = null;
+    this.loadingPhases = [
+      { progress: 20, text: "Loading security modules..." },
+      { progress: 40, text: "Initializing wallet services..." },
+      { progress: 60, text: "Syncing with blockchain..." },
+      { progress: 80, text: "Finalizing setup..." },
+      { progress: 95, text: "Ready to go!" }
+    ];
+  }
+
+  init() {
+    this.startTime = Date.now();
+    this.setupLoadingBar();
+    this.setupEventListeners();
+    this.simulateLoading();
+  }
+
+  setupLoadingBar() {
+    const progressBar = document.getElementById('loadingProgress');
+    progressBar.style.transition = `width ${this.minLoadingTime/1000}s ease`;
+  }
+
+  setupEventListeners() {
+    window.addEventListener('load', () => this.completeLoading());
+    setTimeout(() => this.completeLoading(), this.maxLoadingTime);
+  }
+
+  simulateLoading() {
+    let currentPhase = 0;
+    const phaseInterval = setInterval(() => {
+      if (currentPhase >= this.loadingPhases.length) {
+        clearInterval(phaseInterval);
+        return;
+      }
+      const phase = this.loadingPhases[currentPhase];
+      this.updateProgress(phase.progress, phase.text);
+      currentPhase++;
+    }, this.minLoadingTime / this.loadingPhases.length);
+  }
+
+  updateProgress(percent, text) {
+    document.getElementById('loadingProgress').style.width = `${percent}%`;
+    if (text) document.getElementById('loadingText').textContent = text;
+  }
+
+  completeLoading() {
+    const elapsed = Date.now() - this.startTime;
+    const remainingTime = Math.max(0, this.minLoadingTime - elapsed);
+    
+    setTimeout(() => {
+      this.updateProgress(100, "Ready!");
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        document.body.classList.add('page-loaded');
+        document.querySelectorAll('button, a, input').forEach(el => {
+          el.style.pointerEvents = 'auto';
+        });
+      }, 300);
+    }, remainingTime);
+  }
+}
+
+// Initialize loading system
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button, a, input').forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+  new LoadingSystem().init();
+});
+
+// Enhanced page navigation
+function navigateWithTransition(url) {
+  document.body.classList.remove('page-loaded');
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  document.getElementById('loadingProgress').style.width = '0%';
+  new LoadingSystem().init();
+  setTimeout(() => {
+    window.location.href = url;
+  }, 300);
+}
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 60 },
+      color: { value: '#0096FF' },
+      shape: { type: 'circle' },
+      opacity: { value: 0.3 },
+      size: { value: 3 },
+      move: { enable: true, speed: 1.5 }
+    }
+  });
+
+  function toggleMenu(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('menu');
+    menu.classList.toggle('show');
+  }
+
+  function closeMenuOutside(event) {
+    const menu = document.getElementById('menu');
+    if (!event.target.closest('#menu') && !event.target.closest('.menu-toggle') && window.innerWidth <= 768) {
+      menu.classList.remove('show');
+    }
+  }
+
+  function toggleFaq(question) {
+    const answer = question.parentElement.querySelector('.faq-answer');
+    const plusMinus = question.querySelector('span');
+    
+    answer.classList.toggle('show');
+    plusMinus.textContent = plusMinus.textContent === '+' ? '−' : '+';
+  }
+
+  // Chat Functions
+  let chatOpen = false;
+  let chatHistory = [];
+  
+  function toggleChat() {
+    const chatWidget = document.getElementById('chatWidget');
+    chatOpen = !chatOpen;
+    
+    if (chatOpen) {
+      chatWidget.classList.add('active');
+      document.getElementById('chatInput').focus();
+    } else {
+      chatWidget.classList.remove('active');
+    }
+  }
+  
+  function openLiveChat() {
+    toggleChat();
+  }
+  
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    const chatBody = document.getElementById('chatBody');
+    
+    if (message) {
+      // Add user message
+      addMessage(message, 'user');
+      chatHistory.push({ type: 'user', text: message });
+      
+      // Simulate agent response after a short delay
+      setTimeout(() => {
+        const responses = [
+          "I understand your concern. Let me check that for you.",
+          "Thanks for your message. I'll help you with that.",
+          "That's a good question. Here's what I can tell you...",
+          "I need to verify some details to assist you properly.",
+          "Please give me a moment while I look into this."
+        ];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        addMessage(randomResponse, 'agent');
+        chatHistory.push({ type: 'agent', text: randomResponse });
+        
+        // Scroll to bottom
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }, 1000);
+      
+      input.value = '';
+    }
+    
+    // Scroll to bottom
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+  
+  function addMessage(text, sender) {
+    const chatBody = document.getElementById('chatBody');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender}`;
+    messageDiv.textContent = text;
+    chatBody.appendChild(messageDiv);
+  }
+  
+  // Handle Enter key in chat input
+  document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+  
+  // Simulate connection status
+  function updateConnectionStatus() {
+    const statusElements = document.querySelectorAll('.chat-status');
+    const isOnline = Math.random() > 0.2; // 80% chance of being online
+    
+    statusElements.forEach(el => {
+      if (isOnline) {
+        el.classList.remove('offline');
+      } else {
+        el.classList.add('offline');
+      }
+    });
+    
+    // If offline, show a system message
+    if (!isOnline) {
+      const chatBody = document.getElementById('chatBody');
+      const lastMessage = chatBody.lastChild;
+      
+      if (!lastMessage || !lastMessage.textContent.includes('currently offline')) {
+        addMessage("Our support team is currently offline. Please leave a message and we'll get back to you soon.", 'system');
+      }
+    }
+  }
+  
+  // Update status every 30 seconds
+  setInterval(updateConnectionStatus, 30000);
+  updateConnectionStatus();
+
+  document.getElementById('supportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Thank you for your message! Our support team will get back to you soon.');
+    this.reset();
+  });
+</script>
+</body>
+</html>

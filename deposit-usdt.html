@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tripple Exchange - Deposit USDT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./js/balance-manager.js"></script>
+    <script src="./js/auth-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5649c0;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #00b894;
+            --error: #ff7675;
+            --warning: #fdcb6e;
+            --border: #334155;
+            --shadow-lg: 0 10px 36px 0 rgba(108, 92, 231, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .balance-display {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .current-balance {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .deposit-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .usdt-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .usdt-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #26a17b, #2dd4bf);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .usdt-info h2 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .usdt-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Network Selection */
+        .network-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .network-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .network-option {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .network-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .network-option:hover:not(.active) {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        /* Deposit Address Section */
+        .address-section {
+            margin-bottom: 2rem;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            border: none;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .address-display {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .address-display.active {
+            display: block;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .address-field {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            position: relative;
+        }
+
+        .address-text {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text);
+            word-break: break-all;
+            margin-right: 3rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Manual Deposit Section */
+        .manual-deposit {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .manual-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface-light);
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        .deposit-btn {
+            padding: 1rem;
+            background: var(--success);
+            border: none;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .deposit-btn:hover {
+            background: #00a085;
+            transform: translateY(-1px);
+        }
+
+        /* Important Notes */
+        .important-notes {
+            background: rgba(253, 203, 110, 0.1);
+            border: 1px solid rgba(253, 203, 110, 0.3);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .important-notes h3 {
+            color: var(--warning);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .important-notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .important-notes li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .important-notes li::before {
+            content: "•";
+            color: var(--warning);
+            position: absolute;
+            left: 0;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: rgba(0, 184, 148, 0.1);
+            border: 1px solid rgba(0, 184, 148, 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+            color: var(--success);
+            text-align: center;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Responsive Design */
+        /* Base responsive improvements */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Flexible text sizing */
+        .responsive-text {
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        }
+
+        .responsive-title {
+            font-size: clamp(1.25rem, 4vw, 2rem);
+        }
+
+        .responsive-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        /* Flexible container spacing */
+        .responsive-padding {
+            padding: clamp(0.5rem, 2vw, 2rem);
+        }
+
+        .responsive-margin {
+            margin: clamp(0.5rem, 2vw, 2rem);
+        }
+
+        /* Grid improvements */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* Flexible button sizing */
+        .responsive-btn {
+            padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .deposit-container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .deposit-header {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            
+            .deposit-header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .deposit-container {
+                padding: 1rem;
+                max-width: 100%;
+            }
+            
+            .deposit-form {
+                padding: 1.5rem;
+            }
+            
+            .network-selector {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .qr-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            
+            .deposit-header {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .deposit-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .deposit-container {
+                padding: 0.75rem;
+            }
+            
+            .deposit-form {
+                padding: 1.5rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .form-control {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+            
+            .network-card {
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .network-card h3 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .network-card p {
+                font-size: 0.85rem;
+            }
+            
+            .qr-code {
+                width: 200px;
+                height: 200px;
+                margin: 1rem auto;
+            }
+            
+            .address-display {
+                padding: 1rem;
+                font-size: 0.9rem;
+                word-break: break-all;
+            }
+            
+            .copy-btn {
+                width: 100%;
+                margin-top: 1rem;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .warning-box {
+                padding: 1rem;
+                margin: 1rem 0;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .deposit-header {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .deposit-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .deposit-container {
+                padding: 0.5rem;
+            }
+            
+            .deposit-form {
+                padding: 1rem;
+            }
+            
+            .form-control {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .network-card {
+                padding: 0.75rem;
+            }
+            
+            .qr-code {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .address-display {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .copy-btn {
+                padding: 0.7rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .deposit-header {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .qr-code {
+                width: 120px;
+                height: 120px;
+            }
+        }     .network-option {
+                text-align: center;
+            }
+        }
+
+        /* Modern Loading Overlay Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        /* Abstract Geometric Background */
+        .geometric-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.15;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid #3b82f6;
+            opacity: 0.7;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: float 25s infinite linear;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -30px;
+            right: -30px;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: float 20s infinite linear reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 10%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: rotate(0deg) translate(0, 0);
+            }
+            100% {
+                transform: rotate(360deg) translate(50px, 50px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Main Content */
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        /* Abstract Loading Animation */
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .core {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            animation: core-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes core-pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+            }
+        }
+
+        .orbit {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 {
+            width: 120px;
+            height: 120px;
+            top: 40px;
+            left: 40px;
+            border-top-color: #3b82f6;
+            animation-duration: 8s;
+        }
+
+        .orbit-2 {
+            width: 160px;
+            height: 160px;
+            top: 20px;
+            left: 20px;
+            border-right-color: #60a5fa;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 200px;
+            height: 200px;
+            top: 0;
+            left: 0;
+            border-bottom-color: #00f0ff;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbit-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text Elements */
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-title span {
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            color: rgba(248, 250, 252, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+            animation: progress 3s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0;
+            }
+            50% {
+                width: 80%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.7);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .status-text:after {
+            content: '...';
+            animation: dots 1.5s infinite steps(4, end);
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60%, 100% {
+                content: '...';
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .loading-title {
+                font-size: 2rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .loading-animation {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .orbit-1 {
+                width: 90px;
+                height: 90px;
+                top: 30px;
+                left: 30px;
+            }
+            
+            .orbit-2 {
+                width: 120px;
+                height: 120px;
+                top: 15px;
+                left: 15px;
+            }
+            
+            .orbit-3 {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Loading Overlay -->
+    <div class="loading-screen" id="loadingOverlay">
+        <div class="geometric-bg">
+            <div class="geometric-shape shape-1"></div>
+            <div class="geometric-shape shape-2"></div>
+            <div class="geometric-shape shape-3"></div>
+        </div>
+        
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="core"></div>
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
+            </div>
+            
+            <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+            <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            
+            <p class="status-text">Loading deposit interface</p>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()" aria-label="Go back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="page-title">Deposit USDT</h1>
+            </div>
+            <div class="balance-display">
+                Current Balance: <span class="current-balance" id="currentBalance">$0.00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="deposit-card">
+            <!-- USDT Header -->
+            <div class="usdt-header">
+                <div class="usdt-icon">₮</div>
+                <div class="usdt-info">
+                    <h2>Deposit Tether (USDT)</h2>
+                    <p>Add funds to your Tripple Exchange account</p>
+                </div>
+            </div>
+
+            <!-- Network Selection -->
+            <div class="network-section">
+                <h3 class="section-title">Select Network</h3>
+                <div class="network-options">
+                    <button class="network-option active" data-network="trc20">
+                        TRC20 (Tron) - Fee: 1 USDT
+                    </button>
+                    <button class="network-option" data-network="erc20">
+                        ERC20 (Ethereum) - Fee: 5 USDT
+                    </button>
+                    <button class="network-option" data-network="bep20">
+                        BEP20 (BSC) - Fee: 0.5 USDT
+                    </button>
+                </div>
+            </div>
+
+            <!-- Generate Address -->
+            <div class="address-section">
+                <button class="generate-btn" id="generateBtn" onclick="generateDepositAddress()">
+                    <i class="fas fa-qrcode"></i> Generate Deposit Address
+                </button>
+
+                <div class="address-display" id="addressDisplay">
+                    <div class="qr-container">
+                        <div class="qr-code" id="qrCode"></div>
+                    </div>
+                    <div class="address-field">
+                        <div class="address-text" id="addressText"></div>
+                        <button class="copy-btn" onclick="copyAddress()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Deposit (Admin/Testing) -->
+            <div class="manual-deposit">
+                <h3 class="section-title">Manual Deposit (Testing)</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                    For testing purposes, you can manually add USDT to your account:
+                </p>
+                <div class="manual-form">
+                    <div class="form-group">
+                        <label class="form-label" for="depositAmount">Amount (USDT)</label>
+                        <input type="number" class="form-input" id="depositAmount" placeholder="Enter amount" min="1" step="0.01">
+                    </div>
+                    <button class="deposit-btn" onclick="processManualDeposit()">
+                        <i class="fas fa-plus-circle"></i> Add USDT to Account
+                    </button>
+                    <div class="success-message" id="successMessage"></div>
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="important-notes">
+                <h3><i class="fas fa-exclamation-triangle"></i> Important Notes</h3>
+                <ul>
+                    <li>Only send USDT to the generated address</li>
+                    <li>Ensure you select the correct network (TRC20/ERC20/BEP20)</li>
+                    <li>Minimum deposit: 10 USDT</li>
+                    <li>Deposits typically confirm within 2-30 minutes</li>
+                    <li>Network fees are deducted from your deposit</li>
+                    <li>Contact support if your deposit doesn't appear within 1 hour</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let selectedNetwork = 'trc20';
+        let currentAddress = '';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize balance manager
+            if (window.balanceManager) {
+                updateBalanceDisplay();
+                
+                // Listen for balance updates
+                window.balanceManager.addListener(updateBalanceDisplay);
+            }
+
+            // Setup network selection
+            setupNetworkSelection();
+        });
+
+        // Update balance display
+        function updateBalanceDisplay() {
+            if (window.balanceManager) {
+                const totalBalance = window.balanceManager.getTotalBalanceUSD();
+                document.getElementById('currentBalance').textContent = `$${totalBalance.toFixed(2)}`;
+            }
+        }
+
+        // Setup network selection
+        function setupNetworkSelection() {
+            document.querySelectorAll('.network-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    document.querySelectorAll('.network-option').forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    
+                    // Update selected network
+                    selectedNetwork = this.dataset.network;
+                    
+                    // Hide address display if shown
+                    document.getElementById('addressDisplay').classList.remove('active');
+                    document.getElementById('generateBtn').disabled = false;
+                    document.getElementById('generateBtn').innerHTML = '<i class="fas fa-qrcode"></i> Generate Deposit Address';
+                });
+            });
+        }
+
+        // Generate deposit address
+        function generateDepositAddress() {
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            // Simulate address generation
+            setTimeout(() => {
+                // Generate mock address based on network
+                let address;
+                switch(selectedNetwork) {
+                    case 'trc20':
+                        address = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+                        break;
+                    case 'erc20':
+                        address = '0x1234567890abcdefABCDEF1234567890abcdef12';
+                        break;
+                    case 'bep20':
+                        address = '0xabcdef1234567890ABCDEF1234567890abcdef12';
+                        break;
+                    default:
+                        address = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+                }
+
+                currentAddress = address;
+                
+                // Update address display
+                document.getElementById('addressText').textContent = address;
+                
+                // Generate QR code
+                document.getElementById('qrCode').innerHTML = '';
+                new QRCode(document.getElementById('qrCode'), {
+                    text: address,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff'
+                });
+                
+                // Show address display
+                document.getElementById('addressDisplay').classList.add('active');
+                
+                // Update button
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Generate New Address';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // Copy address to clipboard
+        function copyAddress() {
+            if (currentAddress) {
+                navigator.clipboard.writeText(currentAddress).then(() => {
+                    const copyBtn = document.querySelector('.copy-btn');
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    copyBtn.style.background = 'var(--success)';
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                        copyBtn.style.background = 'var(--primary)';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy address:', err);
+                });
+            }
+        }
+
+        // Process manual deposit (for testing)
+        function processManualDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            const successMessage = document.getElementById('successMessage');
+            
+            if (!amount || amount < 1) {
+                successMessage.textContent = 'Please enter a valid amount (minimum 1 USDT)';
+                successMessage.style.background = 'rgba(255, 118, 117, 0.1)';
+                successMessage.style.borderColor = 'rgba(255, 118, 117, 0.3)';
+                successMessage.style.color = 'var(--error)';
+                successMessage.classList.add('show');
+                return;
+            }
+
+            // Process deposit through balance manager
+            if (window.balanceManager) {
+                try {
+                    window.balanceManager.processDeposit('USDT', amount);
+                    
+                    // Show success message
+                    successMessage.textContent = `Successfully added ${amount} USDT to your account!`;
+                    successMessage.style.background = 'rgba(0, 184, 148, 0.1)';
+                    successMessage.style.borderColor = 'rgba(0, 184, 148, 0.3)';
+                    successMessage.style.color = 'var(--success)';
+                    successMessage.classList.add('show');
+                    
+                    // Clear form
+                    document.getElementById('depositAmount').value = '';
+                    
+                    // Update balance display
+                    updateBalanceDisplay();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMessage.classList.remove('show');
+                    }, 5000);
+                    
+                } catch (error) {
+                    successMessage.textContent = 'Error processing deposit: ' + error.message;
+                    successMessage.style.background = 'rgba(255, 118, 117, 0.1)';
+                    successMessage.style.borderColor = 'rgba(255, 118, 117, 0.3)';
+                    successMessage.style.color = 'var(--error)';
+                    successMessage.classList.add('show');
+                }
+            }
+        }
+
+        // Go back to previous page
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+    <script>
+        // Loading overlay functions
+        function showLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loading overlay initially
+            showLoadingOverlay();
+            
+            // Hide loading overlay after a short delay
+            setTimeout(function() {
+                hideLoadingOverlay();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

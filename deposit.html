@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripple Exchange - Deposit USDT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="./js/balance-manager.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+  
+  /* ===== Loading System ===== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-animation {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 30px;
+}
+
+.loading-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 140px;
+  height: 140px;
+  border: 3px solid rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #0096FF;
+  animation: spin 2s linear infinite;
+}
+
+.loading-progress-container {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0096FF, #00BFFF);
+  transition: width 0.4s ease;
+}
+
+.loading-text {
+  color: #bbb;
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+  max-width: 80%;
+}
+
+/* Animation for content after load */
+.content-wrapper {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.page-loaded .content-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+    :root {
+      --primary: #0096FF;
+      --primary-light: #00BFFF;
+      --background: #0d1117;
+      --surface: #1f2633;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      padding: 15px 20px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 20;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .back-btn {
+      background: rgba(0, 150, 255, 0.1);
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      min-width: 80px;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 150, 255, 0.2);
+      transform: translateX(-2px);
+    }
+
+    .back-btn svg {
+      width: 16px;
+      height: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .logo-container {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .logo-container img {
+      height: 70px;
+      object-fit: contain;
+    }
+
+    .menu-toggle {
+      font-size: 26px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .deposit-container {
+      max-width: 1200px;
+      margin: 100px auto 80px;
+      padding: 0 20px;
+    }
+
+    .deposit-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .deposit-header h1 {
+      font-size: 32px;
+      margin-bottom: 15px;
+      background: linear-gradient(45deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .deposit-header p {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .usdt-deposit-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 150, 255, 0.1);
+      border: 1px solid rgba(0, 150, 255, 0.2);
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 25px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 150, 255, 0.1);
+    }
+
+    .wallet-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,150,255,0.1);
+    }
+
+    .wallet-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .wallet-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: rgba(0,150,255,0.1);
+      padding: 10px;
+    }
+
+    .network-selector {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .network-pill {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(0,150,255,0.1);
+      color: var(--primary-light);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .network-pill.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .generate-btn:hover {
+      transform: scale(0.98);
+      box-shadow: 0 5px 15px rgba(0,150,255,0.3);
+    }
+
+    .qr-section {
+      text-align: center;
+      margin: 25px 0;
+      opacity: 0;
+      height: 0;
+      transition: all 0.3s ease;
+    }
+
+    .qr-section.active {
+      opacity: 1;
+      height: auto;
+    }
+
+    .address-field {
+      background: rgba(0,150,255,0.1);
+      padding: 15px;
+      border-radius: 12px;
+      word-break: break-all;
+      position: relative;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-light);
+    }
+
+    .deposit-note {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 1px solid rgba(0,150,255,0.1);
+    }
+
+    .memo-note {
+      color: var(--primary-light);
+      font-size: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 15px;
+      }
+      
+      .back-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+        min-width: 70px;
+      }
+
+      .back-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .logo-container img {
+        height: 36px;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .back-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+        min-width: 65px;
+      }
+
+      .logo-container img {
+        height: 65px;
+      }
+    }
+
+    /* Add this to your existing CSS */
+header {
+  position: relative;
+}
+
+.logo-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.logo-container img {
+  height: 70px; /* Adjust this value as needed */
+}
+
+@media (max-width: 768px) {
+  .logo-container img {
+    height: 50px; /* Slightly smaller for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-container img {
+    height: 40px; /* Even smaller for phones */
+  }
+}
+  </style>
+</head>
+<body onclick="closeMenuOutside(event)">
+    
+    
+    <!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-animation">
+    <img src="./images/logo.png" alt="Loading" class="loading-logo">
+    <div class="loading-spinner"></div>
+  </div>
+  <div class="loading-progress-container">
+    <div class="loading-progress-bar" id="loadingProgress"></div>
+  </div>
+  <div class="loading-text" id="loadingText">Initializing application...</div>
+</div>
+
+<!-- Wrap all your content in this (except loading overlay) -->
+<div class="content-wrapper" id="contentWrapper">
+  <!-- ALL YOUR EXISTING CONTENT GOES HERE -->
+</div>
+  <div id="particles-js"></div>
+  
+  <header>
+    <div class="header-content">
+      <button class="back-btn" onclick="location.href='dashboard.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+      </button>
+      <div class="logo-container">
+        <img src="./images/logo.png" alt="Tripple Exchange Logo">
+      </div>
+    </div>
+  </header>
+
+  <div class="deposit-container">
+    <div class="deposit-header">
+      <h1>Deposit Cryptocurrency</h1>
+      <p>Supported coins and networks</p>
+    </div>
+
+    <div class="wallet-grid">
+      <!-- Bitcoin -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/btc.png" class="wallet-icon" alt="BTC">
+          <div>
+            <h3>Bitcoin (BTC)</h3>
+            <div class="network-pill active">Native</div>
+          </div>
+        </div>
+        <button class="generate-btn" onclick="generateWallet('btc')">Generate Address</button>
+        <div class="qr-section" id="btc-qr"></div>
+        <div class="address-field" id="btc-address">
+          <span class="address-text">bc1qxy2kgdygjrsqtzq2n0yrf2493w83f5wv4m8vwq</span>
+          <button class="copy-btn" onclick="copyAddress('btc')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Ethereum -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/eth.png" class="wallet-icon" alt="ETH">
+          <div>
+            <h3>Ethereum (ETH)</h3>
+            <div class="network-pill active">ERC20</div>
+          </div>
+        </div>
+        <button class="generate-btn" onclick="generateWallet('eth')">Generate Address</button>
+        <div class="qr-section" id="eth-qr"></div>
+        <div class="address-field" id="eth-address">
+          <span class="address-text">0x1234567890abcdefABCDEF1234567890abcdef</span>
+          <button class="copy-btn" onclick="copyAddress('eth')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Tether -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/usdt.png" class="wallet-icon" alt="USDT">
+          <div>
+            <h3>Tether (USDT)</h3>
+            <div class="network-selector">
+              <div class="network-pill active" data-network="trc20">TRC20</div>
+              <div class="network-pill" data-network="erc20">ERC20</div>
+              <div class="network-pill" data-network="bep20">BEP20</div>
+            </div>
+          </div>
+        </div>
+        <button class="generate-btn" onclick="generateWallet('usdt', 'trc20')">Generate Address</button>
+        <div class="qr-section" id="usdt-qr"></div>
+        <div class="address-field" id="usdt-address">
+          <span class="address-text">TXYZ1234567890abcdefABCDEF1234567890abcd</span>
+          <button class="copy-btn" onclick="copyAddress('usdt')">Copy</button>
+        </div>
+        <div class="memo-note" id="usdt-memo">Memo/Tag: 123456789</div>
+      </div>
+
+      <!-- BNB -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/bnb.png" class="wallet-icon" alt="BNB">
+          <div>
+            <h3>Binance Coin (BNB)</h3>
+            <div class="network-pill active">BEP20</div>
+          </div>
+        </div>
+        <button class="generate-btn" onclick="generateWallet('bnb')">Generate Address</button>
+        <div class="qr-section" id="bnb-qr"></div>
+        <div class="address-field" id="bnb-address">
+          <span class="address-text">bnb1abcdefghijklmnopqrstuvwxyz1234567890</span>
+          <button class="copy-btn" onclick="copyAddress('bnb')">Copy</button>
+        </div>
+      </div>
+
+      <!-- USDC -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/usdc.png" class="wallet-icon" alt="USDC">
+          <div>
+            <h3>USD Coin (USDC)</h3>
+            <div class="network-selector">
+              <div class="network-pill active" data-network="erc20">ERC20</div>
+              <div class="network-pill" data-network="trc20">TRC20</div>
+              <div class="network-pill" data-network="polygon">Polygon</div>
+            </div>
+          </div>
+        </div>
+        <button class="generate-btn" onclick="generateWallet('usdc', 'erc20')">Generate Address</button>
+        <div class="qr-section" id="usdc-qr"></div>
+        <div class="address-field" id="usdc-address">
+          <span class="address-text">0xUSDC1234567890abcdefABCDEF1234567890abcd</span>
+          <button class="copy-btn" onclick="copyAddress('usdc')">Copy</button>
+        </div>
+      </div>
+
+      <!-- XRP -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <img src="./images/xrp.png" class="wallet-icon" alt="XRP">
+          <div>
+            <h3>Ripple (XRP)</h3>
+            <div class="network-pill active">XRP Ledger</div>
+          </div>
+        </div>
+        <button class="generate-btn" onclick="generateWallet('xrp')">Generate Address</button>
+        <div class="qr-section" id="xrp-qr"></div>
+        <div class="address-field" id="xrp-address">
+          <span class="address-text">rP9jnnnY4QzmDAnUJ3rGj1ZxDA5R7XMWsg</span>
+          <button class="copy-btn" onclick="copyAddress('xrp')">Copy</button>
+        </div>
+        <div class="memo-note" id="xrp-memo">Destination Tag: 987654321</div>
+      </div>
+    </div>
+
+    <div class="deposit-note">
+      ⚠️ Important: Always send the exact cryptocurrency shown. Include memo/tag when required.<br>
+      Transactions may take 2-30 minutes to confirm depending on network congestion.
+    </div>
+  </div>
+
+  <script>
+      
+      // ===== Loading System =====
+class LoadingSystem {
+  constructor() {
+    this.minLoadingTime = 1500; // Minimum loading time in ms
+    this.maxLoadingTime = 3000; // Maximum loading time in ms
+    this.startTime = null;
+    this.loadingPhases = [
+      { progress: 20, text: "Loading security modules..." },
+      { progress: 40, text: "Initializing wallet services..." },
+      { progress: 60, text: "Syncing with blockchain..." },
+      { progress: 80, text: "Finalizing setup..." },
+      { progress: 95, text: "Ready to go!" }
+    ];
+  }
+
+  init() {
+    this.startTime = Date.now();
+    this.setupLoadingBar();
+    this.setupEventListeners();
+    this.simulateLoading();
+  }
+
+  setupLoadingBar() {
+    const progressBar = document.getElementById('loadingProgress');
+    progressBar.style.transition = `width ${this.minLoadingTime/1000}s ease`;
+  }
+
+  setupEventListeners() {
+    window.addEventListener('load', () => this.completeLoading());
+    setTimeout(() => this.completeLoading(), this.maxLoadingTime);
+  }
+
+  simulateLoading() {
+    let currentPhase = 0;
+    const phaseInterval = setInterval(() => {
+      if (currentPhase >= this.loadingPhases.length) {
+        clearInterval(phaseInterval);
+        return;
+      }
+      const phase = this.loadingPhases[currentPhase];
+      this.updateProgress(phase.progress, phase.text);
+      currentPhase++;
+    }, this.minLoadingTime / this.loadingPhases.length);
+  }
+
+  updateProgress(percent, text) {
+    document.getElementById('loadingProgress').style.width = `${percent}%`;
+    if (text) document.getElementById('loadingText').textContent = text;
+  }
+
+  completeLoading() {
+    const elapsed = Date.now() - this.startTime;
+    const remainingTime = Math.max(0, this.minLoadingTime - elapsed);
+    
+    setTimeout(() => {
+      this.updateProgress(100, "Ready!");
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        document.body.classList.add('page-loaded');
+        document.querySelectorAll('button, a, input').forEach(el => {
+          el.style.pointerEvents = 'auto';
+        });
+      }, 300);
+    }, remainingTime);
+  }
+}
+
+// Initialize loading system
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button, a, input').forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+  new LoadingSystem().init();
+});
+
+// Enhanced page navigation
+function navigateWithTransition(url) {
+  document.body.classList.remove('page-loaded');
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  document.getElementById('loadingProgress').style.width = '0%';
+  new LoadingSystem().init();
+  setTimeout(() => {
+    window.location.href = url;
+  }, 300);
+}
+    // Wallet Data (Replace with your backend API)
+    const wallets = {
+      btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493w83f5wv4m8vwq',
+      eth: '0x1234567890abcdefABCDEF1234567890abcdef',
+      usdt: {
+        trc20: 'TXYZ1234567890abcdefABCDEF1234567890abcd',
+        erc20: '0xUSDT1234567890abcdefABCDEF1234567890abcd',
+        bep20: 'bnb1usdt1234567890abcdefABCDEF1234567890'
+      },
+      bnb: 'bnb1abcdefghijklmnopqrstuvwxyz1234567890',
+      usdc: {
+        erc20: '0xUSDC1234567890abcdefABCDEF1234567890abcd',
+        trc20: 'TUSDC1234567890abcdefABCDEF1234567890abcd',
+        polygon: '0xPOLYGON1234567890abcdefABCDEF1234567890'
+      },
+      xrp: 'rP9jnnnY4QzmDAnUJ3rGj1ZxDA5R7XMWsg'
+    };
+
+    function generateWallet(currency, network = null) {
+      const address = network ? wallets[currency][network] : wallets[currency];
+      const qrContainer = document.getElementById(`${currency}-qr`);
+      const addressElement = document.getElementById(`${currency}-address`);
+      const memoElement = document.getElementById(`${currency}-memo`);
+
+      // Clear existing QR
+      qrContainer.innerHTML = '';
+      
+      // Generate new QR
+      new QRCode(qrContainer, {
+        text: address,
+        width: 160,
+        height: 160,
+        colorDark: "#0096FF",
+        colorLight: "transparent",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // Show elements
+      qrContainer.classList.add('active');
+      addressElement.style.display = 'block';
+      addressElement.querySelector('.address-text').textContent = address;
+      
+      // Show memo if required
+      if (memoElement) memoElement.style.display = 'block';
+
+      // Update button state
+      const btn = event.target;
+      btn.textContent = 'Address Generated ✓';
+      btn.style.background = 'linear-gradient(135deg, #00c853, #64dd17)';
+      btn.onclick = null;
+    }
+
+    function copyAddress(currency) {
+      const text = document.getElementById(`${currency}-address`).querySelector('.address-text').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const copyBtn = document.querySelector(`#${currency}-address .copy-btn`);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+      });
+    }
+
+    // Network switching
+    document.querySelectorAll('.network-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        this.parentElement.querySelectorAll('.network-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const currency = this.closest('.wallet-card').querySelector('.generate-btn').dataset.currency;
+        const network = this.dataset.network;
+        generateWallet(currency, network);
+      });
+    });
+
+    // Particles JS
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 60 },
+        color: { value: '#0096FF' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.3 },
+        size: { value: 3 },
+        move: { enable: true, speed: 1.5 }
+      }
+    });
+
+    // Mobile menu toggle
+    function toggleMenu(event) {
+      event.stopPropagation();
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('show');
+    }
+
+    function closeMenuOutside(event) {
+      const menu = document.getElementById('menu');
+      if (!event.target.closest('#menu') && !event.target.closest('.menu-toggle') && window.innerWidth <= 768) {
+        menu.classList.remove('show');
+      }
+    }
+  </script>
+</body>
+</html>

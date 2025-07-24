@@ -1,0 +1,113 @@
+{
+  "name": "Tripple Exchange",
+  "version": "1.0.0",
+  "description": "Professional cryptocurrency trading platform",
+  "homepage": "https://trippleexchange.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trippleexchange/platform.git"
+  },
+  "deployment": {
+    "environment": "production",
+    "domain": "trippleexchange.com",
+    "ssl": true,
+    "compression": true,
+    "minification": true,
+    "caching": {
+      "static_files": "1 year",
+      "html_files": "1 hour",
+      "api_responses": "5 minutes"
+    }
+  },
+  "build": {
+    "output_directory": "dist",
+    "source_directory": "src",
+    "assets_directory": "assets",
+    "optimize_images": true,
+    "minify_css": true,
+    "minify_js": true,
+    "bundle_assets": true
+  },
+  "security": {
+    "https_only": true,
+    "hsts_enabled": true,
+    "content_security_policy": true,
+    "xss_protection": true,
+    "frame_options": "DENY",
+    "content_type_options": "nosniff"
+  },
+  "performance": {
+    "enable_compression": true,
+    "enable_caching": true,
+    "lazy_loading": true,
+    "preload_critical_resources": true,
+    "optimize_fonts": true
+  },
+  "monitoring": {
+    "error_tracking": true,
+    "performance_monitoring": true,
+    "uptime_monitoring": true,
+    "log_level": "info"
+  },
+  "database": {
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "name": "u925878138_tripplex",
+    "charset": "utf8mb4",
+    "collation": "utf8mb4_unicode_ci",
+    "connection_pool": {
+      "min_connections": 5,
+      "max_connections": 20
+    }
+  },
+  "api": {
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 100,
+      "burst_limit": 200
+    },
+    "cors": {
+      "enabled": true,
+      "allowed_origins": ["https://trippleexchange.com"],
+      "allowed_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "allowed_headers": ["Content-Type", "Authorization"]
+    }
+  },
+  "features": {
+    "real_time_prices": true,
+    "portfolio_analytics": true,
+    "admin_confirmation": true,
+    "notification_system": true,
+    "multi_language": false,
+    "dark_mode": true,
+    "mobile_app": false
+  },
+  "integrations": {
+    "coingecko_api": {
+      "enabled": true,
+      "api_key": null,
+      "rate_limit": "50/minute"
+    },
+    "email_service": {
+      "provider": "smtp",
+      "host": "smtp.hostinger.com",
+      "port": 587,
+      "encryption": "tls"
+    },
+    "payment_gateways": [],
+    "social_login": {
+      "google": true,
+      "facebook": false,
+      "twitter": false
+    }
+  },
+  "backup": {
+    "enabled": true,
+    "frequency": "daily",
+    "retention_days": 30,
+    "include_database": true,
+    "include_files": true,
+    "storage_location": "cloud"
+  }
+}

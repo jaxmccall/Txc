@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Analytics | Tripple Exchange</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #0096FF;
+            --primary-hover: #0080e0;
+            --primary-light: rgba(0, 150, 255, 0.1);
+            --bg: #0a0e14;
+            --surface: #0d1117;
+            --surface-light: #161b22;
+            --surface-lighter: #21262d;
+            --text: #ffffff;
+            --text-secondary: #b0b0b0;
+            --success: #00c853;
+            --error: #ff3d00;
+            --warning: #ffab00;
+            --border: #30363d;
+            --radius: 0.75rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--error);
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .time-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .time-btn {
+            padding: 0.5rem 1rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+
+        .time-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        .pie-chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Assets Table */
+        .assets-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .search-box {
+            padding: 0.5rem 1rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text);
+            width: 250px;
+        }
+
+        .assets-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .assets-table th,
+        .assets-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .assets-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .asset-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .asset-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .asset-details h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .asset-details span {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .performance-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .performance-badge.positive {
+            background: rgba(0, 200, 83, 0.1);
+            color: var(--success);
+        }
+
+        .performance-badge.negative {
+            background: rgba(255, 61, 0, 0.1);
+            color: var(--error);
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .assets-table {
+                font-size: 0.875rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p style="margin-top: 1rem; color: var(--text-secondary);">Loading portfolio analytics...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="dashboard.html" class="logo">
+            <i class="fas fa-exchange-alt"></i>
+            Tripple Exchange
+        </a>
+        <nav class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="wallet.html">Wallet</a>
+            <a href="trade.html">Trade</a>
+            <a href="portfolio-analytics.html" style="color: var(--primary);">Analytics</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Portfolio Analytics</h1>
+            <p class="page-subtitle">Advanced insights into your cryptocurrency portfolio performance</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Portfolio Value</span>
+                    <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalValue">$0.00</div>
+                <div class="stat-change positive" id="totalChange">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+0.00%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">24h Change</span>
+                    <div class="stat-icon" style="background: rgba(0, 200, 83, 0.1); color: var(--success);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="dayChange">$0.00</div>
+                <div class="stat-change positive" id="dayChangePercent">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+0.00%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Best Performer</span>
+                    <div class="stat-icon" style="background: rgba(255, 171, 0, 0.1); color: var(--warning);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="bestPerformer">-</div>
+                <div class="stat-change positive" id="bestPerformerChange">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+0.00%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Assets</span>
+                    <div class="stat-icon" style="background: rgba(150, 150, 150, 0.1); color: var(--text-secondary);">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalAssets">0</div>
+                <div class="stat-change" id="assetsChange">
+                    <span>Active holdings</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Container -->
+        <div class="charts-container">
+            <!-- Portfolio Performance Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Portfolio Performance</h3>
+                    <div class="time-selector">
+                        <button class="time-btn" data-period="1D">1D</button>
+                        <button class="time-btn" data-period="7D">7D</button>
+                        <button class="time-btn active" data-period="30D">30D</button>
+                        <button class="time-btn" data-period="90D">90D</button>
+                        <button class="time-btn" data-period="1Y">1Y</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Asset Allocation Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Asset Allocation</h3>
+                </div>
+                <div class="pie-chart-container">
+                    <canvas id="allocationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assets Table -->
+        <div class="assets-section">
+            <div class="section-header">
+                <h3 class="section-title">Portfolio Holdings</h3>
+                <input type="text" class="search-box" placeholder="Search assets..." id="assetSearch">
+            </div>
+            <table class="assets-table" id="assetsTable">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Holdings</th>
+                        <th>Value</th>
+                        <th>24h Change</th>
+                        <th>Allocation</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody id="assetsTableBody">
+                    <!-- Dynamic content -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Portfolio data
+        let portfolioData = {
+            assets: [
+                { symbol: 'USDT', name: 'Tether', balance: 1250.00, price: 1.00, change24h: 0.01, allocation: 0 },
+                { symbol: 'BTC', name: 'Bitcoin', balance: 0.125, price: 43250.00, change24h: 2.45, allocation: 0 },
+                { symbol: 'ETH', name: 'Ethereum', balance: 2.75, price: 2650.00, change24h: 1.85, allocation: 0 },
+                { symbol: 'ADA', name: 'Cardano', balance: 500, price: 0.45, change24h: -1.2, allocation: 0 },
+                { symbol: 'DOT', name: 'Polkadot', balance: 25, price: 8.50, change24h: 3.1, allocation: 0 },
+                { symbol: 'LINK', name: 'Chainlink', balance: 15, price: 18.75, change24h: -0.8, allocation: 0 }
+            ],
+            totalValue: 0,
+            totalChange24h: 0
+        };
+
+        let portfolioChart, allocationChart;
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                calculatePortfolioMetrics();
+                initializeCharts();
+                renderAssetsTable();
+                updateStats();
+                hideLoading();
+            }, 1500);
+        });
+
+        // Calculate portfolio metrics
+        function calculatePortfolioMetrics() {
+            let totalValue = 0;
+            let totalChange = 0;
+
+            portfolioData.assets.forEach(asset => {
+                const value = asset.balance * asset.price;
+                totalValue += value;
+                totalChange += value * (asset.change24h / 100);
+            });
+
+            // Calculate allocations
+            portfolioData.assets.forEach(asset => {
+                const value = asset.balance * asset.price;
+                asset.allocation = (value / totalValue) * 100;
+            });
+
+            portfolioData.totalValue = totalValue;
+            portfolioData.totalChange24h = (totalChange / totalValue) * 100;
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            initPortfolioChart();
+            initAllocationChart();
+        }
+
+        // Portfolio performance chart
+        function initPortfolioChart() {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            
+            // Generate sample data for 30 days
+            const data = generatePortfolioHistory(30);
+            
+            portfolioChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: data.values,
+                        borderColor: '#0096FF',
+                        backgroundColor: 'rgba(0, 150, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#30363d'
+                            },
+                            ticks: {
+                                color: '#b0b0b0'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#30363d'
+                            },
+                            ticks: {
+                                color: '#b0b0b0',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Asset allocation chart
+        function initAllocationChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+            
+            const colors = ['#0096FF', '#00c853', '#ffab00', '#ff3d00', '#9c27b0', '#607d8b'];
+            
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: portfolioData.assets.map(asset => asset.symbol),
+                    datasets: [{
+                        data: portfolioData.assets.map(asset => asset.allocation),
+                        backgroundColor: colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#b0b0b0',
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate portfolio history data
+        function generatePortfolioHistory(days) {
+            const labels = [];
+            const values = [];
+            const baseValue = portfolioData.totalValue;
+            
+            for (let i = days; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString());
+                
+                // Generate realistic fluctuation
+                const variation = (Math.random() - 0.5) * 0.1; // ±5% variation
+                const value = baseValue * (1 + variation * (i / days));
+                values.push(value);
+            }
+            
+            return { labels, values };
+        }
+
+        // Render assets table
+        function renderAssetsTable() {
+            const tbody = document.getElementById('assetsTableBody');
+            tbody.innerHTML = '';
+
+            portfolioData.assets.forEach(asset => {
+                const value = asset.balance * asset.price;
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="asset-info">
+                            <div class="asset-icon">${asset.symbol.charAt(0)}</div>
+                            <div class="asset-details">
+                                <h4>${asset.symbol}</h4>
+                                <span>${asset.name}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${asset.balance.toLocaleString()} ${asset.symbol}</td>
+                    <td>$${value.toLocaleString()}</td>
+                    <td>
+                        <span class="performance-badge ${asset.change24h >= 0 ? 'positive' : 'negative'}">
+                            ${asset.change24h >= 0 ? '+' : ''}${asset.change24h.toFixed(2)}%
+                        </span>
+                    </td>
+                    <td>${asset.allocation.toFixed(1)}%</td>
+                    <td>
+                        <span class="performance-badge ${asset.change24h >= 0 ? 'positive' : 'negative'}">
+                            ${asset.change24h >= 0 ? '+' : ''}$${(value * asset.change24h / 100).toFixed(2)}
+                        </span>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalValue').textContent = '$' + portfolioData.totalValue.toLocaleString();
+            document.getElementById('dayChange').textContent = '$' + (portfolioData.totalValue * portfolioData.totalChange24h / 100).toFixed(2);
+            document.getElementById('dayChangePercent').innerHTML = `
+                <i class="fas fa-arrow-${portfolioData.totalChange24h >= 0 ? 'up' : 'down'}"></i>
+                <span>${portfolioData.totalChange24h >= 0 ? '+' : ''}${portfolioData.totalChange24h.toFixed(2)}%</span>
+            `;
+            
+            // Best performer
+            const bestPerformer = portfolioData.assets.reduce((best, asset) => 
+                asset.change24h > best.change24h ? asset : best
+            );
+            
+            document.getElementById('bestPerformer').textContent = bestPerformer.symbol;
+            document.getElementById('bestPerformerChange').innerHTML = `
+                <i class="fas fa-arrow-up"></i>
+                <span>+${bestPerformer.change24h.toFixed(2)}%</span>
+            `;
+            
+            document.getElementById('totalAssets').textContent = portfolioData.assets.length;
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Time period selector
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const period = this.dataset.period;
+                updateChartPeriod(period);
+            });
+        });
+
+        // Update chart period
+        function updateChartPeriod(period) {
+            const days = {
+                '1D': 1,
+                '7D': 7,
+                '30D': 30,
+                '90D': 90,
+                '1Y': 365
+            };
+            
+            const data = generatePortfolioHistory(days[period]);
+            portfolioChart.data.labels = data.labels;
+            portfolioChart.data.datasets[0].data = data.values;
+            portfolioChart.update();
+        }
+
+        // Asset search
+        document.getElementById('assetSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#assetsTableBody tr');
+            
+            rows.forEach(row => {
+                const assetName = row.querySelector('.asset-details h4').textContent.toLowerCase();
+                const assetSymbol = row.querySelector('.asset-details span').textContent.toLowerCase();
+                
+                if (assetName.includes(searchTerm) || assetSymbol.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

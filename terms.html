@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tripple Exchange - Terms and Conditions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="./js/auth-manager.js"></script>
+  <style>
+  
+  /* ===== Loading System ===== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-animation {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 30px;
+}
+
+.loading-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 140px;
+  height: 140px;
+  border: 3px solid rgba(0, 150, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #0096FF;
+  animation: spin 2s linear infinite;
+}
+
+.loading-progress-container {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0096FF, #00BFFF);
+  transition: width 0.4s ease;
+}
+
+.loading-text {
+  color: #bbb;
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+  max-width: 80%;
+}
+
+/* Animation for content after load */
+.content-wrapper {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.page-loaded .content-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0d1117;
+      color: white;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      background: #1f2633;
+      padding: 20px 0;
+      text-align: center;
+      margin-bottom: 40px;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      height: 60px;
+    }
+
+    h1 {
+      color: #0096ff; /* Updated color */
+      margin-top: 20px;
+    }
+
+    h2 {
+      color: #00b3ff; /* Updated color */
+      margin-top: 30px;
+      border-bottom: 1px solid #2b3242;
+      padding-bottom: 10px;
+    }
+
+    .content {
+      background: #1f2633;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #2b3242;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .back-button {
+      display: inline-block;
+      padding: 10px 25px;
+      background: linear-gradient(135deg, #0096ff, #00b3ff); /* Updated gradient */
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      margin-top: 20px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: linear-gradient(135deg, #00b3ff, #0096ff); /* Updated gradient */
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+    
+    <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+    <div class="geometric-bg">
+      <div class="geometric-shape shape-1"></div>
+      <div class="geometric-shape shape-2"></div>
+      <div class="geometric-shape shape-3"></div>
+    </div>
+    <div class="loading-content">
+      <div class="loading-animation">
+        <div class="core"></div>
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+      </div>
+      <h1 class="loading-title"><span>TRIPPLE EXCHANGE</span></h1>
+      <p class="loading-subtitle">CRYPTO TRADING PLATFORM</p>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      <p class="status-text">Loading terms and conditions</p>
+    </div>
+  </div>
+
+<!-- Wrap all your content in this (except loading overlay) -->
+<div class="content-wrapper" id="contentWrapper">
+  <!-- ALL YOUR EXISTING CONTENT GOES HERE -->
+</div>
+  <header>
+    <img src="./images/logo.png" alt="Tripple Exchange Logo" class="logo">
+    <h1>Terms and Conditions</h1>
+  </header>
+
+  <div class="container">
+    <div class="content">
+      <p>Last Updated: January 1, 2023</p>
+      
+      <p>Welcome to Tripple Exchange. By accessing or using our services, you agree to be bound by these Terms and Conditions. Please read them carefully.</p>
+      
+      <h2>1. Account Terms</h2>
+      <ul>
+        <li>You must be at least 18 years old to use our services.</li>
+        <li>You are responsible for maintaining the security of your account and password.</li>
+        <li>You are responsible for all activity that occurs under your account.</li>
+        <li>You must provide accurate and complete information when creating an account.</li>
+      </ul>
+      
+      <h2>2. Service Usage</h2>
+      <ul>
+        <li>Tripple Exchange provides cryptocurrency trading and wallet services.</li>
+        <li>You agree not to use our services for any illegal activities.</li>
+        <li>We reserve the right to refuse service to anyone for any reason at any time.</li>
+        <li>Prices of cryptocurrencies are volatile and may change rapidly.</li>
+      </ul>
+      
+      <h2>3. Risk Disclosure</h2>
+      <p>Cryptocurrency trading involves substantial risk of loss and is not suitable for every investor. You should carefully consider your investment objectives, level of experience, and risk appetite before trading cryptocurrencies.</p>
+      
+      <h2>4. Fees</h2>
+      <p>Our fee schedule is available on our website and may be updated from time to time. You agree to pay all applicable fees for transactions conducted through our platform.</p>
+      
+      <h2>5. Privacy</h2>
+      <p>Your use of our services is also governed by our Privacy Policy, which explains how we collect, use, and protect your personal information.</p>
+      
+      <h2>6. Intellectual Property</h2>
+      <p>All content included on this platform, such as text, graphics, logos, and software, is the property of Tripple Exchange or its content suppliers and protected by international copyright laws.</p>
+      
+      <h2>7. Limitation of Liability</h2>
+      <p>Tripple Exchange shall not be liable for any indirect, incidental, special, consequential or punitive damages resulting from your access to or use of our services.</p>
+      
+      <h2>8. Changes to Terms</h2>
+      <p>We reserve the right to modify these terms at any time. We will notify users of any changes through our platform. Your continued use of our services after such changes constitutes your acceptance of the new terms.</p>
+      
+      <h2>9. Governing Law</h2>
+      <p>These Terms shall be governed by and construed in accordance with the laws of the jurisdiction where Tripple Exchange is registered, without regard to its conflict of law provisions.</p>
+      
+      <h2>10. Contact Information</h2>
+      <p>For any questions about these Terms and Conditions, please contact us at support@cryptonet.example.com.</p>
+      
+      <a href="dashboard.html" class="back-button">Back to Dashboard</a>
+    </div>
+    
+    <div class="footer">
+      <p>&copy; 2023 Tripple Exchange. All rights reserved.</p>
+    </div>
+  </div>
+  
+  
+  <script>// ===== Loading System =====
+class LoadingSystem {
+  constructor() {
+    this.minLoadingTime = 1500; // Minimum loading time in ms
+    this.maxLoadingTime = 3000; // Maximum loading time in ms
+    this.startTime = null;
+    this.loadingPhases = [
+      { progress: 20, text: "Loading security modules..." },
+      { progress: 40, text: "Initializing wallet services..." },
+      { progress: 60, text: "Syncing with blockchain..." },
+      { progress: 80, text: "Finalizing setup..." },
+      { progress: 95, text: "Ready to go!" }
+    ];
+  }
+
+  init() {
+    this.startTime = Date.now();
+    this.setupLoadingBar();
+    this.setupEventListeners();
+    this.simulateLoading();
+  }
+
+  setupLoadingBar() {
+    const progressBar = document.getElementById('loadingProgress');
+    progressBar.style.transition = `width ${this.minLoadingTime/1000}s ease`;
+  }
+
+  setupEventListeners() {
+    window.addEventListener('load', () => this.completeLoading());
+    setTimeout(() => this.completeLoading(), this.maxLoadingTime);
+  }
+
+  simulateLoading() {
+    let currentPhase = 0;
+    const phaseInterval = setInterval(() => {
+      if (currentPhase >= this.loadingPhases.length) {
+        clearInterval(phaseInterval);
+        return;
+      }
+      const phase = this.loadingPhases[currentPhase];
+      this.updateProgress(phase.progress, phase.text);
+      currentPhase++;
+    }, this.minLoadingTime / this.loadingPhases.length);
+  }
+
+  updateProgress(percent, text) {
+    document.getElementById('loadingProgress').style.width = `${percent}%`;
+    if (text) document.getElementById('loadingText').textContent = text;
+  }
+
+  completeLoading() {
+    const elapsed = Date.now() - this.startTime;
+    const remainingTime = Math.max(0, this.minLoadingTime - elapsed);
+    
+    setTimeout(() => {
+      this.updateProgress(100, "Ready!");
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        document.body.classList.add('page-loaded');
+        document.querySelectorAll('button, a, input').forEach(el => {
+          el.style.pointerEvents = 'auto';
+        });
+      }, 300);
+    }, remainingTime);
+  }
+}
+
+// Initialize loading system
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button, a, input').forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+  new LoadingSystem().init();
+});
+
+// Enhanced page navigation
+function navigateWithTransition(url) {
+  document.body.classList.remove('page-loaded');
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  document.getElementById('loadingProgress').style.width = '0%';
+  new LoadingSystem().init();
+  setTimeout(() => {
+    window.location.href = url;
+  }, 300);
+}</script>
+</body>
+</html>

@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoTrade Pro | Recent Activities</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./js/auth-manager.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-hover: #5649c0;
+            --primary-light: #f1effd;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #00b894;
+            --error: #ff7675;
+            --warning: #fdcb6e;
+            --info: #0984e3;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow-lg: 0 10px 36px 0 rgba(108, 92, 231, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+                "header header"
+                "menu main"
+                "footer footer";
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 280px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .user-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-dropdown-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--surface-light);
+        }
+        
+        .user-dropdown-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .user-dropdown-info {
+            min-width: 0;
+        }
+        
+        .user-dropdown-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0.25rem 0;
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .user-dropdown-item i {
+            width: 24px;
+            margin-right: 0.75rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .user-dropdown-item:hover {
+            background: var(--surface-light);
+            color: var(--primary);
+        }
+        
+        .user-dropdown-item:hover i {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .user-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 12px 12px 0 0;
+                box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            .user-dropdown.show {
+                animation: slideUp 0.3s ease-out;
+            }
+            
+            @keyframes slideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+        }
+
+        .notifications-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .notifications-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 1.15rem;
+            transition: filter 0.2s;
+        }
+
+        .user-avatar:hover {
+            filter: brightness(1.1);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Menu Styles */
+        #menu {
+            grid-area: menu;
+            background: var(--surface);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            overflow-y: auto;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+        }
+
+        #menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 12px 25px;
+            border-radius: 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+        }
+
+        #menu a:hover {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--text);
+        }
+
+        #menu a.active {
+            background: rgba(108, 92, 231, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        #menu a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary);
+        }
+
+        #menu a i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--surface-light);
+            margin: 15px 25px;
+        }
+
+        .menu-header {
+            padding: 15px 25px 5px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 77, 77, 0.25);
+            border: 1px solid rgba(255, 77, 77, 0.5);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 25px;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: auto;
+            text-align: left;
+            margin: 20px 15px 0;
+            box-shadow: 0 2px 10px rgba(255, 77, 77, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 77, 77, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-title i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* Filters */
+        .filters-container {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-light);
+            opacity: 0.9;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--surface-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 3px solid var(--primary);
+            z-index: 1;
+        }
+
+        .timeline-content {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .timeline-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .timeline-icon.login {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .timeline-icon.trade {
+            background: linear-gradient(135deg, var(--success), var(--info));
+        }
+
+        .timeline-icon.withdraw {
+            background: linear-gradient(135deg, var(--warning), var(--error));
+        }
+
+        .timeline-icon.security {
+            background: linear-gradient(135deg, var(--info), var(--primary));
+        }
+
+        .timeline-icon.deposit {
+            background: linear-gradient(135deg, var(--success), var(--secondary));
+        }
+
+        .timeline-time {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .timeline-details {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .timeline-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .timeline-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .status-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        /* Activity Summary */
+        .activity-summary {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            background: var(--bg);
+            transition: var(--transition);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.25rem;
+        }
+
+        .summary-icon.login {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--primary);
+        }
+
+        .summary-icon.trade {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .summary-icon.security {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .summary-icon.other {
+            background: rgba(253, 203, 110, 0.1);
+            color: var(--warning);
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "footer";
+            }
+            
+            #menu {
+                position: fixed;
+                left: -240px;
+                top: 73px;
+                height: calc(100vh - 73px);
+                width: 240px;
+                transition: left 0.3s ease;
+                z-index: 99;
+            }
+            
+            #menu.show {
+                left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e14 0%, #161b22 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .loading-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem;
+            background: rgba(13, 17, 23, 0.95);
+            border-radius: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            width: 420px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crypto-loader {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .crypto-loader-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            animation: crypto-spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        
+        .crypto-loader-circle:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation-delay: -0.3s;
+            border-width: 3px;
+            border-top-color: var(--primary);
+        }
+        
+        .crypto-loader-circle:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation-delay: -0.6s;
+            border-top-color: var(--secondary);
+            border-width: 2px;
+        }
+        
+        .crypto-loader-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .loading-content {
+            text-align: center;
+            width: 100%;
+        }
+        
+        .loading-text {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            min-height: 1.2rem;
+        }
+        
+        .loading-progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            position: relative;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .progress-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: shine 1.5s infinite;
+        }
+        
+        .loading-progress-text {
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 35px;
+            text-align: right;
+        }
+        
+        .loading-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.25rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        @keyframes crypto-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+        
+        @keyframes shine {
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modern Loading Overlay -->
+    <div class="loading-screen" id="loadingOverlay">
+        <div class="geometric-bg">
+            <div class="geometric-shape shape-1"></div>
+            <div class="geometric-shape shape-2"></div>
+            <div class="geometric-shape shape-3"></div>
+        </div>
+        
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="core"></div>
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
+            </div>
+            
+            <h1 class="loading-title"><span>TRIPPLE</span> EXCHANGE</h1>
+            <p class="loading-subtitle">SECURE DIGITAL ASSET PLATFORM</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            
+            <p class="status-text">Loading activity history</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/" class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>CryptoTrade Pro</span>
+            </a>
+            <div class="user-menu">
+                <button class="notifications-btn" id="notificationsBtn" aria-label="Notifications">
+                    <i class="far fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-avatar" id="userAvatar" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="User menu">
+                    JD
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-avatar">JD</div>
+                        <div class="user-dropdown-info">
+                            <div class="user-dropdown-name">John Doe</div>
+                            <div class="user-dropdown-email">john.doe@cryptotrade.pro</div>
+                        </div>
+                    </div>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="profile.html" class="user-dropdown-item">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <a href="settings.html" class="user-dropdown-item">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="security.html" class="user-dropdown-item">
+                        <i class="fas fa-lock"></i> Security
+                    </a>
+                    <div class="user-dropdown-divider"></div>
+                    <button class="user-dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu -->
+    <div id="menu">
+        <a href="./dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="./trade.html"><i class="fas fa-chart-line"></i> Trade</a>
+        <a href="./wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
+        <a href="./profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="./activities.html" class="active" aria-current="page"><i class="fas fa-history"></i> Activity</a>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-header">Settings</div>
+        <a href="./settings.html">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+        
+        <div class="menu-divider"></div>
+        
+        <button class="logout-btn" id="logoutBtn" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-history"></i>
+                Recent Activities
+            </h1>
+            <div>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-file-export"></i>
+                    Export Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Activity Summary -->
+        <div class="activity-summary">
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-icon login">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div class="summary-value">42</div>
+                    <div class="summary-label">Logins</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon trade">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="summary-value">128</div>
+                    <div class="summary-label">Trades</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="summary-value">8</div>
+                    <div class="summary-label">Security Events</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon other">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="summary-value">64</div>
+                    <div class="summary-label">Other Activities</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-container">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Activity Type</label>
+                    <select class="filter-select" id="activityType">
+                        <option value="all">All Activities</option>
+                        <option value="login">Logins</option>
+                        <option value="trade">Trades</option>
+                        <option value="withdraw">Withdrawals</option>
+                        <option value="deposit">Deposits</option>
+                        <option value="security">Security Events</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">All Statuses</option>
+                        <option value="success">Successful</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <select class="filter-select" id="dateRange">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" class="filter-input" id="searchInput" placeholder="Search activities...">
+                </div>
+            </div>
+            
+            <div class="filter-actions">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-redo"></i>
+                    Reset
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+            <!-- Activity 1 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon login">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <span>Successful Login</span>
+                        </div>
+                        <span class="timeline-time">Today at 09:42 AM</span>
+                    </div>
+                    <div class="timeline-details">
+                        New York, United States • Chrome Browser (v115.0) • IP: 192.168.1.45
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            New York, US
+                        </div>
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-desktop"></i>
+                            Desktop
+                        </div>
+                        <div class="status-badge status-success">
+                            <i class="fas fa-check-circle"></i>
+                            Secure
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 2 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon trade">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <span>Trade Executed</span>
+                        </div>
+                        <span class="timeline-time">Yesterday at 02:15 PM</span>
+                    </div>
+                    <div class="timeline-details">
+                        BTC/USDT • Buy Order • 0.25 BTC at $29,500 • Total: $7,375
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-coins"></i>
+                            BTC/USDT
+                        </div>
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-arrow-up"></i>
+                            Buy
+                        </div>
+                        <div class="status-badge status-success">
+                            <i class="fas fa-check-circle"></i>
+                            Completed
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 3 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon withdraw">
+                                <i class="fas fa-money-check-alt"></i>
+                            </div>
+                            <span>Withdrawal Request</span>
+                        </div>
+                        <span class="timeline-time">Jan 12, 2023 at 10:30 AM</span>
+                    </div>
+                    <div class="timeline-details">
+                        $5,000 to Bank Account (•••• 1234) • Estimated arrival: 3 business days
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-university"></i>
+                            Bank Transfer
+                        </div>
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-clock"></i>
+                            Processing
+                        </div>
+                        <div class="status-badge status-warning">
+                            <i class="fas fa-clock"></i>
+                            Pending
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 4 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon security">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <span>Security Update</span>
+                        </div>
+                        <span class="timeline-time">Jan 5, 2023 at 04:20 PM</span>
+                    </div>
+                    <div class="timeline-details">
+                        Two-Factor Authentication Enabled • SMS verification method added
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            SMS Authentication
+                        </div>
+                        <div class="status-badge status-info">
+                            <i class="fas fa-shield-alt"></i>
+                            Security
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 5 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon deposit">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <span>Deposit Received</span>
+                        </div>
+                        <span class="timeline-time">Jan 3, 2023 at 11:45 AM</span>
+                    </div>
+                    <div class="timeline-details">
+                        $2,500 from Bank Account (•••• 5678) • Transaction ID: TXN-789456123
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-university"></i>
+                            Bank Transfer
+                        </div>
+                        <div class="status-badge status-success">
+                            <i class="fas fa-check-circle"></i>
+                            Completed
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 6 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon trade">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <span>Trade Executed</span>
+                        </div>
+                        <span class="timeline-time">Jan 1, 2023 at 09:15 AM</span>
+                    </div>
+                    <div class="timeline-details">
+                        ETH/USDT • Sell Order • 2.5 ETH at $1,850 • Total: $4,625
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-coins"></i>
+                            ETH/USDT
+                        </div>
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-arrow-down"></i>
+                            Sell
+                        </div>
+                        <div class="status-badge status-success">
+                            <i class="fas fa-check-circle"></i>
+                            Completed
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 7 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <div class="timeline-title">
+                            <div class="timeline-icon security">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <span>Password Changed</span>
+                        </div>
+                        <span class="timeline-time">Dec 28, 2022 at 03:10 PM</span>
+                    </div>
+                    <div class="timeline-details">
+                        Your account password was successfully updated from this device.
+                    </div>
+                    <div class="timeline-meta">
+                        <div class="timeline-meta-item">
+                            <i class="fas fa-laptop"></i>
+                            MacBook Pro
+                        </div>
+                        <div class="status-badge status-info">
+                            <i class="fas fa-shield-alt"></i>
+                            Security
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize loading system
+            initLoadingSystem();
+            
+            // Initialize UI components
+            initUIComponents();
+        });
+        
+        // Initialize loading system
+        function initLoadingSystem() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.classList.remove('hidden');
+            }
+            
+            // Simulate loading progress
+            let progress = 0;
+            const progressBar = document.getElementById('loadingProgress');
+            const progressText = document.getElementById('loadingProgressText');
+            const loadingText = document.getElementById('loadingText');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+            const securityStatus = document.getElementById('securityStatus');
+            
+            const loadingInterval = setInterval(() => {
+                progress += 10;
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (progressText) progressText.textContent = `${progress}%`;
+                
+                if (progress === 30) {
+                    loadingText.textContent = 'LOADING ACTIVITY DATA';
+                    loadingSubtext.textContent = 'Retrieving recent actions';
+                } else if (progress === 60) {
+                    loadingText.textContent = 'ANALYZING PATTERNS';
+                    loadingSubtext.textContent = 'Identifying important events';
+                } else if (progress === 90) {
+                    loadingText.textContent = 'FINALIZING TIMELINE';
+                    loadingSubtext.textContent = 'Almost ready';
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        loadingOverlay.classList.add('hidden');
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        // Initialize UI components
+        function initUIComponents() {
+            // Toggle mobile menu
+            const menuToggle = document.getElementById('menuToggle');
+            const menu = document.getElementById('menu');
+            
+            if (menuToggle && menu) {
+                menuToggle.addEventListener('click', () => {
+                    menu.classList.toggle('show');
+                    menuToggle.setAttribute('aria-expanded', menu.classList.contains('show'));
+                });
+            }
+            
+            // Initialize user dropdown
+            const userAvatar = document.getElementById('userAvatar');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userAvatar && userDropdown) {
+                // Toggle dropdown on avatar click
+                userAvatar.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isExpanded = userAvatar.getAttribute('aria-expanded') === 'true';
+                    userAvatar.setAttribute('aria-expanded', !isExpanded);
+                    userDropdown.classList.toggle('show', !isExpanded);
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userAvatar.setAttribute('aria-expanded', 'false');
+                        userDropdown.classList.remove('show');
+                    }
+                });
+                
+                // Close dropdown on Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && userDropdown.classList.contains('show')) {
+                        userAvatar.setAttribute('aria-expanded', 'false');
+                        userDropdown.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Handle logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            // Initialize filter functionality
+            const applyFiltersBtn = document.querySelector('.btn-primary');
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', () => {
+                    const activityType = document.getElementById('activityType').value;
+                    const status = document.getElementById('statusFilter').value;
+                    const dateRange = document.getElementById('dateRange').value;
+                    const searchTerm = document.getElementById('searchInput').value;
+                    
+                    // In a real app, this would filter the activities
+                    alert(`Filters applied:\nActivity: ${activityType}\nStatus: ${status}\nDate Range: ${dateRange} days\nSearch: ${searchTerm}`);
+                });
+            }
+        }
+        
+        // Handle logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('You have been logged out');
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
