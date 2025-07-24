@@ -1,9 +1,9 @@
 <?php
 // Database configuration
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'tripple_exchange');
-define('DB_USER', 'db_user');
-define('DB_PASS', 'your_secure_password');
+define('DB_NAME', 'u925878138_tripplex');
+define('DB_USER', 'u925878138_admin');
+define('DB_PASS', 'Chills@1008!!');
 
 // SMTP Configuration
 define('SMTP_HOST', 'smtp.hostinger.com');
