@@ -1,9 +1,9 @@
 <?php
-// Database configuration
+// Database configuration - Standardized Hostinger credentials
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'tripple_exchange');
-define('DB_USER', 'db_user');
-define('DB_PASS', 'your_secure_password');
+define('DB_NAME', 'u925878138_tripplex');
+define('DB_USER', 'u925878138_admin');
+define('DB_PASS', 'Chills@1008!!');
 
 // SMTP Configuration
 define('SMTP_HOST', 'smtp.hostinger.com');
@@ -42,8 +42,9 @@ ini_set('error_log', __DIR__ . '/logs/php_errors.log');
 // Timezone
 date_default_timezone_set('UTC');
 
-// Database connection
+// Database connection - Both PDO and mysqli for compatibility
 try {
+    // PDO connection
     $pdo = new PDO(
         "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
         DB_USER,
@@ -54,7 +55,15 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false,
         ]
     );
-} catch (PDOException $e) {
+    
+    // mysqli connection for compatibility with existing code
+    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    if ($mysqli->connect_errno) {
+        throw new Exception("Database connection failed: " . $mysqli->connect_error);
+    }
+    $mysqli->set_charset('utf8mb4');
+    
+} catch (Exception $e) {
     error_log("Database connection failed: " . $e->getMessage());
     http_response_code(500);
     die(json_encode(['error' => 'Database connection failed']));

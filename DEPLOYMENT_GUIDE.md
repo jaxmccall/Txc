@@ -123,6 +123,67 @@ Your Tripple Exchange platform is **FULLY READY** for hosting deployment!
 
 ---
 
+## 🔧 TROUBLESHOOTING & TESTING SCRIPTS
+
+### **Test Database Connection**
+Use the built-in database connection test script:
+```
+https://yourdomain.com/test_db_connection.php
+```
+
+**What it checks:**
+- ✅ Database credentials configuration
+- ✅ MySQLi and PDO connectivity  
+- ✅ Configuration files consistency
+- ✅ PHP extensions availability
+- ✅ Basic database queries
+
+**Common Issues:**
+- "No such file or directory" → MySQL service not running
+- "Access denied" → Wrong database credentials
+- "Unknown database" → Database not created or wrong name
+
+### **Emergency User Creation**
+If you're locked out, use the emergency user creation script:
+```
+https://yourdomain.com/create_test_user.php
+```
+
+**Default test user:**
+- Username: `testuser`
+- Email: `test@example.com`  
+- Password: `TestPass123!`
+
+**Custom user creation:**
+```
+https://yourdomain.com/create_test_user.php?username=admin&email=admin@test.com&password=AdminPass123!
+```
+
+**⚠️ SECURITY WARNING:** Delete these test scripts from production!
+
+### **Authentication Error Logging**
+Authentication failures are now logged to PHP error logs:
+- Login attempts (successful/failed)
+- Signup attempts (successful/failed/duplicate)
+- Database connection errors
+- Session management issues
+
+Check your server's PHP error log for authentication debugging.
+
+### **Database Configuration Issues**
+All configuration files now use standardized Hostinger credentials:
+- **Host:** `localhost`
+- **Database:** `u925878138_tripplex`
+- **Username:** `u925878138_admin`  
+- **Password:** `Chills@1008!!`
+
+Files updated for consistency:
+- ✅ `config.php` (mysqli connection)
+- ✅ `login_config.php` (PDO + mysqli compatibility)
+- ✅ `db-connect.php` (mysqli connection)
+
+---
+
 ## 🚀 DEPLOYMENT STEPS
 
 ### **Step 1: Upload Files**

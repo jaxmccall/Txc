@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../db-connect.php';
+require_once 'config.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -12,12 +12,14 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Fetch user assets from database
-$stmt = $db->prepare("SELECT a.id, a.symbol, a.name, a.icon, ua.balance 
+$stmt = $mysqli->prepare("SELECT a.id, a.symbol, a.name, a.icon, ua.balance 
                      FROM user_assets ua
                      JOIN assets a ON ua.asset_id = a.id
                      WHERE ua.user_id = ?");
-$stmt->execute([$user_id]);
-$userAssets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$userAssets = $result->fetch_all(MYSQLI_ASSOC);
 
 // Add current prices and values (would be fetched from external API in real implementation)
 foreach ($userAssets as &$asset) {
