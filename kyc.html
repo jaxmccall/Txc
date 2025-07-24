@@ -714,24 +714,70 @@
       </div>
 
       <div class="kyc-section" id="section2">
-        <h2 class="section-title">Identity Verification</h2>
+        <h2 class="section-title">Selfie Verification</h2>
         <p style="color: var(--text-light); margin-bottom: 20px;">
-          Upload a clear photo of your government-issued ID (Passport, Driver's License, or National ID).
+          Take a clear selfie photo holding your ID document for verification. Make sure your face and the document are clearly visible.
         </p>
         
-        <div class="upload-box" id="idDropZone" 
+        <div class="upload-box" id="selfieDropZone" 
              ondragover="handleDragOver(event)" 
              ondragleave="handleDragLeave(event)" 
-             ondrop="handleFileDrop(event, 'idUpload')">
-          <div class="upload-icon">🆔</div>
+             ondrop="handleFileDrop(event, 'selfieUpload')">
+          <div class="upload-icon">🤳</div>
           <p class="upload-text">
-            <strong>Click to upload</strong> or drag and drop<br>
-            Accepted formats: JPG, PNG, PDF (Max 5MB)
+            <strong>Click to upload selfie</strong> or drag and drop<br>
+            Accepted formats: JPG, PNG (Max 5MB)
           </p>
-          <input type="file" id="idUpload" accept="image/*,.pdf" style="display: none;">
+          <input type="file" id="selfieUpload" accept="image/*" style="display: none;">
         </div>
         
-        <div class="uploaded-files" id="idFiles"></div>
+        <div class="uploaded-files" id="selfieFiles"></div>
+        
+        <div class="kyc-buttons">
+          <button type="button" class="btn btn-secondary" onclick="prevSection(1)">Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextSection(3)">Continue</button>
+        </div>
+      </div>
+
+      <div class="kyc-section" id="section3">
+        <h2 class="section-title">Identity Document</h2>
+        <p style="color: var(--text-light); margin-bottom: 20px;">
+          Upload a clear photo of your government-issued ID (Passport, Driver's License, or National ID). You can also upload a screenshot if needed.
+        </p>
+        
+        <div class="upload-options" style="display: flex; gap: 20px; margin-bottom: 20px;">
+          <div style="flex: 1;">
+            <h3 style="margin-bottom: 10px; color: var(--primary);">Upload ID Document</h3>
+            <div class="upload-box" id="idDropZone" 
+                 ondragover="handleDragOver(event)" 
+                 ondragleave="handleDragLeave(event)" 
+                 ondrop="handleFileDrop(event, 'idUpload')">
+              <div class="upload-icon">🆔</div>
+              <p class="upload-text">
+                <strong>Click to upload</strong> or drag and drop<br>
+                Accepted formats: JPG, PNG, PDF (Max 5MB)
+              </p>
+              <input type="file" id="idUpload" accept="image/*,.pdf" style="display: none;">
+            </div>
+            <div class="uploaded-files" id="idFiles"></div>
+          </div>
+          
+          <div style="flex: 1;">
+            <h3 style="margin-bottom: 10px; color: var(--primary);">Upload ID Screenshot</h3>
+            <div class="upload-box" id="screenshotDropZone" 
+                 ondragover="handleDragOver(event)" 
+                 ondragleave="handleDragLeave(event)" 
+                 ondrop="handleFileDrop(event, 'screenshotUpload')">
+              <div class="upload-icon">📱</div>
+              <p class="upload-text">
+                <strong>Click to upload screenshot</strong> or drag and drop<br>
+                Accepted formats: JPG, PNG (Max 5MB)
+              </p>
+              <input type="file" id="screenshotUpload" accept="image/*" style="display: none;">
+            </div>
+            <div class="uploaded-files" id="screenshotFiles"></div>
+          </div>
+        </div>
         
         <div class="form-group">
           <label for="idType">Document Type</label>
@@ -749,12 +795,12 @@
         </div>
         
         <div class="kyc-buttons">
-          <button type="button" class="btn btn-secondary" onclick="prevSection(1)">Back</button>
-          <button type="button" class="btn btn-primary" onclick="nextSection(3)">Continue</button>
+          <button type="button" class="btn btn-secondary" onclick="prevSection(2)">Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextSection(4)">Continue</button>
         </div>
       </div>
 
-      <div class="kyc-section" id="section3">
+      <div class="kyc-section" id="section4">
         <h2 class="section-title">Address Verification</h2>
         <p style="color: var(--text-light); margin-bottom: 20px;">
           Upload a recent utility bill or bank statement (not older than 3 months) showing your name and address.
@@ -780,12 +826,12 @@
         </div>
         
         <div class="kyc-buttons">
-          <button type="button" class="btn btn-secondary" onclick="prevSection(2)">Back</button>
-          <button type="button" class="btn btn-primary" onclick="nextSection(4)">Continue</button>
+          <button type="button" class="btn btn-secondary" onclick="prevSection(3)">Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextSection(5)">Continue</button>
         </div>
       </div>
 
-      <div class="kyc-section" id="section4">
+      <div class="kyc-section" id="section5">
         <h2 class="section-title">Review & Submit</h2>
         
         <div style="background: var(--card-hover); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
@@ -1060,12 +1106,33 @@ function navigateWithTransition(url) {
     e.currentTarget.classList.remove('dragover');
     const files = e.dataTransfer.files;
     document.getElementById(targetId).files = files;
-    handleFileUpload({ target: document.getElementById(targetId) }, targetId === 'idUpload' ? 'idFiles' : 'addressFiles');
+    
+    let containerId;
+    switch(targetId) {
+      case 'selfieUpload':
+        containerId = 'selfieFiles';
+        break;
+      case 'idUpload':
+        containerId = 'idFiles';
+        break;
+      case 'screenshotUpload':
+        containerId = 'screenshotFiles';
+        break;
+      case 'addressUpload':
+        containerId = 'addressFiles';
+        break;
+      default:
+        containerId = 'idFiles';
+    }
+    
+    handleFileUpload({ target: document.getElementById(targetId) }, containerId);
   }
 
   function handleFileUpload(event, containerId) {
     const files = event.target.files;
     const container = document.getElementById(containerId);
+    const uploadType = getUploadType(event.target.id);
+    
     container.innerHTML = '';
 
     for (let i = 0; i < files.length; i++) {
@@ -1074,7 +1141,16 @@ function navigateWithTransition(url) {
         alert('File size exceeds 5MB limit: ' + file.name);
         continue;
       }
-      if (!['image/jpeg', 'image/png', 'application/pdf'].includes(file.type)) {
+      
+      // Different validation for different upload types
+      let allowedTypes;
+      if (uploadType === 'selfie' || uploadType === 'screenshot') {
+        allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      } else {
+        allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      }
+      
+      if (!allowedTypes.includes(file.type)) {
         alert('Invalid file type: ' + file.name);
         continue;
       }
@@ -1086,10 +1162,57 @@ function navigateWithTransition(url) {
           <span>📄</span>
           <span>${file.name}</span>
         </div>
-        <div class="file-status status-pending">Pending</div>
+        <div class="file-status status-pending">Uploading...</div>
       `;
       container.appendChild(fileItem);
+      
+      // Upload file to server
+      uploadFileToServer(file, uploadType, fileItem);
     }
+  }
+  
+  function getUploadType(inputId) {
+    switch(inputId) {
+      case 'selfieUpload':
+        return 'selfie';
+      case 'idUpload':
+        return 'id_document';
+      case 'screenshotUpload':
+        return 'id_screenshot';
+      case 'addressUpload':
+        return 'address_document';
+      default:
+        return 'id_document';
+    }
+  }
+  
+  function uploadFileToServer(file, uploadType, fileElement) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_type', uploadType);
+    
+    fetch('kyc-upload.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      const statusElement = fileElement.querySelector('.file-status');
+      if (data.success) {
+        statusElement.textContent = 'Uploaded';
+        statusElement.className = 'file-status status-success';
+      } else {
+        statusElement.textContent = 'Failed';
+        statusElement.className = 'file-status status-error';
+        console.error('Upload failed:', data.message);
+      }
+    })
+    .catch(error => {
+      const statusElement = fileElement.querySelector('.file-status');
+      statusElement.textContent = 'Error';
+      statusElement.className = 'file-status status-error';
+      console.error('Upload error:', error);
+    });
   }
 
   // Country-Specific SSN Field
@@ -1129,9 +1252,9 @@ function navigateWithTransition(url) {
 
   // Form Submission
   function submitKYC() {
-    if (validateSection(4)) {
+    if (validateSection(5)) {
       setTimeout(() => {
-        document.getElementById('section4').classList.remove('active');
+        document.getElementById('section5').classList.remove('active');
         document.getElementById('kycSuccess').classList.add('active');
         document.querySelectorAll('.step-circle, .step-line, .step-label').forEach(element => {
           element.classList.add('completed');
@@ -1140,6 +1263,41 @@ function navigateWithTransition(url) {
       }, 1500);
     }
   }
+
+  // Initialize upload box click handlers
+  document.addEventListener('DOMContentLoaded', function() {
+    // Selfie upload
+    document.getElementById('selfieDropZone').addEventListener('click', function() {
+      document.getElementById('selfieUpload').click();
+    });
+    document.getElementById('selfieUpload').addEventListener('change', function(e) {
+      handleFileUpload(e, 'selfieFiles');
+    });
+    
+    // ID document upload
+    document.getElementById('idDropZone').addEventListener('click', function() {
+      document.getElementById('idUpload').click();
+    });
+    document.getElementById('idUpload').addEventListener('change', function(e) {
+      handleFileUpload(e, 'idFiles');
+    });
+    
+    // Screenshot upload
+    document.getElementById('screenshotDropZone').addEventListener('click', function() {
+      document.getElementById('screenshotUpload').click();
+    });
+    document.getElementById('screenshotUpload').addEventListener('change', function(e) {
+      handleFileUpload(e, 'screenshotFiles');
+    });
+    
+    // Address document upload
+    document.getElementById('addressDropZone').addEventListener('click', function() {
+      document.getElementById('addressUpload').click();
+    });
+    document.getElementById('addressUpload').addEventListener('change', function(e) {
+      handleFileUpload(e, 'addressFiles');
+    });
+  });
 
   // Initialize country field
   toggleSSNField();
