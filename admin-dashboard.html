@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Tripple Exchange</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --accent: #4cc9f0;
+      --danger: #f72585;
+      --success: #38b000;
+      --warning: #ffaa00;
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --card: #1e293b;
+      --card-hover: #334155;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --border-radius: 0.5rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 240px;
+      height: 100vh;
+      background: var(--bg-secondary);
+      padding: 1.5rem 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-right: 1px solid var(--card-border);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--primary);
+      font-size: 1.25rem;
+      font-weight: 600;
+      padding: 0 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .sidebar .logo i {
+      font-size: 1.5rem;
+    }
+
+    .sidebar nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 0.75rem;
+    }
+
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      margin: 0.25rem 0;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .sidebar nav a:hover {
+      background-color: var(--card-hover);
+      color: var(--text-light);
+    }
+
+    .sidebar nav a.active {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .sidebar nav a i {
+      width: 1.5rem;
+      text-align: center;
+    }
+
+    .logout-container {
+      margin-top: auto;
+      padding: 1rem 0.75rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--danger);
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      font-weight: 500;
+      background-color: rgba(247, 37, 133, 0.1);
+      width: 100%;
+    }
+
+    .logout-btn:hover {
+      background-color: rgba(247, 37, 133, 0.2);
+    }
+
+    .logout-btn i {
+      width: 1.5rem;
+      text-align: center;
+    }
+
+    /* Mobile logout button */
+    .mobile-logout-btn {
+      display: none;
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background-color: var(--danger);
+      color: white;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 90;
+    }
+
+    .mobile-logout-btn i {
+      font-size: 1.25rem;
+    }
+
+    /* Main Content Styles */
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .dash-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .dash-header .icon {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .dash-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Admin Profile */
+    .admin-profile {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: fit-content;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .admin-profile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .admin-profile img {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .admin-profile .greet {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .admin-profile .greet span {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .admin-profile small {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Stats Grid */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-box {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-box::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+
+    .sb-blue::after { background: var(--primary); }
+    .sb-green::after { background: var(--success); }
+    .sb-yellow::after { background: var(--warning); }
+    .sb-purple::after { background: #7b2cbf; }
+    .sb-red::after { background: var(--danger); }
+
+    .stat-box .sb-icon {
+      font-size: 1.75rem;
+      color: white;
+      border-radius: 50%;
+      width: 3.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sb-blue .sb-icon { background: var(--primary); }
+    .sb-green .sb-icon { background: var(--success); }
+    .sb-yellow .sb-icon { background: var(--warning); }
+    .sb-purple .sb-icon { background: #7b2cbf; }
+    .sb-red .sb-icon { background: var(--danger); }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .stat-title {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .stat-error {
+      color: var(--danger);
+      font-size: 1.25rem;
+    }
+
+    .stat-loading {
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1024px) {
+      .stat-row {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        padding: 1rem;
+        align-items: center;
+      }
+
+      .sidebar .logo {
+        margin-bottom: 0;
+      }
+
+      .sidebar nav {
+        display: flex;
+        overflow-x: auto;
+        padding: 0.5rem;
+      }
+
+      .sidebar nav a {
+        white-space: nowrap;
+      }
+
+      .logout-container {
+        display: none;
+      }
+
+      .mobile-logout-btn {
+        display: flex;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 1.5rem;
+        padding-bottom: 5rem; /* Add space for mobile logout button */
+      }
+    }
+
+    @media (max-width: 640px) {
+      .admin-profile {
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .stat-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Modern Loading Overlay Styles */
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .geometric-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .geometric-shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 {
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(45deg, #4361ee33, #4cc9f033);
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape-2 {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(45deg, #f7258533, #ffaa0033);
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(45deg, #38b00033, #4cc9f033);
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(120deg); }
+        66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    .loading-content {
+        text-align: center;
+        z-index: 2;
+        position: relative;
+    }
+
+    .loading-animation {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+    }
+
+    .core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(45deg, #4361ee, #4cc9f0);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .orbit {
+        position: absolute;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        animation: rotate 3s linear infinite;
+    }
+
+    .orbit-1 {
+        width: 40px;
+        height: 40px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-top-color: #4361ee;
+        animation-duration: 1.5s;
+    }
+
+    .orbit-2 {
+        width: 70px;
+        height: 70px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-right-color: #4cc9f0;
+        animation-duration: 2s;
+        animation-direction: reverse;
+    }
+
+    .orbit-3 {
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-bottom-color: #f72585;
+        animation-duration: 3s;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    @keyframes rotate {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .loading-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #4361ee, #4cc9f0, #f72585);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    .loading-subtitle {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .progress-container {
+        width: 200px;
+        height: 4px;
+        background: #334155;
+        border-radius: 2px;
+        margin: 0 auto 1.5rem;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #4361ee, #4cc9f0);
+        border-radius: 2px;
+        animation: progress 3s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+    }
+
+    .status-text {
+        color: #e2e8f0;
+        font-size: 0.9rem;
+        font-weight: 400;
+        opacity: 0.8;
+    }
+
+    /* Responsive adjustments for loading overlay */
+    @media (max-width: 768px) {
+        .loading-title {
+            font-size: 2rem;
+        }
+        
+        .loading-animation {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .progress-container {
+            width: 150px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+      <div class="geometric-bg">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+      </div>
+      
+      <div class="loading-content">
+          <div class="loading-animation">
+              <div class="core"></div>
+              <div class="orbit orbit-1"></div>
+              <div class="orbit orbit-2"></div>
+              <div class="orbit orbit-3"></div>
+          </div>
+          
+          <h1 class="loading-title">
+              <span>TRIPPLE EXCHANGE</span>
+          </h1>
+          <p class="loading-subtitle">Admin Dashboard</p>
+          
+          <div class="progress-container">
+              <div class="progress-bar"></div>
+          </div>
+          
+          <p class="status-text">Loading admin interface</p>
+      </div>
+  </div>
+
+  <div class="sidebar">
+    <span class="logo"><i class="fa-solid fa-globe"></i> Admin Dashboard</span>
+    <nav>
+      <a href="admin-dashboard.html" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a href="admin-users.html"><i class="fa-solid fa-users"></i> Users</a>
+      <a href="admin-trades.html"><i class="fa-solid fa-chart-line"></i> Trades</a>
+      <a href="admin-deposits.html"><i class="fa-solid fa-wallet"></i> Deposits</a>
+      <a href="admin-withdrawals.html"><i class="fa-solid fa-arrow-up"></i> Withdrawals</a>
+      <a href="admin-kyc.html"><i class="fa-solid fa-user-check"></i> KYC</a>
+      <a href="admin-mining.html"><i class="fa-solid fa-coins"></i> Mining</a>
+      <a href="admin-get-notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a>
+      <a href="admin-content.html"><i class="fa-solid fa-file-alt"></i> Content</a>
+      <a href="admin-get-settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
+      <a href="admin-logs.html"><i class="fa-solid fa-rotate-left"></i> Audit/Logs</a>
+    </nav>
+    <div class="logout-container">
+      <a href="#" class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </div>
+
+  <!-- Mobile logout button (hidden on desktop) -->
+  <a href="#" class="mobile-logout-btn" id="mobileLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i></a>
+
+  <div class="main">
+    <div class="dash-header">
+      <span class="icon"><i class="fa-solid fa-gauge-high"></i></span>
+      <h1>Admin Dashboard</h1>
+    </div>
+    <div class="admin-profile">
+      <img src="assets/admin-avatar.png" alt="Admin" id="adminAvatar" />
+      <div>
+        <div class="greet">Welcome, <span id="adminName">Admin</span></div>
+        <small id="lastLogin">Last login: --</small>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box sb-blue">
+        <span class="sb-icon"><i class="fa-solid fa-users"></i></span>
+        <div class="stat-content">
+          <span class="stat-val" id="totalUsers"><span class="stat-loading">...</span></span>
+          <span class="stat-title">Total Users</span>
+        </div>
+      </div>
+      <div class="stat-box sb-green">
+        <span class="sb-icon"><i class="fa-solid fa-user-check"></i></span>
+        <div class="stat-content">
+          <span class="stat-val" id="pendingKYC"><span class="stat-loading">...</span></span>
+          <span class="stat-title">Pending KYC</span>
+        </div>
+      </div>
+      <div class="stat-box sb-yellow">
+        <span class="sb-icon"><i class="fa-solid fa-arrow-up"></i></span>
+        <div class="stat-content">
+          <span class="stat-val" id="pendingWithdrawals"><span class="stat-loading">...</span></span>
+          <span class="stat-title">Pending Withdrawals</span>
+        </div>
+      </div>
+      <div class="stat-box sb-purple">
+        <span class="sb-icon"><i class="fa-solid fa-chart-line"></i></span>
+        <div class="stat-content">
+          <span class="stat-val" id="ongoingTrades"><span class="stat-loading">...</span></span>
+          <span class="stat-title">Ongoing Trades</span>
+        </div>
+      </div>
+      <div class="stat-box sb-red">
+        <span class="sb-icon"><i class="fa-solid fa-wallet"></i></span>
+        <div class="stat-content">
+          <span class="stat-val" id="platformBalance"><span class="stat-loading">...</span></span>
+          <span class="stat-title">Platform Revenue</span>
+        </div>
+      </div>
+    </div>
+    <!-- Add more dashboard content here as needed -->
+  </div>
+
+  <script>
+    // Modern Loading overlay functions
+    function showLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
+    }
+
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    // Global impersonation function
+    function impersonateUser(userId) {
+      fetch('/api/admin-impersonate-user.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ user_id: userId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = '/dashboard.php';
+        } else {
+          alert('Error: ' + data.error);
+        }
+      })
+      .catch(err => alert('Unexpected error: ' + err.message));
+    }
+
+    // DOM Content Loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      // Initialize loading overlay
+      showLoadingOverlay();
+      
+      // Hide loading overlay after a short delay
+      setTimeout(function() {
+          hideLoadingOverlay();
+          document.body.classList.add('page-loaded');
+      }, 3000);
+      
+      // Set admin name/avatar/last login from your backend if you wish
+      document.getElementById("adminName").textContent = "Admin";
+      document.getElementById("lastLogin").textContent = "Last login: " + new Date().toLocaleString();
+
+      // Stats AJAX call
+      fetch('https://trippleexchange.com/admin/api/admin-dashboard-stats.php')
+        .then(r => r.json())
+        .then(data => {
+          // Check for proper structure
+          if (data && data.success && data.stats) {
+            document.getElementById('totalUsers').textContent = data.stats.totalUsers ?? '0';
+            document.getElementById('pendingKYC').textContent = data.stats.pendingKYC ?? '0';
+            document.getElementById('pendingWithdrawals').textContent = data.stats.pendingWithdrawals ?? '0';
+            document.getElementById('ongoingTrades').textContent = data.stats.ongoingTrades ?? '0';
+            document.getElementById('platformBalance').textContent = data.stats.platformBalance ?? '$0.00';
+          } else {
+            throw new Error('Bad API structure');
+          }
+        })
+        .catch(e => {
+          // Show error in each stat card
+          ['totalUsers','pendingKYC','pendingWithdrawals','ongoingTrades','platformBalance'].forEach(id=>{
+            document.getElementById(id).innerHTML = '<span class="stat-error">Error</span>';
+          });
+        });
+
+      // Logout button handlers
+      function handleLogout() {
+        // Add your logout logic here
+        window.location.href = '/admin/admin-login.html';
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleLogout();
+      });
+
+      document.getElementById('mobileLogoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleLogout();
+      });
+    });
+  </script>
+<script src="admin-auth.js"></script>
+</body>
+</html>

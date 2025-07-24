@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Test User - Tripple Exchange Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0096FF;
+            --primary-dark: #007be8;
+            --success: #38b000;
+            --danger: #f72585;
+            --bg: #0a0e1a;
+            --bg-secondary: #1a1f2e;
+            --card: #1e2332;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #4cc9f0 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: linear-gradient(135deg, var(--card) 0%, var(--bg-secondary) 100%);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .test-user-info {
+            background: rgba(0, 150, 255, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-user-info h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .credential-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .credential-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .credential-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .credential-value {
+            font-weight: 600;
+            color: var(--text);
+            font-family: monospace;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 150, 255, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #4ade80 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(56, 176, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(0, 150, 255, 0.1);
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: rgba(56, 176, 0, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(247, 37, 133, 0.15);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .wallets-list {
+            background: rgba(255,255,255,0.03);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .wallet-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .wallet-item:last-child {
+            border-bottom: none;
+        }
+
+        .wallet-crypto {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.03);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .instructions h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .instructions ol {
+            padding-left: 1.5rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-plus"></i> Create Test User</h1>
+            <p>Generate a dummy user for testing all admin features</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="test-user-info">
+            <h3><i class="fas fa-info-circle"></i> Test User Credentials</h3>
+            <div class="credential-grid">
+                <div class="credential-item">
+                    <div class="credential-label">Username</div>
+                    <div class="credential-value">testuser</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Email</div>
+                    <div class="credential-value">testuser@example.com</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Password</div>
+                    <div class="credential-value">Test123!</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Initial Balance</div>
+                    <div class="credential-value">$1,000.00 USDT</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Account Score</div>
+                    <div class="credential-value">100 (Excellent)</div>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-label">Status</div>
+                    <div class="credential-value">Active</div>
+                </div>
+            </div>
+
+            <div class="wallets-list">
+                <h4 style="margin-bottom: 1rem; color: var(--text);"><i class="fas fa-wallet"></i> Pre-assigned Wallets</h4>
+                <div class="wallet-item">
+                    <span class="wallet-crypto">BTC (Bitcoin)</span>
+                    <span class="wallet-address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-crypto">ETH (Ethereum)</span>
+                    <span class="wallet-address">0x742d35Cc6634C0532925a3b8D4f25F2d4c4b8c9c</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-crypto">USDT (Ethereum)</span>
+                    <span class="wallet-address">0x8ba1f109551bD432803012645Hac136c5c2BD754</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-crypto">BNB (BSC)</span>
+                    <span class="wallet-address">bnb1grpf0955h0ykzq3ar5nmum7y6gdfl6lxfn46h2</span>
+                </div>
+            </div>
+        </div>
+
+        <button id="createUserBtn" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i>
+            Create Test User
+        </button>
+
+        <a href="enhanced-admin-panel.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            Back to Admin Panel
+        </a>
+
+        <div class="instructions">
+            <h4><i class="fas fa-clipboard-list"></i> Testing Instructions</h4>
+            <ol>
+                <li>Click "Create Test User" to add the dummy user to your database</li>
+                <li>Go to the Admin Panel to test user management features</li>
+                <li>Test balance adjustments (credit/debit/set operations)</li>
+                <li>Test credit score updates with different values</li>
+                <li>Test wallet address assignments for various cryptocurrencies</li>
+                <li>Test user impersonation to switch to user view</li>
+                <li>Login to the frontend with test credentials to verify user experience</li>
+                <li>Test all admin features with this dummy user data</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('createUserBtn').addEventListener('click', async function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            // Show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Creating User...';
+            
+            try {
+                const response = await fetch('api/create-test-user.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'testuser',
+                        email: 'testuser@example.com',
+                        password: 'Test123!',
+                        balance: 1000.00,
+                        account_score: 100
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Test user created successfully! You can now use it for testing all admin features.', 'success');
+                    btn.innerHTML = '<i class="fas fa-check"></i> User Created Successfully';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-success');
+                } else {
+                    showAlert(data.message || 'Failed to create test user', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error creating test user:', error);
+                showAlert('Error creating test user. Please check your database connection.', 'danger');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'flex';
+            
+            const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+            alert.innerHTML = `<i class="${icon}"></i> ${message}`;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+    </script>
+    <script src="admin-auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Trades | Tripple Exchange</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4f6cff;
+      --primary-dark: #3a56d4;
+      --success: #38b000;
+      --danger: #f72585;
+      --warning: #ffaa00;
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --card: #1e293b;
+      --card-hover: #334155;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-radius: 0.75rem;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background: var(--bg-secondary);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      border-right: 1px solid var(--card-border);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 0;
+    }
+    .sidebar .logo {
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 600;
+      padding: 0 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      padding: 0.75rem 1.25rem;
+      margin: 0.2rem 0;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .sidebar nav a.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .sidebar nav a:hover:not(.active) {
+      background: var(--card-hover);
+      color: var(--text);
+    }
+    .main {
+      margin-left: 250px;
+      padding: 2rem;
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .header .icon {
+      color: var(--primary);
+      font-size: 1.7rem;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin: 0;
+    }
+    .filters {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+      background: var(--card);
+      padding: 1rem 1.2rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--card-border);
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 160px;
+      flex: 1;
+    }
+    .filter-group label {
+      color: var(--text-muted);
+      font-size: 0.89rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    .filter-group input,
+    .filter-group select {
+      padding: 0.6rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--card-border);
+      background: var(--bg-secondary);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .filter-group input:focus, .filter-group select:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--card-border);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px 0 rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+    th {
+      background: var(--bg-secondary);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 1rem 1.2rem;
+      font-size: 0.92rem;
+      text-align: left;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border);
+    }
+    td {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.99rem;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover {
+      background: rgba(67, 97, 238, 0.05);
+    }
+    .status-badge {
+      padding: 0.36em 1em;
+      border-radius: 1em;
+      font-size: 0.89em;
+      font-weight: 600;
+      display: inline-block;
+      background: var(--bg-secondary);
+      color: var(--primary);
+    }
+    .sb-open { background: rgba(67,97,238,0.10); color: var(--primary); }
+    .sb-processing { background: rgba(255,170,0,0.12); color: var(--warning); }
+    .sb-completed { background: rgba(56,176,0,0.11); color: var(--success); }
+    .sb-cancelled { background: rgba(247,37,133,0.13); color: var(--danger);}
+    .view-btn {
+      background: var(--primary);
+      color: white;
+      padding: 0.48em 1.05em;
+      border: none;
+      border-radius: 0.5em;
+      cursor: pointer;
+      font-size: 0.97em;
+      font-weight: 500;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .view-btn:hover {
+      background: var(--primary-light);
+    }
+    .pagination {
+      display: flex;
+      gap: 0.35em;
+      margin-top: 1.2rem;
+      justify-content: center;
+      padding: 1em 0.2em 0.5em 0.2em;
+      border-top: 1px solid var(--card-border);
+    }
+    .page-btn {
+      padding: 0.42em 1.1em;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      border-radius: 0.45em;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.97em;
+      min-width: 2.3em;
+    }
+    .page-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .page-btn.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: var(--primary);
+      gap: 0.8rem;
+    }
+    .loading i {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg);}
+      to { transform: rotate(360deg);}
+    }
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(15,23,42,0.96);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      backdrop-filter: blur(3px);
+    }
+    .modal {
+      background: var(--card);
+      padding: 2rem 1.5rem;
+      border-radius: var(--border-radius);
+      max-width: 430px; width: 97%;
+      box-shadow: 0 8px 40px rgba(67,97,238,0.08);
+      border: 1px solid var(--card-border);
+      position: relative;
+      color: var(--text);
+    }
+    .modal h2 {
+      color: var(--primary);
+      margin-bottom: 1.2rem;
+      font-size: 1.3rem;
+      display: flex; align-items: center; gap: 0.7em;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      position: absolute;
+      top: 1.3rem; right: 1.3rem;
+      font-size: 1.45rem;
+      color: var(--danger);
+      cursor: pointer;
+      border-radius: 50%;
+      width: 2.2rem; height: 2.2rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .modal-close:hover {
+      background: rgba(247,37,133,0.10);
+    }
+    .modal-content p {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px dashed var(--card-border);
+      font-size: 1rem;
+    }
+    .modal-content b {
+      color: var(--text-muted);
+      min-width: 100px;
+      font-weight: 500;
+    }
+    @media (max-width: 900px) {
+      .sidebar { width: 100px; }
+      .main { margin-left: 100px; }
+      .sidebar .logo span, .sidebar nav a span { display: none;}
+      .sidebar nav a { justify-content: center; }
+    }
+    @media (max-width: 700px) {
+      .main { margin-left: 0; padding: 1rem;}
+      .sidebar { display: none;}
+    }
+    @media (max-width: 500px) {
+      .filters { padding: 0.7rem;}
+      .modal { padding: 1.3rem;}
+      th, td { padding-left: 0.6em; padding-right: 0.6em;}
+    }
+
+    /* Modern Loading Overlay Styles */
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .geometric-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .geometric-shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 {
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(45deg, #4361ee33, #4cc9f033);
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape-2 {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(45deg, #f7258533, #ffaa0033);
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(45deg, #38b00033, #4cc9f033);
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(120deg); }
+        66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    .loading-content {
+        text-align: center;
+        z-index: 2;
+        position: relative;
+    }
+
+    .loading-animation {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+    }
+
+    .core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(45deg, #4361ee, #4cc9f0);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .orbit {
+        position: absolute;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        animation: rotate 3s linear infinite;
+    }
+
+    .orbit-1 {
+        width: 40px;
+        height: 40px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-top-color: #4361ee;
+        animation-duration: 1.5s;
+    }
+
+    .orbit-2 {
+        width: 70px;
+        height: 70px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-right-color: #4cc9f0;
+        animation-duration: 2s;
+        animation-direction: reverse;
+    }
+
+    .orbit-3 {
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-bottom-color: #f72585;
+        animation-duration: 3s;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    @keyframes rotate {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .loading-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #4361ee, #4cc9f0, #f72585);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    .loading-subtitle {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .progress-container {
+        width: 200px;
+        height: 4px;
+        background: #334155;
+        border-radius: 2px;
+        margin: 0 auto 1.5rem;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #4361ee, #4cc9f0);
+        border-radius: 2px;
+        animation: progress 3s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+    }
+
+    .status-text {
+        color: #e2e8f0;
+        font-size: 0.9rem;
+        font-weight: 400;
+        opacity: 0.8;
+    }
+
+    /* Responsive adjustments for loading overlay */
+    @media (max-width: 768px) {
+        .loading-title {
+            font-size: 2rem;
+        }
+        
+        .loading-animation {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .progress-container {
+            width: 150px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+      <div class="geometric-bg">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+      </div>
+      
+      <div class="loading-content">
+          <div class="loading-animation">
+              <div class="core"></div>
+              <div class="orbit orbit-1"></div>
+              <div class="orbit orbit-2"></div>
+              <div class="orbit orbit-3"></div>
+          </div>
+          
+          <h1 class="loading-title">
+              <span>TRIPPLE EXCHANGE</span>
+          </h1>
+          <p class="loading-subtitle">Admin Trade Management</p>
+          
+          <div class="progress-container">
+              <div class="progress-bar"></div>
+          </div>
+          
+          <p class="status-text">Loading trade data</p>
+      </div>
+  </div>
+
+  <div class="sidebar">
+    <span class="logo"><i class="fa-solid fa-globe"></i> <span>Admin Panel</span></span>
+    <nav>
+      <a href="admin-dashboard.html"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+      <a href="admin-users.html"><i class="fa-solid fa-users"></i> <span>Users</span></a>
+      <a href="admin-trades.html" class="active"><i class="fa-solid fa-chart-line"></i> <span>Trades</span></a>
+      <a href="admin-get-notifications.html"><i class="fa-solid fa-bell"></i> <span>Notifications</span></a>
+      <a href="admin-deposits.html"><i class="fa-solid fa-wallet"></i> <span>Deposits</span></a>
+      <a href="admin-withdrawals.html"><i class="fa-solid fa-arrow-up"></i> <span>Withdrawals</span></a>
+      <a href="admin-kyc.html"><i class="fa-solid fa-user-check"></i> <span>KYC</span></a>
+      <a href="admin-mining.html"><i class="fa-solid fa-coins"></i> <span>Mining</span></a>
+      <a href="admin-content.html"><i class="fa-solid fa-file-alt"></i> <span>Content</span></a>
+      <a href="admin-settings.html"><i class="fa-solid fa-gear"></i> <span>Settings</span></a>
+      <a href="admin-logs.html"><i class="fa-solid fa-rotate-left"></i> <span>Audit/Logs</span></a>
+    </nav>
+  </div>
+  <div class="main">
+    <div class="header">
+      <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
+      <h1>Trades</h1>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="open">Open</option>
+          <option value="processing">Processing</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="emailFilter">User Email</label>
+        <input type="text" id="emailFilter" placeholder="Search by email">
+      </div>
+      <div class="filter-group">
+        <label for="dateFilter">Date</label>
+        <input type="date" id="dateFilter">
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table id="tradesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User Email</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="6" class="loading">
+                <i class="fas fa-spinner"></i> Loading trades...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+  <!-- Trade Details Modal -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      <h2><i class="fas fa-info-circle"></i> Trade Details</h2>
+      <div class="modal-content" id="modalContent">
+        <p><b>ID:</b> <span id="modalId">-</span></p>
+        <p><b>User:</b> <span id="modalUser">-</span></p>
+        <p><b>Amount:</b> <span id="modalAmount">-</span></p>
+        <p><b>Status:</b> <span id="modalStatus">-</span></p>
+        <p><b>Created:</b> <span id="modalCreated">-</span></p>
+        <p><b>Details:</b> <span id="modalDetails">-</span></p>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Modern Loading overlay functions
+    function showLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
+    }
+
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    // API endpoint
+    const TRADES_API = "admin/api/admin-get-trades.php";
+
+    let currentPage = 1, totalPages = 1, statusFilter = '', emailFilter = '', dateFilter = '';
+    const tradesTableBody = document.querySelector("#tradesTable tbody");
+    const paginationContainer = document.getElementById("pagination");
+    const statusFilterEl = document.getElementById("statusFilter");
+    const emailFilterEl = document.getElementById("emailFilter");
+    const dateFilterEl = document.getElementById("dateFilter");
+    const modalBg = document.getElementById("modalBg");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Initialize loading overlay
+      showLoadingOverlay();
+      
+      // Hide loading overlay after a short delay
+      setTimeout(function() {
+          hideLoadingOverlay();
+          document.body.classList.add('page-loaded');
+      }, 3000);
+      
+      fetchTrades();
+      statusFilterEl.addEventListener("change", () => { statusFilter = statusFilterEl.value; currentPage = 1; fetchTrades(); });
+      emailFilterEl.addEventListener("input", debounce(() => { emailFilter = emailFilterEl.value.trim(); currentPage = 1; fetchTrades(); }, 300));
+      dateFilterEl.addEventListener("change", () => { dateFilter = dateFilterEl.value; currentPage = 1; fetchTrades(); });
+    });
+
+    function fetchTrades() {
+      tradesTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="loading">
+            <i class="fas fa-spinner"></i> Loading trades...
+          </td>
+        </tr>`;
+      const url = new URL(TRADES_API, window.location.origin);
+      url.searchParams.append('page', currentPage);
+      if (statusFilter) url.searchParams.append('status', statusFilter);
+      if (emailFilter) url.searchParams.append('email', emailFilter);
+      if (dateFilter) url.searchParams.append('date', dateFilter);
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => {
+              throw new Error(`HTTP error! status: ${response.status} - ${text}`);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.success) {
+            renderTrades(data.trades);
+            renderPagination(data.page, data.totalPages);
+            totalPages = data.totalPages;
+          } else {
+            showError("No trades found or invalid data structure");
+          }
+        })
+        .catch(error => {
+          showError("Failed to load trades.<br>" + (error.message || error));
+          console.error('Error fetching trades:', error);
+        });
+    }
+
+    function renderTrades(trades) {
+      if (!trades || trades.length === 0) {
+        tradesTableBody.innerHTML = `<tr>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              No trades found matching your criteria
+            </td>
+          </tr>`;
+        return;
+      }
+      tradesTableBody.innerHTML = trades.map(trade => `
+        <tr>
+          <td>${trade.id}</td>
+          <td>${trade.email || "-"}</td>
+          <td>$${parseFloat(trade.amount).toFixed(2)}</td>
+          <td><span class="status-badge sb-${trade.status}">${
+            trade.status.charAt(0).toUpperCase() + trade.status.slice(1)
+          }</span></td>
+          <td>${formatDate(trade.created_at)}</td>
+          <td>
+            <button class="view-btn" onclick="showTradeDetails(${trade.id})">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPagination(current, total) {
+      if (total <= 1) { paginationContainer.innerHTML = ''; return; }
+      let html = '';
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, current - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(total, startPage + maxVisiblePages - 1);
+      if (endPage - startPage + 1 < maxVisiblePages) startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      html += `<button class="page-btn ${current === 1 ? 'disabled' : ''}" onclick="gotoPage(${current - 1})" ${current === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+      if (startPage > 1) {
+        html += `<button class="page-btn" onclick="gotoPage(1)">1</button>`;
+        if (startPage > 2) html += `<button class="page-btn disabled">...</button>`;
+      }
+      for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="gotoPage(${i})">${i}</button>`;
+      }
+      if (endPage < total) {
+        if (endPage < total - 1) html += `<button class="page-btn disabled">...</button>`;
+        html += `<button class="page-btn" onclick="gotoPage(${total})">${total}</button>`;
+      }
+      html += `<button class="page-btn ${current === total ? 'disabled' : ''}" onclick="gotoPage(${current + 1})" ${current === total ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+      paginationContainer.innerHTML = html;
+    }
+    function gotoPage(page) {
+      if (page < 1 || page > totalPages || page === currentPage) return;
+      currentPage = page;
+      fetchTrades();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showError(message) {
+      tradesTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 2rem; color: var(--danger);">
+            <i class="fas fa-exclamation-circle"></i> ${message}
+          </td>
+        </tr>`;
+      paginationContainer.innerHTML = '';
+    }
+
+    // Modal functions
+    function showTradeDetails(id) {
+      modalBg.style.display = 'flex';
+      document.getElementById('modalId').textContent = 'Loading...';
+      document.getElementById('modalUser').textContent = 'Loading...';
+      document.getElementById('modalAmount').textContent = 'Loading...';
+      document.getElementById('modalStatus').textContent = 'Loading...';
+      document.getElementById('modalCreated').textContent = 'Loading...';
+      document.getElementById('modalDetails').textContent = 'Loading...';
+
+      // Replace with your own trade-details endpoint
+      fetch(`admin/api/admin-get-trade-details.php?id=${id}`)
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => { throw new Error(`HTTP error! status: ${response.status} - ${text}`); });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.success && data.trade) {
+            const trade = data.trade;
+            document.getElementById('modalId').textContent = trade.id;
+            document.getElementById('modalUser').textContent = trade.email || "-";
+            document.getElementById('modalAmount').textContent = `$${parseFloat(trade.amount).toFixed(2)}`;
+            document.getElementById('modalStatus').innerHTML =
+              `<span class="status-badge sb-${trade.status}">${
+                trade.status.charAt(0).toUpperCase() + trade.status.slice(1)
+              }</span>`;
+            document.getElementById('modalCreated').textContent = formatDate(trade.created_at);
+            document.getElementById('modalDetails').textContent = trade.details || 'No additional details';
+          } else {
+            document.getElementById('modalContent').innerHTML = `
+              <p style="color: var(--danger); text-align: center;">
+                <i class="fas fa-exclamation-circle"></i> Failed to load trade details
+              </p>`;
+          }
+        })
+        .catch(error => {
+          document.getElementById('modalContent').innerHTML = `
+            <p style="color: var(--danger); text-align: center;">
+              <i class="fas fa-exclamation-circle"></i> Error loading trade details<br>${error.message || error}
+            </p>`;
+        });
+    }
+    function closeModal() {
+      modalBg.style.display = 'none';
+    }
+    window.closeModal = closeModal;
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    }
+    function debounce(func, wait) {
+      let timeout;
+      return function() {
+        const context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+      };
+    }
+  </script>
+<script src="admin-auth.js"></script>
+</body>
+</html>

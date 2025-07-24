@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Deposits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #19d4fa;
+      --primary-gradient: linear-gradient(135deg, #11c9ff 0%, #0d88ef 100%);
+      --secondary-gradient: linear-gradient(135deg, #18e1c8 0%, #0dbdfc 100%);
+      --danger-gradient: linear-gradient(135deg, #e55069 0%, #f3722c 100%);
+      --bg-dark: #171e28;
+      --bg-darker: #0f141c;
+      --card-bg: #232c39;
+      --card-border: #2a3545;
+      --text-light: #f8fafc;
+      --text-muted: #94a3b8;
+      --sidebar-bg: #1c2531;
+      --table-header: #1b222d;
+      --table-row: #242d38;
+      --table-border: #2a3545;
+      --modal-bg: rgba(14, 22, 36, 0.8);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: var(--bg-dark);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    /* Sidebar Styles */
+    .admin-sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 1200;
+      box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+      transition: all 0.3s ease;
+    }
+    
+    .admin-sidebar .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 30px 0 30px 40px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 15px rgba(11, 25, 36, 0.8);
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .admin-sidebar nav {
+      width: 100%;
+      padding: 0 20px;
+    }
+    
+    .admin-sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 14px 20px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      margin-bottom: 5px;
+      position: relative;
+    }
+    
+    .admin-sidebar a:hover {
+      background: rgba(25, 212, 250, 0.1);
+      color: var(--text-light);
+    }
+    
+    .admin-sidebar a.active {
+      background: var(--primary-gradient);
+      color: white !important;
+      box-shadow: 0 4px 15px rgba(44, 177, 249, 0.4);
+    }
+    
+    .admin-sidebar a.active::before {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid var(--bg-dark);
+    }
+    
+    .admin-sidebar i {
+      font-size: 1.2em;
+      min-width: 24px;
+      text-align: center;
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+      margin-left: 280px;
+      padding: 40px;
+      min-height: 100vh;
+      transition: margin 0.3s ease;
+    }
+    
+    h1 {
+      color: var(--primary);
+      font-size: 2.4rem;
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 35px rgba(9, 52, 74, 0.15);
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid var(--card-border);
+    }
+    
+    /* Button Styles */
+    .add-btn {
+      background: var(--secondary-gradient);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(19, 186, 193, 0.3);
+      cursor: pointer;
+      margin-bottom: 25px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(19, 186, 193, 0.4);
+    }
+    
+    .add-btn:active {
+      transform: translateY(0);
+    }
+    
+    /* Table Styles */
+    table {
+      width: 100%;
+      margin-top: 10px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+    
+    th, td {
+      padding: 16px 12px;
+      text-align: left;
+      border: none;
+    }
+    
+    th {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.05rem;
+      background: var(--table-header);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+    }
+    
+    td {
+      background: var(--table-row);
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+    
+    tr:not(:last-child) td {
+      border-bottom: 1px solid var(--table-border);
+    }
+    
+    /* Action Buttons */
+    .edit-btn, .delete-btn {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .edit-btn {
+      background: var(--primary-gradient);
+      color: white;
+    }
+    
+    .edit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(29, 182, 245, 0.3);
+    }
+    
+    .delete-btn {
+      background: var(--danger-gradient);
+      color: white;
+    }
+    
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Modal Styles */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--modal-bg);
+      z-index: 1300;
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--card-bg);
+      color: white;
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 15px 50px rgba(25, 212, 250, 0.2);
+      border: 1px solid rgba(25, 212, 250, 0.3);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-bg.show .modal-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .modal-content h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    
+    .modal-content input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(25, 212, 250, 0.3);
+      background: rgba(28, 36, 49, 0.7);
+      color: var(--text-light);
+      transition: all 0.2s ease;
+    }
+    
+    .modal-content input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(25, 212, 250, 0.2);
+    }
+    
+    .modal-content label {
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+    
+    .msg {
+      color: var(--danger);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 6px;
+      border-left: 3px solid var(--danger);
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+      .admin-sidebar {
+        width: 240px;
+      }
+      .main-content {
+        margin-left: 240px;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.show {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 30px 20px;
+      }
+      .card {
+        padding: 20px;
+      }
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      .modal-content {
+        max-width: 95%;
+      }
+      .modal-actions {
+        flex-direction: column;
+      }
+      .modal-actions button {
+        width: 100%;
+      }
+    }
+    
+    /* Additional UI Improvements */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: rgba(148, 163, 184, 0.3);
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+    
+    /* Menu Toggle Button (for mobile) */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 1100;
+      box-shadow: 0 4px 15px rgba(25, 212, 250, 0.4);
+    }
+    
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    
+    .status-pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+    
+    .status-inactive {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    /* Modern Loading Overlay Styles */
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #020617;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    }
+
+    .loading-screen.hidden {
+        display: none;
+    }
+
+    /* Abstract Geometric Background */
+    .geometric-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        opacity: 0.15;
+    }
+
+    .geometric-shape {
+        position: absolute;
+        border: 1px solid #3b82f6;
+        opacity: 0.7;
+    }
+
+    .shape-1 {
+        width: 300px;
+        height: 300px;
+        top: -50px;
+        left: -50px;
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        animation: float 25s infinite linear;
+    }
+
+    .shape-2 {
+        width: 200px;
+        height: 200px;
+        bottom: -30px;
+        right: -30px;
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        animation: float 20s infinite linear reverse;
+    }
+
+    .shape-3 {
+        width: 150px;
+        height: 150px;
+        top: 30%;
+        right: 10%;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        animation: pulse 8s infinite ease-in-out;
+    }
+
+    @keyframes float {
+        0% {
+            transform: rotate(0deg) translate(0, 0);
+        }
+        100% {
+            transform: rotate(360deg) translate(50px, 50px);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+    }
+
+    /* Main Content */
+    .loading-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 10;
+        width: 100%;
+        max-width: 600px;
+        padding: 2rem;
+    }
+
+    /* Abstract Loading Animation */
+    .loading-animation {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 3rem;
+    }
+
+    .core {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        animation: core-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes core-pulse {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+        }
+    }
+
+    .orbit {
+        position: absolute;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        animation: orbit-rotate linear infinite;
+    }
+
+    .orbit-1 {
+        width: 120px;
+        height: 120px;
+        top: 40px;
+        left: 40px;
+        border-top-color: #3b82f6;
+        animation-duration: 8s;
+    }
+
+    .orbit-2 {
+        width: 160px;
+        height: 160px;
+        top: 20px;
+        left: 20px;
+        border-right-color: #60a5fa;
+        animation-duration: 12s;
+        animation-direction: reverse;
+    }
+
+    .orbit-3 {
+        width: 200px;
+        height: 200px;
+        top: 0;
+        left: 0;
+        border-bottom-color: #00f0ff;
+        animation-duration: 16s;
+    }
+
+    @keyframes orbit-rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Text Elements */
+    .loading-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center;
+        background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 2px;
+        animation: title-glow 4s infinite ease-in-out;
+    }
+
+    @keyframes title-glow {
+        0%, 100% {
+            filter: brightness(1);
+        }
+        50% {
+            filter: brightness(1.3);
+        }
+    }
+
+    .loading-subtitle {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 3rem;
+        text-align: center;
+        letter-spacing: 1px;
+        font-weight: 300;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+        width: 300px;
+        height: 4px;
+        background: rgba(59, 130, 246, 0.2);
+        border-radius: 2px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+        border-radius: 2px;
+        animation: progress-fill 3s infinite ease-in-out;
+    }
+
+    @keyframes progress-fill {
+        0% {
+            width: 0%;
+            transform: translateX(-100%);
+        }
+        50% {
+            width: 100%;
+            transform: translateX(0%);
+        }
+        100% {
+            width: 100%;
+            transform: translateX(100%);
+        }
+    }
+
+    .status-text {
+        font-size: 0.9rem;
+        color: #64748b;
+        text-align: center;
+        animation: status-fade 2s infinite ease-in-out;
+    }
+
+    @keyframes status-fade {
+        0%, 100% {
+            opacity: 0.7;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .loading-title {
+            font-size: 2rem;
+        }
+        
+        .loading-animation {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .core {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .orbit-1 {
+            width: 90px;
+            height: 90px;
+            top: 30px;
+            left: 30px;
+        }
+        
+        .orbit-2 {
+            width: 120px;
+            height: 120px;
+            top: 15px;
+            left: 15px;
+        }
+        
+        .orbit-3 {
+            width: 150px;
+            height: 150px;
+            top: 0;
+            left: 0;
+        }
+        
+        .progress-container {
+            width: 250px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+      <div class="geometric-bg">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+      </div>
+      
+      <div class="loading-content">
+          <div class="loading-animation">
+              <div class="core"></div>
+              <div class="orbit orbit-1"></div>
+              <div class="orbit orbit-2"></div>
+              <div class="orbit orbit-3"></div>
+          </div>
+          
+          <h1 class="loading-title">
+              <span>TRIPPLE EXCHANGE</span>
+          </h1>
+          <p class="loading-subtitle">Admin Deposit Management</p>
+          
+          <div class="progress-container">
+              <div class="progress-bar"></div>
+          </div>
+          
+          <p class="status-text">Loading deposit data</p>
+      </div>
+  </div>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- SIDEBAR MENU -->
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="logo">Tripple Admin</div>
+    <nav>
+      <a href="admin-dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a>
+      <a href="admin-users.html"><i class="fa-solid fa-users"></i>Users</a>
+      <a href="admin-trades.html"><i class="fa-solid fa-chart-line"></i>Trades</a>
+      <a href="admin-deposits.html" class="active"><i class="fa-solid fa-wallet"></i>Deposits</a>
+      <a href="admin-withdrawals.html"><i class="fa-solid fa-arrow-up"></i>Withdrawals</a>
+      <a href="admin-kyc.html"><i class="fa-solid fa-user-check"></i>KYC</a>
+      <a href="admin-mining.html"><i class="fa-solid fa-coins"></i>Mining</a>
+      <a href="admin-notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+      <a href="admin-referrals.html"><i class="fa-solid fa-link"></i>Referrals</a>
+      <a href="admin-content.html"><i class="fa-solid fa-file-alt"></i>Content</a>
+      <a href="admin-settings.html"><i class="fa-solid fa-gear"></i>Settings</a>
+      <a href="admin-logs.html"><i class="fa-solid fa-rotate-left"></i>Audit/Logs</a>
+    </nav>
+  </aside>
+  
+  <!-- MAIN PAGE -->
+  <div class="main-content">
+    <h1>Manage Deposit Addresses</h1>
+    
+    <div class="card fade-in">
+      <button class="add-btn" onclick="showForm()">
+        <i class="fas fa-plus"></i> Add Address
+      </button>
+      
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Coin</th>
+              <th>Network</th>
+              <th>Address</th>
+              <th>Label</th>
+              <th>Last Update</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="addrTable">
+            <!-- Data will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MODAL -->
+  <div class="modal-bg" id="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Add Address</h2>
+      <div class="msg" id="modalMsg"></div>
+      
+      <form onsubmit="saveAddress(event)">
+        <input type="hidden" id="addrId">
+        
+        <label for="coin">Coin *</label>
+        <input type="text" required placeholder="e.g. USDT" id="coin" autocomplete="off">
+        
+        <label for="network">Network *</label>
+        <input type="text" required placeholder="e.g. TRC20" id="network" autocomplete="off">
+        
+        <label for="address">Address *</label>
+        <input type="text" required placeholder="Wallet Address" id="address" autocomplete="off">
+        
+        <label for="label">Label</label>
+        <input type="text" placeholder="Optional label" id="label" autocomplete="off">
+        
+        <div class="modal-actions">
+          <button type="button" onclick="hideModal()" class="delete-btn">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button type="submit" class="edit-btn">
+            <i class="fas fa-save"></i> Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // Modern Loading overlay functions
+    function showLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
+    }
+
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    // DOM Elements
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const modal = document.getElementById('modal');
+    const modalContent = document.querySelector('.modal-content');
+    
+    // Initialize loading overlay
+    document.addEventListener('DOMContentLoaded', function() {
+        showLoadingOverlay();
+        
+        // Hide loading overlay after a short delay
+        setTimeout(function() {
+            hideLoadingOverlay();
+            document.body.classList.add('page-loaded');
+        }, 3000);
+        
+        // Load initial data
+        fetchAddresses();
+    });
+    
+    // Toggle sidebar on mobile
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+    });
+    
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992 && !sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.remove('show');
+      }
+    });
+    
+    // Fetch addresses from API
+    function fetchAddresses() {
+      // Show loading state
+      document.getElementById('addrTable').innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 30px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary);"></i>
+          </td>
+        </tr>
+      `;
+      
+      // Simulate API call (replace with actual fetch)
+      setTimeout(() => {
+        // Mock data - replace with actual API call
+        const mockData = {
+          success: true,
+          addresses: [
+            {
+              id: 1,
+              coin: 'BTC',
+              network: 'Bitcoin',
+              address: '3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5',
+              label: 'Primary BTC Wallet',
+              updated_at: '2023-10-15T14:30:22Z'
+            },
+            {
+              id: 2,
+              coin: 'ETH',
+              network: 'ERC20',
+              address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+              label: 'Main ETH Address',
+              updated_at: '2023-10-14T09:15:45Z'
+            },
+            {
+              id: 3,
+              coin: 'USDT',
+              network: 'TRC20',
+              address: 'TNPZbjhD1KcK4Yf4kbYjHZQZJhXZQZJhXZ',
+              label: '',
+              updated_at: '2023-10-12T16:45:30Z'
+            }
+          ]
+        };
+        
+        // In a real app, you would use:
+        // fetch('api/admin-get-addresses.php').then(r=>r.json()).then(d=>{
+        //   renderAddresses(d);
+        // });
+        
+        renderAddresses(mockData);
+      }, 800);
+    }
+    
+    // Render addresses to the table
+    function renderAddresses(data) {
+      let rows = '';
+      
+      if (data.success && data.addresses && data.addresses.length > 0) {
+        data.addresses.forEach(a => {
+          rows += `
+            <tr class="fade-in">
+              <td><strong>${a.coin}</strong></td>
+              <td>${a.network}</td>
+              <td style="max-width:220px;overflow-wrap:anywhere;font-family: monospace;">${a.address}</td>
+              <td>${a.label || '<span style="color: var(--text-muted);">N/A</span>'}</td>
+              <td>${formatDate(a.updated_at)}</td>
+              <td>
+                <button class="edit-btn" onclick="showForm(${a.id},'${escapeString(a.coin)}','${escapeString(a.network)}','${escapeString(a.address)}','${escapeString(a.label || '')}')">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="delete-btn" onclick="deleteAddr(${a.id})">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+      } else {
+        rows = `
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="fas fa-wallet"></i>
+                <h3>No Deposit Addresses</h3>
+                <p>Add your first deposit address to get started</p>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      
+      document.getElementById('addrTable').innerHTML = rows;
+    }
+    
+    // Format date for display
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      
+      const date = new Date(dateString);
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    // Escape strings for HTML insertion
+    function escapeString(str) {
+      return str.replace(/'/g, "\\'");
+    }
+    
+    // Show modal form
+    function showForm(id = '', coin = '', network = '', address = '', label = '') {
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+      
+      document.getElementById('modalMsg').textContent = '';
+      document.getElementById('modalTitle').textContent = id ? 'Edit Address' : 'Add Address';
+      document.getElementById('addrId').value = id || '';
+      document.getElementById('coin').value = coin || '';
+      document.getElementById('network').value = network || '';
+      document.getElementById('address').value = address || '';
+      document.getElementById('label').value = label || '';
+      
+      // Focus first input
+      if (!id) document.getElementById('coin').focus();
+    }
+    
+    // Hide modal
+    function hideModal() {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+    
+    // Save address
+    function saveAddress(e) {
+      e.preventDefault();
+      
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      
+      // Prepare data
+      const data = {
+        id: document.getElementById('addrId').value,
+        coin: document.getElementById('coin').value.trim(),
+        network: document.getElementById('network').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        label: document.getElementById('label').value.trim()
+      };
+      
+      // Simulate API call (replace with actual fetch)
+      setTimeout(() => {
+        // Mock response - replace with actual API call
+        const mockResponse = {
+          success: true,
+          message: 'Address saved successfully'
+        };
+        
+        // In a real app, you would use:
+        // fetch('api/admin-save-address.php', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(data)
+        // })
+        // .then(r => r.json())
+        // .then(d => {
+        //   handleSaveResponse(d);
+        // })
+        // .catch(err => {
+        //   handleSaveError(err);
+        // });
+        
+        handleSaveResponse(mockResponse);
+      }, 1000);
+      
+      function handleSaveResponse(response) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        
+        if (response.success) {
+          hideModal();
+          fetchAddresses();
+          
+          // Show success notification
+          showNotification('Address saved successfully', 'success');
+        } else {
+          document.getElementById('modalMsg').textContent = response.message || 'Save failed!';
+        }
+      }
+      
+      function handleSaveError(error) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        document.getElementById('modalMsg').textContent = "Network error. Please try again.";
+        console.error('Save error:', error);
+      }
+    }
+    
+    // Delete address
+    function deleteAddr(id) {
+      if (!confirm('Are you sure you want to delete this address?')) return;
+      
+      // Show loading on the row
+      const row = document.querySelector(`button[onclick="deleteAddr(${id})"]`).closest('tr');
+      const originalContent = row.innerHTML;
+      row.innerHTML = `
+        <td colspan="6" style="text-align: center;">
+          <i class="fas fa-spinner fa-spin" style="color: var(--primary);"></i>
+        </td>
+      `;
+      
+      // Simulate API call (replace with actual fetch)
+      setTimeout(() => {
+        // Mock response - replace with actual API call
+        const mockResponse = {
+          success: true,
+          message: 'Address deleted successfully'
+        };
+        
+        // In a real app, you would use:
+        // fetch('api/admin-delete-address.php', {
+        //   method: 'POST',
+        //   body: new URLSearchParams({ id })
+        // })
+        // .then(r => r.json())
+        // .then(d => {
+        //   handleDeleteResponse(d);
+        // })
+        // .catch(err => {
+        //   handleDeleteError(err);
+        // });
+        
+        handleDeleteResponse(mockResponse);
+      }, 800);
+      
+      function handleDeleteResponse(response) {
+        if (response.success) {
+          fetchAddresses();
+          showNotification('Address deleted successfully', 'success');
+        } else {
+          row.innerHTML = originalContent;
+          showNotification(response.message || 'Delete failed!', 'error');
+        }
+      }
+      
+      function handleDeleteError(error) {
+        row.innerHTML = originalContent;
+        showNotification('Network error. Please try again.', 'error');
+        console.error('Delete error:', error);
+      }
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        ${message}
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 3000);
+    }
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) hideModal();
+    });
+    
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') hideModal();
+    });
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchAddresses();
+      
+      // Add notification styles
+      const style = document.createElement('style');
+      style.textContent = `
+        .notification {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          background: var(--card-bg);
+          color: white;
+          padding: 15px 25px;
+          border-radius: 8px;
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          transform: translateY(100px);
+          opacity: 0;
+          transition: all 0.3s ease;
+          z-index: 1400;
+          border-left: 4px solid var(--primary);
+        }
+        
+        .notification.show {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        
+        .notification.success {
+          border-left-color: var(--success);
+        }
+        
+        .notification.error {
+          border-left-color: var(--danger);
+        }
+        
+        .notification i {
+          font-size: 1.2rem;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
+<script src="admin-auth.js"></script>
+</body>
+</html>

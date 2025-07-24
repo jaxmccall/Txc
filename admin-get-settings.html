@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --primary-dark: #2563eb;
+      --primary-gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --warning-light: #fbbf24;
+      --danger: #ef4444;
+      --danger-light: #f87171;
+      --bg-dark: #0f172a;
+      --bg-darker: #020617;
+      --sidebar-bg: #1e293b;
+      --card-bg: #1e293b;
+      --card-hover: rgba(30, 41, 59, 0.8);
+      --card-border: #334155;
+      --input-bg: #0f172a;
+      --text-light: #f8fafc;
+      --text-muted: #c7dbef;
+      --text-dark: #8a9db5;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      --transition: all 0.2s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .admin-sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      border-right: 1px solid var(--card-border);
+    }
+
+    .admin-sidebar .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      padding: 30px 0 30px 36px;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+
+    .admin-sidebar .logo::after {
+      content: '';
+      position: absolute;
+      bottom: 20px;
+      left: 36px;
+      width: 40px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 3px;
+    }
+
+    .admin-sidebar nav {
+      padding: 20px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .admin-sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: var(--transition);
+      margin-bottom: 4px;
+    }
+
+    .admin-sidebar a:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--text-light);
+    }
+
+    .admin-sidebar a.active {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .admin-sidebar i {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .main-content {
+      margin-left: 280px;
+      padding: 40px;
+      min-height: 100vh;
+      background: var(--bg-dark);
+    }
+
+    h1 {
+      color: var(--text-light);
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 3px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 30px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: 0 15px 35px rgba(9,52,74,0.25);
+    }
+
+    label {
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--text-light);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-light);
+      font-size: 1rem;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    button {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 34px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    button i {
+      font-size: 0.9em;
+    }
+
+    .status-msg {
+      font-weight: 600;
+      margin-left: 10px;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 1200px) {
+      .admin-sidebar {
+        width: 240px;
+      }
+      .main-content {
+        margin-left: 240px;
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      .card {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+      button {
+        padding: 10px 24px;
+      <a href="admin-deposits.html"><i class="fa-solid fa-wallet"></i>Deposits</a>
+      <a href="admin-withdrawals.html"><i class="fa-solid fa-arrow-up"></i>Withdrawals</a>
+      <a href="admin-kyc.html"><i class="fa-solid fa-user-check"></i>KYC</a>
+      <a href="admin-mining.html"><i class="fa-solid fa-coins"></i>Mining</a>
+      <a href="admin-get-notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+      <a href="admin-referrals.html"><i class="fa-solid fa-link"></i>Referrals</a>
+      <a href="admin-content.html"><i class="fa-solid fa-file-alt"></i>Content</a>
+      <a href="admin-settings.html" class="active"><i class="fa-solid fa-gear"></i>Settings</a>
+      <a href="admin-logs.html"><i class="fa-solid fa-rotate-left"></i>Audit/Logs</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <h1>Platform Settings</h1>
+    <form id="settingsForm" class="card" autocomplete="off">
+      <div class="form-group">
+        <label for="site_name">Site Name</label>
+        <input type="text" id="site_name" name="site_name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="support_email">Support Email</label>
+        <input type="email" id="support_email" name="support_email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="withdrawal_fee">Withdrawal Fee (%)</label>
+        <input type="number" step="0.01" min="0" max="100" id="withdrawal_fee" name="withdrawal_fee" required>
+      </div>
+
+      <div class="form-group">
+        <label for="min_withdrawal">Minimum Withdrawal Amount</label>
+        <input type="number" step="0.01" min="0" id="min_withdrawal" name="min_withdrawal" required>
+      </div>
+
+      <div class="form-group">
+        <label for="maintenance">Maintenance Mode</label>
+        <select id="maintenance" name="maintenance" required>
+          <option value="0">Off</option>
+          <option value="1">On</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit"><i class="fas fa-save"></i> Save Settings</button>
+        <span class="status-msg" id="statusMsg"></span>
+      </div>
+    </form>
+  </div>
+  <script>
+    // Enhanced settings management with error handling
+    document.addEventListener('DOMContentLoaded', function() {
+      // GET Settings
+      function fetchSettings() {
+        fetch("api/admin-get-settings.php")
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.success && data.settings) {
+              for (const key in data.settings) {
+                const element = document.getElementById(key);
+                if (element) {
+                  element.value = data.settings[key];
+                }
+              }
+            } else {
+              showStatusMessage('Failed to load settings', 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching settings:', error);
+            showStatusMessage('Connection error', 'error');
+          });
+      }
+
+      // SAVE Settings
+      document.getElementById('settingsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = {};
+        
+        // Validate form inputs
+        let isValid = true;
+        formData.forEach((value, key) => {
+          data[key] = value;
+          if (!value && form.elements[key].required) {
+            isValid = false;
+            form.elements[key].classList.add('error');
+          } else {
+            form.elements[key].classList.remove('error');
+          }
+        });
+
+        if (!isValid) {
+          showStatusMessage('Please fill all required fields', 'error');
+          return;
+        }
+
+        // Additional validation for numbers
+        if (data.withdrawal_fee < 0 || data.withdrawal_fee > 100) {
+          showStatusMessage('Withdrawal fee must be between 0-100%', 'error');
+          document.getElementById('withdrawal_fee').classList.add('error');
+          return;
+        }
+
+        if (data.min_withdrawal < 0) {
+          showStatusMessage('Minimum withdrawal must be positive', 'error');
+          document.getElementById('min_withdrawal').classList.add('error');
+          return;
+        }
+
+        const saveButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = saveButton.innerHTML;
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        saveButton.disabled = true;
+
+        fetch("api/admin-save-settings.php", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            showStatusMessage('✓ Settings saved successfully!', 'success');
+          } else {
+            showStatusMessage('✗ Failed to save: ' + (data.message || 'Unknown error'), 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error saving settings:', error);
+          showStatusMessage('✗ Network error occurred', 'error');
+        })
+        .finally(() => {
+          saveButton.innerHTML = originalButtonText;
+          saveButton.disabled = false;
+        });
+      });
+
+      // Helper function to show status messages
+      function showStatusMessage(message, type) {
+        const statusElement = document.getElementById('statusMsg');
+        statusElement.textContent = message;
+        statusElement.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
+        
+        if (type === 'success') {
+          setTimeout(() => {
+            statusElement.textContent = '';
+          }, 3000);
+        }
+      }
+
+      // Initialize
+      fetchSettings();
+    });
+  </script>
+<script src="admin-auth.js"></script>
+</body>
+</html>

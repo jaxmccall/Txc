@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Panel - Tripple Exchange</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        :root {
+            --primary: #0096FF;
+            --primary-dark: #007be8;
+            --primary-light: #33a9ff;
+            --accent: #4cc9f0;
+            --danger: #f72585;
+            --success: #38b000;
+            --warning: #ffaa00;
+            --info: #17a2b8;
+            --bg: #0a0e1a;
+            --bg-secondary: #1a1f2e;
+            --bg-tertiary: #252b3d;
+            --card: #1e2332;
+            --card-hover: #252b3d;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+            --border: #334155;
+            --border-light: #475569;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            --gradient-success: linear-gradient(135deg, var(--success) 0%, #4ade80 100%);
+            --gradient-danger: linear-gradient(135deg, var(--danger) 0%, #f87171 100%);
+            --gradient-warning: linear-gradient(135deg, var(--warning) 0%, #fbbf24 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Admin Header */
+        .admin-header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .control-card {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .control-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .card-description {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .control-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .action-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            border: 1px solid transparent;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .action-item:hover {
+            border-color: var(--primary);
+            background: rgba(0, 150, 255, 0.1);
+        }
+
+        .action-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 0 2rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .impersonation-banner {
+            background: linear-gradient(135deg, var(--warning), #ff8c00);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .impersonation-banner.active { display: block; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(56, 176, 0, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(247, 37, 133, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .alert-warning {
+            background: rgba(255, 170, 0, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <!-- Impersonation Banner -->
+    <div id="impersonationBanner" class="impersonation-banner">
+        <i class="fas fa-user-secret"></i>
+        Currently impersonating user: <span id="impersonatedUser"></span>
+        <button class="btn btn-danger" onclick="endImpersonation()" style="margin-left: 1rem;">
+            <i class="fas fa-sign-out-alt"></i> End Impersonation
+        </button>
+    </div>
+
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>Admin Control Panel</span>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-primary" onclick="refreshStats()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-warning" onclick="viewFrontend()">
+                <i class="fas fa-external-link-alt"></i> View Frontend
+            </button>
+            <button class="btn btn-danger" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-value" id="totalUsers">0</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="activeUsers">0</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalBalance">$0</div>
+            <div class="stat-label">Total Balance</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="pendingWithdrawals">0</div>
+            <div class="stat-label">Pending Withdrawals</div>
+        </div>
+    </div>
+
+    <!-- Control Grid -->
+    <div class="control-grid">
+        <!-- User Management -->
+        <div class="control-card">
+            <div class="card-header">
+                <div class="card-icon" style="background: var(--primary);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <div class="card-title">User Management</div>
+                    <div class="card-description">Manage user accounts, balances, and permissions</div>
+                </div>
+            </div>
+            <div class="control-actions">
+                <div class="action-item" onclick="openUserModal()">
+                    <div class="action-label">
+                        <i class="fas fa-user-plus"></i>
+                        Create New User
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="viewAllUsers()">
+                    <div class="action-label">
+                        <i class="fas fa-list"></i>
+                        View All Users
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="bulkUserActions()">
+                    <div class="action-label">
+                        <i class="fas fa-tasks"></i>
+                        Bulk Actions
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance Management -->
+        <div class="control-card">
+            <div class="card-header">
+                <div class="card-icon" style="background: var(--success);">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div>
+                    <div class="card-title">Balance Management</div>
+                    <div class="card-description">Adjust user balances and manage funds</div>
+                </div>
+            </div>
+            <div class="control-actions">
+                <div class="action-item" onclick="openBalanceModal()">
+                    <div class="action-label">
+                        <i class="fas fa-plus-circle"></i>
+                        Credit User Balance
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="openDebitModal()">
+                    <div class="action-label">
+                        <i class="fas fa-minus-circle"></i>
+                        Debit User Balance
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="viewBalanceHistory()">
+                    <div class="action-label">
+                        <i class="fas fa-history"></i>
+                        Balance History
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Management -->
+        <div class="control-card">
+            <div class="card-header">
+                <div class="card-icon" style="background: var(--accent);">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div>
+                    <div class="card-title">Transaction Management</div>
+                    <div class="card-description">Monitor and manage deposits/withdrawals</div>
+                </div>
+            </div>
+            <div class="control-actions">
+                <div class="action-item" onclick="viewPendingDeposits()">
+                    <div class="action-label">
+                        <i class="fas fa-arrow-down"></i>
+                        Pending Deposits
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="viewPendingWithdrawals()">
+                    <div class="action-label">
+                        <i class="fas fa-arrow-up"></i>
+                        Pending Withdrawals
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="processTransactions()">
+                    <div class="action-label">
+                        <i class="fas fa-cogs"></i>
+                        Process Transactions
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Impersonation -->
+        <div class="control-card">
+            <div class="card-header">
+                <div class="card-icon" style="background: var(--danger);">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <div>
+                    <div class="card-title">User Impersonation</div>
+                    <div class="card-description">Login as any user for support purposes</div>
+                </div>
+            </div>
+            <div class="control-actions">
+                <div class="action-item" onclick="openImpersonationModal()">
+                    <div class="action-label">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Impersonate User
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="action-item" onclick="viewActiveImpersonations()">
+                    <div class="action-label">
+                        <i class="fas fa-eye"></i>
+                        Active Sessions
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Creation Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New User</h3>
+                <button class="close-btn" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Initial Balance (USDT)</label>
+                    <input type="number" class="form-input" name="balance" step="0.01" value="0">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-user-plus"></i> Create User
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Balance Adjustment Modal -->
+    <div id="balanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Adjust User Balance</h3>
+                <button class="close-btn" onclick="closeModal('balanceModal')">&times;</button>
+            </div>
+            <form id="balanceForm">
+                <div class="form-group">
+                    <label class="form-label">User ID or Username</label>
+                    <input type="text" class="form-input" name="user_identifier" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amount (USDT)</label>
+                    <input type="number" class="form-input" name="amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Action</label>
+                    <select class="form-select" name="action" required>
+                        <option value="credit">Credit (Add)</option>
+                        <option value="debit">Debit (Subtract)</option>
+                        <option value="set">Set Balance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reason</label>
+                    <textarea class="form-textarea" name="reason" placeholder="Reason for balance adjustment..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    <i class="fas fa-wallet"></i> Adjust Balance
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Impersonation Modal -->
+    <div id="impersonationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Impersonate User</h3>
+                <button class="close-btn" onclick="closeModal('impersonationModal')">&times;</button>
+            </div>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Warning:</strong> You will be logged in as the selected user. Use this feature responsibly for support purposes only.
+            </div>
+            <form id="impersonationForm">
+                <div class="form-group">
+                    <label class="form-label">User ID or Username</label>
+                    <input type="text" class="form-input" name="user_identifier" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reason for Impersonation</label>
+                    <textarea class="form-textarea" name="reason" placeholder="Reason for impersonating this user..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger" style="width: 100%;">
+                    <i class="fas fa-user-secret"></i> Start Impersonation
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-control-panel.js"></script>
+</body>
+</html>

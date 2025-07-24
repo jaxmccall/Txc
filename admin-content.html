@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Content Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --primary-dark: #2563eb;
+      --primary-gradient: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --warning-light: #fbbf24;
+      --danger: #ef4444;
+      --danger-light: #f87171;
+      --bg-dark: #0f172a;
+      --bg-darker: #020617;
+      --sidebar-bg: #1e293b;
+      --card-bg: #1e293b;
+      --card-hover: rgba(30, 41, 59, 0.8);
+      --card-border: #334155;
+      --input-bg: #0f172a;
+      --text-light: #f8fafc;
+      --text-muted: #c7dbef;
+      --text-dark: #8a9db5;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      --transition: all 0.2s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .admin-sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      border-right: 1px solid var(--card-border);
+    }
+
+    .admin-sidebar .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      padding: 30px 0 30px 36px;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+
+    .admin-sidebar .logo::after {
+      content: '';
+      position: absolute;
+      bottom: 20px;
+      left: 36px;
+      width: 40px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 3px;
+    }
+
+    .admin-sidebar nav {
+      padding: 20px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .admin-sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: var(--transition);
+      margin-bottom: 4px;
+    }
+
+    .admin-sidebar a:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--text-light);
+    }
+
+    .admin-sidebar a.active {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .admin-sidebar i {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .main-content {
+      margin-left: 280px;
+      padding: 40px;
+      min-height: 100vh;
+      background: var(--bg-dark);
+    }
+
+    h1 {
+      color: var(--text-light);
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 3px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: 0 15px 35px rgba(9,52,74,0.25);
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-light);
+    }
+
+    select {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-light);
+      font-size: 1rem;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--input-bg);
+      color: var(--text-light);
+      font-size: 1rem;
+      margin-bottom: 20px;
+      transition: var(--transition);
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .save-btn {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 36px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .save-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .save-btn i {
+      font-size: 0.9em;
+    }
+
+    .status-msg {
+      font-weight: 600;
+      margin-left: 10px;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 1200px) {
+      .admin-sidebar {
+        width: 240px;
+      }
+      .main-content {
+        margin-left: 240px;
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      .card {
+        padding: 20px;
+      }
+      textarea {
+        min-height: 250px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+      .card {
+        padding: 15px;
+      }
+      .save-btn {
+        padding: 10px 24px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Modern Loading Overlay Styles */
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #020617;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    }
+
+    .loading-screen.hidden {
+        display: none;
+    }
+
+    .geometric-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        opacity: 0.15;
+    }
+
+    .geometric-shape {
+        position: absolute;
+        border: 1px solid #3b82f6;
+        opacity: 0.7;
+    }
+
+    .shape-1 {
+        width: 300px;
+        height: 300px;
+        top: -50px;
+        left: -50px;
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        animation: float 25s infinite linear;
+    }
+
+    .shape-2 {
+        width: 200px;
+        height: 200px;
+        bottom: -30px;
+        right: -30px;
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        animation: float 20s infinite linear reverse;
+    }
+
+    .shape-3 {
+        width: 150px;
+        height: 150px;
+        top: 30%;
+        right: 10%;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        animation: pulse 8s infinite ease-in-out;
+    }
+
+    @keyframes float {
+        0% {
+            transform: rotate(0deg) translate(0, 0);
+        }
+        100% {
+            transform: rotate(360deg) translate(50px, 50px);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+    }
+
+    .loading-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 10;
+        width: 100%;
+        max-width: 600px;
+        padding: 2rem;
+    }
+
+    .loading-animation {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 3rem;
+    }
+
+    .core {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        animation: core-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes core-pulse {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.7);
+        }
+    }
+
+    .orbit {
+        position: absolute;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        animation: orbit-rotate linear infinite;
+    }
+
+    .orbit-1 {
+        width: 120px;
+        height: 120px;
+        top: 40px;
+        left: 40px;
+        border-top-color: #3b82f6;
+        animation-duration: 8s;
+    }
+
+    .orbit-2 {
+        width: 160px;
+        height: 160px;
+        top: 20px;
+        left: 20px;
+        border-right-color: #60a5fa;
+        animation-duration: 12s;
+        animation-direction: reverse;
+    }
+
+    .orbit-3 {
+        width: 200px;
+        height: 200px;
+        top: 0;
+        left: 0;
+        border-bottom-color: #00f0ff;
+        animation-duration: 16s;
+    }
+
+    @keyframes orbit-rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loading-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center;
+        background: linear-gradient(135deg, #3b82f6 0%, #00f0ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 2px;
+        animation: title-glow 4s infinite ease-in-out;
+    }
+
+    @keyframes title-glow {
+        0%, 100% {
+            filter: brightness(1);
+        }
+        50% {
+            filter: brightness(1.3);
+        }
+    }
+
+    .loading-subtitle {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 3rem;
+        text-align: center;
+        letter-spacing: 1px;
+        font-weight: 300;
+    }
+
+    .progress-container {
+        width: 300px;
+        height: 4px;
+        background: rgba(59, 130, 246, 0.2);
+        border-radius: 2px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #00f0ff 100%);
+        border-radius: 2px;
+        animation: progress-fill 3s infinite ease-in-out;
+    }
+
+    @keyframes progress-fill {
+        0% {
+            width: 0%;
+            transform: translateX(-100%);
+        }
+        50% {
+            width: 100%;
+            transform: translateX(0%);
+        }
+        100% {
+            width: 100%;
+            transform: translateX(100%);
+        }
+    }
+
+    .status-text {
+        font-size: 0.9rem;
+        color: #64748b;
+        text-align: center;
+        animation: status-fade 2s infinite ease-in-out;
+    }
+
+    @keyframes status-fade {
+        0%, 100% {
+            opacity: 0.7;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .loading-title {
+            font-size: 2rem;
+        }
+        
+        .loading-animation {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .core {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .orbit-1 {
+            width: 90px;
+            height: 90px;
+            top: 30px;
+            left: 30px;
+        }
+        
+        .orbit-2 {
+            width: 120px;
+            height: 120px;
+            top: 15px;
+            left: 15px;
+        }
+        
+        .orbit-3 {
+            width: 150px;
+            height: 150px;
+            top: 0;
+            left: 0;
+        }
+        
+        .progress-container {
+            width: 250px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+      <div class="geometric-bg">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+      </div>
+      
+      <div class="loading-content">
+          <div class="loading-animation">
+              <div class="core"></div>
+              <div class="orbit orbit-1"></div>
+              <div class="orbit orbit-2"></div>
+              <div class="orbit orbit-3"></div>
+          </div>
+          
+          <h1 class="loading-title">
+              <span>TRIPPLE EXCHANGE</span>
+          </h1>
+          <p class="loading-subtitle">Admin Content Management</p>
+          
+          <div class="progress-container">
+              <div class="progress-bar"></div>
+          </div>
+          
+          <p class="status-text">Loading content manager</p>
+      </div>
+  </div>
+
+  <aside class="admin-sidebar">
+    <div class="logo">Tripple Admin</div>
+    <nav>
+      <a href="admin-dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a>
+      <a href="admin-users.html"><i class="fa-solid fa-users"></i>Users</a>
+      <a href="admin-trades.html"><i class="fa-solid fa-chart-line"></i>Trades</a>
+      <a href="admin-deposits.html"><i class="fa-solid fa-wallet"></i>Deposits</a>
+      <a href="admin-withdrawals.html"><i class="fa-solid fa-arrow-up"></i>Withdrawals</a>
+      <a href="admin-kyc.html"><i class="fa-solid fa-user-check"></i>KYC</a>
+      <a href="admin-mining.html"><i class="fa-solid fa-coins"></i>Mining</a>
+      <a href="admin-get-notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+      <a href="admin-referrals.html"><i class="fa-solid fa-link"></i>Referrals</a>
+      <a href="admin-content.html" class="active"><i class="fa-solid fa-file-alt"></i>Content</a>
+      <a href="admin-settings.html"><i class="fa-solid fa-gear"></i>Settings</a>
+      <a href="admin-logs.html"><i class="fa-solid fa-rotate-left"></i>Audit/Logs</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <h1>Content Manager</h1>
+    <div class="card">
+      <label for="sectionSelect">Select Section to Edit</label>
+      <select id="sectionSelect">
+        <option value="homepage">Homepage</option>
+        <option value="about">About Us</option>
+        <option value="terms">Terms of Service</option>
+        <option value="privacy">Privacy Policy</option>
+        <option value="faq">FAQ</option>
+      </select>
+      <textarea id="contentBox" placeholder="Content will load here..."></textarea>
+      <div class="actions">
+        <button class="save-btn" onclick="saveContent()"><i class="fas fa-save"></i> Save Changes</button>
+        <span class="status-msg" id="statusMsg"></span>
+      </div>
+    </div>
+  </div>
+  <script>
+  // Modern Loading overlay functions
+  function showLoadingOverlay() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+          overlay.classList.remove('hidden');
+      }
+  }
+
+  function hideLoadingOverlay() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+          overlay.classList.add('hidden');
+      }
+  }
+
+  // Initialize loading overlay
+  document.addEventListener('DOMContentLoaded', function() {
+      showLoadingOverlay();
+      
+      // Hide loading overlay after a short delay
+      setTimeout(function() {
+          hideLoadingOverlay();
+          document.body.classList.add('page-loaded');
+      }, 3000);
+      
+      // Load initial content
+      fetchContent(document.getElementById('sectionSelect').value);
+  });
+
+  // Utility to get CSS variable from :root
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name) || name;
+  }
+
+  function fetchContent(section) {
+    fetch("api/admin-get-content.php?section=" + encodeURIComponent(section))
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('contentBox').value = d.content || "";
+      })
+      .catch(error => {
+        const statusMsg = document.getElementById('statusMsg');
+        statusMsg.textContent = "✗ Failed to load content";
+        statusMsg.style.color = cssVar('--danger');
+        console.error("Error fetching content:", error);
+      });
+  }
+
+  document.getElementById('sectionSelect').onchange = function() {
+    fetchContent(this.value);
+    document.getElementById('statusMsg').textContent = "";
+    document.getElementById('statusMsg').style.color = "";
+  };
+
+  function saveContent() {
+    const section = document.getElementById('sectionSelect').value;
+    const content = document.getElementById('contentBox').value;
+    const statusMsg = document.getElementById('statusMsg');
+    
+    if (!content.trim()) {
+      statusMsg.textContent = "Content cannot be empty";
+      statusMsg.style.color = cssVar('--danger');
+      return;
+    }
+
+    fetch("api/admin-save-content.php", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({section, content})
+    })
+    .then(r => r.json())
+    .then(d => {
+      statusMsg.textContent = d.success ? "✓ Changes saved successfully!" : "✗ Save failed";
+      statusMsg.style.color = d.success ? cssVar('--success') : cssVar('--danger');
+      if (d.success) {
+        setTimeout(() => {
+          statusMsg.textContent = "";
+        }, 2500);
+      }
+    })
+    .catch(error => {
+      statusMsg.textContent = "✗ Network error";
+      statusMsg.style.color = cssVar('--danger');
+      console.error("Save error:", error);
+    });
+  }
+
+  // Load initial content
+  fetchContent(document.getElementById('sectionSelect').value);
+</script>
+
+
+<script>
+  fetch('check-admin-session.php')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.authenticated) {
+        window.location.href = 'admin-login.html';
+      }
+    })
+    .catch(() => window.location.href = 'admin-login.html');
+</script>
+
+<script src="admin-auth.js"></script>
+</body>
+</html>

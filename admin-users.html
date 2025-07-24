@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - User Management</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0096FF;
+      --primary-light: #00BFFF;
+      --danger: #F44336;
+      --warning: #F0B400;
+      --success: #16C784;
+      --info: #00B4D8;
+      --dark: #17202A;
+      --darker: #0d1117;
+      --light: #f8fafc;
+      --gray: #7f8c8d;
+      --border: #233042;
+      --card-bg: #202a35;
+    }
+    html, body {
+      background: var(--darker);
+      color: var(--light);
+      font-family: 'Poppins', sans-serif;
+      margin: 0; min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+    .sidebar {
+      width: 250px; background: var(--dark);
+      position: fixed; top: 0; left: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      z-index: 100; padding: 28px 0 0 0;
+      transition: width 0.3s;
+    }
+    .sidebar.collapsed { width: 70px; }
+    .sidebar.collapsed .site-title, .sidebar.collapsed .nav-link span { display: none; }
+    .sidebar.collapsed .nav-link { justify-content: center; }
+    .toggle-sidebar {
+      position: absolute; top: 20px; right: -15px;
+      background: var(--dark); border: 2px solid var(--border);
+      border-radius: 50%; width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--light); cursor: pointer; z-index: 101;
+    }
+    .site-title {
+      color: var(--primary-light); font-size: 1.3rem; text-align: center; font-weight: 700;
+      margin-bottom: 28px; padding: 0 15px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .nav { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; flex-grow: 1; }
+    .nav-link {
+      color: var(--light); text-decoration: none;
+      padding: 13px 20px; border-radius: 8px; font-size: 0.95rem; font-weight: 500;
+      display: flex; align-items: center; gap: 12px; transition: all 0.2s;
+    }
+    .nav-link:hover { background: rgba(0, 150, 255, 0.12);}
+    .nav-link.active {
+      background: linear-gradient(90deg, var(--primary) 70%, var(--primary-light));
+      color: #fff; box-shadow: 0 2px 10px rgba(0, 150, 255, 0.15);
+    }
+    .main-content {
+      margin-left: 250px; padding: 30px 30px 30px 30px; min-height: 100vh; transition: margin-left 0.3s;
+      background: var(--darker);
+    }
+    .sidebar.collapsed ~ .main-content { margin-left: 70px; }
+    .page-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 25px; flex-wrap: wrap; gap: 15px;
+    }
+    h1 { font-size: 2rem; color: var(--primary); margin: 0; font-weight: 700; }
+    .action-buttons { display: flex; gap: 10px; }
+    .btn {
+      padding: 10px 18px; border-radius: 8px; border: none; font-weight: 600; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.18s;
+      background: var(--card-bg); color: var(--primary-light); border: 1.5px solid var(--primary-light);
+    }
+    .btn-primary { background: var(--primary); color: white; border: none; }
+    .btn-primary:hover { background: #007be8;}
+    .btn-success { background: var(--success); color: white; border: none;}
+    .btn-success:hover { background: #14b377;}
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--light);}
+    .btn-outline:hover { background: rgba(255,255,255,0.05);}
+    .search-filter-container {
+      display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .searchbar, .filter-dropdown, .date-input {
+      padding: 10px 15px; font-size: 1rem;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card-bg); color: var(--light);
+      min-width: 170px; max-width: 400px;
+      outline: none;
+    }
+    .filter-dropdown, .date-input { cursor: pointer; }
+    .date-range { display: flex; gap: 10px; align-items: center;}
+    .table-container {
+      overflow-x: auto; border-radius: 16px; background: var(--card-bg);
+      margin-top: 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+    }
+    table {
+      width: 100%; border-collapse: collapse; min-width: 1250px;
+    }
+    th, td {
+      padding: 14px 12px; text-align: left; font-size: 0.97rem;
+    }
+    th {
+      background: #243248; color: var(--primary-light);
+      font-size: 0.97rem; font-weight: 700; position: sticky; top: 0;
+      letter-spacing: 0.04em;
+    }
+    tr { border-bottom: 1px solid var(--border);}
+    tr:last-child { border-bottom: none; }
+    tr:hover { background: rgba(0, 150, 255, 0.06);}
+    .checkbox-cell { width: 36px; text-align: center; }
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;
+      background: rgba(0,180,255,0.11); color: var(--primary-light); letter-spacing: 0.04em;
+    }
+    .badge.frozen, .badge.kyc-rejected { background: rgba(244,67,54,0.13); color: var(--danger);}
+    .badge.kyc-pending { background: rgba(255,179,71,0.15); color: var(--warning);}
+    .badge.kyc-approved, .badge.email-verified { background: rgba(22,199,132,0.12); color: var(--success);}
+    .badge.email-unverified { background: rgba(255,179,71,0.13); color: var(--warning);}
+    .credit-score {
+      display: inline-block; width: 60px; text-align: center; font-weight: 600; padding: 4px 0; border-radius: 12px;
+    }
+    .credit-score.high { background: rgba(22,199,132,0.10); color: var(--success);}
+    .credit-score.medium { background: rgba(255,179,71,0.10); color: var(--warning);}
+    .credit-score.low { background: rgba(244,67,54,0.10); color: var(--danger);}
+    .action-btns { display: flex; gap: 6px; flex-wrap: wrap;}
+    .action-btn {
+      border: none; padding: 7px 11px; border-radius: 6px; cursor: pointer; font-size: 0.94rem;
+      display: flex; align-items: center; gap: 5px; transition: all 0.17s;
+      background: var(--card-bg); color: var(--primary-light); border: 1.2px solid var(--primary-light);
+    }
+    .action-btn.edit { background: var(--primary); color: #fff; border: none;}
+    .action-btn.edit:hover { background: #007be8;}
+    .action-btn.balance { background: var(--success); color: #fff; border: none;}
+    .action-btn.auth { background: var(--info); color: #fff; border: none;}
+    .action-btn.notify { background: var(--warning); color: #222; border: none;}
+    .action-btn.impersonate { background: var(--gray); color: #fff; border: none;}
+    .action-btn:hover { transform: translateY(-2px);}
+    .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 10px 0;}
+    .pagination-info { font-size: 0.97rem; color: var(--gray);}
+    .pagination-controls { display: flex; gap: 8px;}
+    .page-btn {
+      padding: 8px 12px; border-radius: 6px;
+      background: var(--card-bg); border: 1.2px solid var(--primary-light); color: var(--primary-light);
+      cursor: pointer; font-weight: 600; transition: all 0.15s;
+    }
+    .page-btn.active, .page-btn:hover { background: var(--primary-light); color: white; }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed;}
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.72); z-index: 1000; justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: var(--card-bg); border-radius: 16px;
+      width: 95%; max-width: 470px; max-height: 94vh; overflow-y: auto;
+      padding: 28px; box-shadow: 0 7px 38px rgba(0,0,0,0.22);
+      animation: modalFadeIn 0.25s;
+    }
+    @keyframes modalFadeIn { from{opacity:0; transform:translateY(-20px);} to{opacity:1; transform:translateY(0);} }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;}
+    .modal-title { font-size: 1.28rem; color: var(--primary); font-weight: 700; margin: 0;}
+    .close-modal {
+      background: none; border: none; font-size: 1.5rem; color: var(--gray); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .close-modal:hover { color: var(--danger);}
+    .form-group { margin-bottom: 14px;}
+    .form-label { display: block; margin-bottom: 6px; font-size: 0.99rem; color: var(--light);}
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 9px 13px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card-bg); color: var(--light); font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+    }
+    .form-textarea { min-height: 90px; resize: vertical;}
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;}
+    .toast {
+      position: fixed; bottom: 22px; right: 22px; padding: 15px 22px; border-radius: 9px;
+      background: var(--dark); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.19);
+      display: flex; align-items: center; gap: 12px; z-index: 1010;
+      transform: translateY(120px); opacity: 0; transition: all 0.32s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1;}
+    .toast.success { border-left: 4px solid var(--success);}
+    .toast.error { border-left: 4px solid var(--danger);}
+    .toast.warning { border-left: 4px solid var(--warning);}
+    .close-toast { background: none; border: none; color: white; cursor: pointer; margin-left: 15px;}
+    @media (max-width:1200px){ .sidebar{width:70px;} .sidebar .site-title, .sidebar .nav-link span{display:none;} .sidebar .nav-link{justify-content:center;} .main-content{margin-left:70px;}}
+    @media (max-width:900px){ .main-content{padding:22px 6px;}}
+    @media (max-width:600px){
+      .main-content{padding:12px 2px;}
+      .search-filter-container{flex-direction:column;}
+      .searchbar,.filter-dropdown,.date-input{width:100%;max-width:none;}
+      .modal-content{width:98%;padding:11px;}
+      table{min-width:950px;}
+    }
+
+    /* Modern Loading Overlay Styles */
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .geometric-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .geometric-shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 {
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(45deg, #4361ee33, #4cc9f033);
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape-2 {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(45deg, #f7258533, #ffaa0033);
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(45deg, #38b00033, #4cc9f033);
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(120deg); }
+        66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    .loading-content {
+        text-align: center;
+        z-index: 2;
+        position: relative;
+    }
+
+    .loading-animation {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+    }
+
+    .core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(45deg, #4361ee, #4cc9f0);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .orbit {
+        position: absolute;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        animation: rotate 3s linear infinite;
+    }
+
+    .orbit-1 {
+        width: 40px;
+        height: 40px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-top-color: #4361ee;
+        animation-duration: 1.5s;
+    }
+
+    .orbit-2 {
+        width: 70px;
+        height: 70px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-right-color: #4cc9f0;
+        animation-duration: 2s;
+        animation-direction: reverse;
+    }
+
+    .orbit-3 {
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-bottom-color: #f72585;
+        animation-duration: 3s;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    @keyframes rotate {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .loading-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #4361ee, #4cc9f0, #f72585);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    .loading-subtitle {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .progress-container {
+        width: 200px;
+        height: 4px;
+        background: #334155;
+        border-radius: 2px;
+        margin: 0 auto 1.5rem;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #4361ee, #4cc9f0);
+        border-radius: 2px;
+        animation: progress 3s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+    }
+
+    .status-text {
+        color: #e2e8f0;
+        font-size: 0.9rem;
+        font-weight: 400;
+        opacity: 0.8;
+    }
+
+    /* Responsive adjustments for loading overlay */
+    @media (max-width: 768px) {
+        .loading-title {
+            font-size: 2rem;
+        }
+        
+        .loading-animation {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .progress-container {
+            width: 150px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <!-- Modern Loading Overlay -->
+  <div id="loadingOverlay" class="loading-screen">
+      <div class="geometric-bg">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+      </div>
+      
+      <div class="loading-content">
+          <div class="loading-animation">
+              <div class="core"></div>
+              <div class="orbit orbit-1"></div>
+              <div class="orbit orbit-2"></div>
+              <div class="orbit orbit-3"></div>
+          </div>
+          
+          <h1 class="loading-title">
+              <span>TRIPPLE EXCHANGE</span>
+          </h1>
+          <p class="loading-subtitle">Admin User Management</p>
+          
+          <div class="progress-container">
+              <div class="progress-bar"></div>
+          </div>
+          
+          <p class="status-text">Loading user data</p>
+      </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-chevron-left"></i></div>
+    <div class="site-title">Tripple Admin</div>
+    <div class="nav">
+      <a class="nav-link" href="admin-dashboard.html"><i class="fa fa-home"></i><span>Dashboard</span></a>
+      <a class="nav-link active" href="admin-users.html"><i class="fa fa-users"></i><span>Users</span></a>
+      <a class="nav-link" href="admin-trades.html"><i class="fa fa-chart-line"></i><span>Trades</span></a>
+      <a class="nav-link" href="admin-deposits.html"><i class="fa fa-wallet"></i><span>Deposits</span></a>
+      <a class="nav-link" href="admin-withdrawals.html"><i class="fa fa-arrow-up"></i><span>Withdrawals</span></a>
+      <a class="nav-link" href="admin-kyc.html"><i class="fa fa-user-check"></i><span>KYC</span></a>
+      <a class="nav-link" href="admin-mining.html"><i class="fa fa-coins"></i><span>Mining</span></a>
+      <a class="nav-link" href="admin-get-notifications.html"><i class="fa fa-bell"></i><span>Notifications</span></a>
+      <a class="nav-link" href="admin-referrals.html"><i class="fa fa-link"></i><span>Referrals</span></a>
+      <a class="nav-link" href="admin-content.html"><i class="fa fa-file-alt"></i><span>Content</span></a>
+      <a class="nav-link" href="admin-settings.html"><i class="fa fa-cog"></i><span>Settings</span></a>
+      <a class="nav-link" href="admin-logs.html"><i class="fa fa-history"></i><span>Audit/Logs</span></a>
+      <div style="flex-grow: 1;"></div>
+      <a class="nav-link" href="#" onclick="logout()"><i class="fa fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
+  </nav>
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1>User Management</h1>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="showExportModal()"><i class="fas fa-file-export"></i> Export</button>
+        <button class="btn btn-success" onclick="showBulkActionModal()"><i class="fas fa-tasks"></i> Bulk Actions</button>
+      </div>
+    </div>
+    <div class="search-filter-container">
+      <input class="searchbar" type="text" id="searchInput" placeholder="Search users...">
+      <select class="filter-dropdown" id="statusFilter">
+        <option value="">All Statuses</option>
+        <option value="active">Active</option>
+        <option value="frozen">Frozen</option>
+      </select>
+      <select class="filter-dropdown" id="kycFilter">
+        <option value="">All KYC Statuses</option>
+        <option value="approved">KYC Approved</option>
+        <option value="pending">KYC Pending</option>
+        <option value="rejected">KYC Rejected</option>
+      </select>
+      <select class="filter-dropdown" id="emailFilter">
+        <option value="">All Email Statuses</option>
+        <option value="verified">Email Verified</option>
+        <option value="unverified">Email Unverified</option>
+      </select>
+      <div class="date-range">
+        <input type="date" class="date-input" id="dateFrom">
+        <span>to</span>
+        <input type="date" class="date-input" id="dateTo">
+      </div>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="checkbox-cell"><input type="checkbox" id="selectAll"></th>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Balance</th>
+            <th>Credit Score</th>
+            <th>KYC</th>
+            <th>Status</th>
+            <th>IP Address</th>
+            <th>Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <div class="pagination-info" id="paginationInfo">Showing 0 of 0 users</div>
+      <div class="pagination-controls">
+        <button class="page-btn" id="firstPage" disabled><i class="fas fa-angle-double-left"></i></button>
+        <button class="page-btn" id="prevPage" disabled><i class="fas fa-angle-left"></i></button>
+        <span id="pageNumbers"></span>
+        <button class="page-btn" id="nextPage" disabled><i class="fas fa-angle-right"></i></button>
+        <button class="page-btn" id="lastPage" disabled><i class="fas fa-angle-double-right"></i></button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <div class="modal" id="userModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle"></div>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="userForm"></form>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span id="toastMessage"></span>
+    <button class="close-toast" onclick="hideToast()">&times;</button>
+  </div>
+  <script>
+    // Modern Loading overlay functions
+    function showLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
+    }
+
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    // SIDEBAR
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('collapsed');
+      const icon = document.querySelector('.toggle-sidebar i');
+      icon.classList.toggle('fa-chevron-left');
+      icon.classList.toggle('fa-chevron-right');
+    }
+    function logout() { window.location.href = 'logout.php'; }
+
+    // USERS TABLE LOGIC
+    let usersData = [];
+    let totalUsers = 0;
+    let currentPage = 1;
+    const usersPerPage = 15;
+    let totalPages = 1;
+    let selectedUsers = new Set();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize loading overlay
+      showLoadingOverlay();
+      
+      // Hide loading overlay after a short delay
+      setTimeout(function() {
+          hideLoadingOverlay();
+          document.body.classList.add('page-loaded');
+      }, 3000);
+      
+      const today = new Date();
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      document.getElementById('dateFrom').valueAsDate = oneMonthAgo;
+      document.getElementById('dateTo').valueAsDate = today;
+      setupEventListeners();
+      fetchUsers();
+    });
+
+    function setupEventListeners() {
+      document.getElementById('searchInput').addEventListener('input', debounce(fetchUsers, 300));
+      document.getElementById('statusFilter').addEventListener('change', fetchUsers);
+      document.getElementById('kycFilter').addEventListener('change', fetchUsers);
+      document.getElementById('emailFilter').addEventListener('change', fetchUsers);
+      document.getElementById('dateFrom').addEventListener('change', fetchUsers);
+      document.getElementById('dateTo').addEventListener('change', fetchUsers);
+      document.getElementById('firstPage').addEventListener('click', () => goToPage(1));
+      document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
+      document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
+      document.getElementById('lastPage').addEventListener('click', () => goToPage(totalPages));
+      document.getElementById('selectAll').addEventListener('change', function() {
+        document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+          checkbox.checked = this.checked;
+          if (this.checked) {
+            selectedUsers.add(parseInt(checkbox.dataset.userId));
+          } else {
+            selectedUsers.delete(parseInt(checkbox.dataset.userId));
+          }
+        });
+      });
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, arguments), wait);
+      };
+    }
+
+    function fetchUsers() {
+      const search = document.getElementById('searchInput').value.trim();
+      const status = document.getElementById('statusFilter').value;
+      const kyc = document.getElementById('kycFilter').value;
+      const email = document.getElementById('emailFilter').value;
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+
+      let url = 'api/admin-get-users.php';
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (status) params.append('status', status);
+      if (kyc) params.append('kyc_status', kyc);
+      if (email) params.append('email_verified', email === 'verified' ? '1' : '0');
+      if (dateFrom) params.append('date_from', dateFrom);
+      if (dateTo) params.append('date_to', dateTo);
+      params.append('page', currentPage);
+      params.append('per_page', usersPerPage);
+      url += '?' + params.toString();
+
+      showLoading();
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
+        .then(data => {
+          if (data.success) {
+            usersData = data.users;
+            totalUsers = data.total_count;
+            totalPages = Math.max(1, Math.ceil(data.total_count / usersPerPage));
+            renderUsers();
+            updatePagination();
+          } else {
+            showToast('Could not load users: ' + (data.message || ''), 'error');
+          }
+        })
+        .catch(err => {
+          console.error('Fetch error:', err);
+          showToast('Failed to load users: ' + err.message, 'error');
+        })
+        .finally(hideLoading);
+    }
+
+    function renderUsers() {
+      let rows = '';
+      if (!usersData || usersData.length === 0) {
+        rows = '<tr><td colspan="11" style="text-align:center;color:#888;padding:30px;">No users found.</td></tr>';
+      } else {
+        usersData.forEach((user, idx) => {
+          const accountScore = user.account_score || user.credit_score || 100;
+          const scoreClass = accountScore >= 80 ? 'high' : accountScore >= 60 ? 'medium' : 'low';
+          rows += `
+          <tr>
+            <td class="checkbox-cell"><input type="checkbox" class="user-checkbox" data-user-id="${user.id}" ${selectedUsers.has(user.id) ? 'checked' : ''}></td>
+            <td>${user.id}</td>
+            <td><a href="#" style="color:var(--primary-light);" onclick="showUserDetailsModal(${idx});return false;">${escapeHtml(user.name)}</a></td>
+            <td>${escapeHtml(user.email)}</td>
+            <td>$${parseFloat(user.wallet_balance || user.balance || 0).toFixed(2)}</td>
+            <td><span class="credit-score ${scoreClass}">${accountScore}</span></td>
+            <td><span class="badge kyc-${user.kyc_status}">${capitalize(user.kyc_status)}</span></td>
+            <td><span class="badge ${user.status}">${capitalize(user.status)}</span></td>
+            <td>${user.ip_address || 'N/A'}</td>
+            <td>${user.location || 'N/A'}</td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn edit" title="Edit user" onclick="showEditUserModal(${idx})"><i class="fas fa-edit"></i></button>
+                <button class="action-btn balance" title="Modify balance" onclick="showBalanceModal(${idx})"><i class="fas fa-money-bill-wave"></i></button>
+                <button class="action-btn auth" title="Auth & Certification" onclick="showAuthModal(${idx})"><i class="fas fa-user-shield"></i></button>
+                <button class="action-btn notify" title="Send notification" onclick="showNotificationModal(${idx})"><i class="fas fa-bell"></i></button>
+                <button class="action-btn impersonate" title="Impersonate user" onclick="impersonateUser(${idx})"><i class="fas fa-user-secret"></i></button>
+              </div>
+            </td>
+          </tr>
+          `;
+        });
+      }
+      document.getElementById('usersTableBody').innerHTML = rows;
+      document.getElementById('paginationInfo').textContent =
+        `Showing ${usersData.length ? ((currentPage - 1) * usersPerPage + 1) : 0}-${Math.min(currentPage * usersPerPage, totalUsers)} of ${totalUsers} users`;
+      bindCheckBoxes();
+    }
+
+    function updatePagination() {
+      const firstBtn = document.getElementById('firstPage');
+      const prevBtn = document.getElementById('prevPage');
+      const nextBtn = document.getElementById('nextPage');
+      const lastBtn = document.getElementById('lastPage');
+      const pageNumbers = document.getElementById('pageNumbers');
+      firstBtn.disabled = currentPage === 1;
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+      lastBtn.disabled = currentPage === totalPages;
+
+      let pageButtons = '';
+      const maxVisible = 5;
+      let start = Math.max(1, currentPage - 2), end = Math.min(totalPages, currentPage + 2);
+      if (totalPages > maxVisible) {
+        if (currentPage <= 3) { start = 1; end = maxVisible; }
+        else if (currentPage >= totalPages - 2) { start = totalPages - maxVisible + 1; end = totalPages; }
+      }
+      for (let i = start; i <= end; i++) {
+        pageButtons += `<button class="page-btn${i === currentPage ? ' active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+      }
+      pageNumbers.innerHTML = pageButtons;
+    }
+
+    function goToPage(page) {
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      fetchUsers();
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.className = `toast ${type} show`;
+      setTimeout(hideToast, 4500);
+    }
+
+    function hideToast() {
+      document.getElementById('toast').classList.remove('show');
+    }
+
+    function showLoading() { 
+      // Implement your loading indicator here
+    }
+
+    function hideLoading() {
+      // Implement hiding loading indicator here
+    }
+
+    // Utility Functions
+    function escapeHtml(str) {
+      return str ? String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])) : '';
+    }
+
+    function capitalize(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+
+    function bindCheckBoxes() {
+      document.querySelectorAll('.user-checkbox').forEach(cb => {
+        cb.onchange = function() {
+          const id = parseInt(cb.dataset.userId);
+          if (cb.checked) selectedUsers.add(id); else selectedUsers.delete(id);
+          document.getElementById('selectAll').checked =
+            Array.from(document.querySelectorAll('.user-checkbox')).every(box => box.checked);
+        }
+      });
+    }
+
+    // MODALS
+    function closeModal() {
+      document.getElementById('userModal').style.display = 'none';
+    }
+
+    function showUserDetailsModal(idx) {
+      const user = usersData[idx];
+      document.getElementById('modalTitle').textContent = 'User Details';
+      document.getElementById('userForm').innerHTML = `
+        <div class="form-group"><label class="form-label">ID:</label> <div>${user.id}</div></div>
+        <div class="form-group"><label class="form-label">Name:</label> <div>${escapeHtml(user.name)}</div></div>
+        <div class="form-group"><label class="form-label">Email:</label> <div>${escapeHtml(user.email)}</div></div>
+        <div class="form-group"><label class="form-label">Balance:</label> <div>$${parseFloat(user.wallet_balance).toFixed(2)}</div></div>
+        <div class="form-group"><label class="form-label">Credit Score:</label> <div>${user.credit_score}</div></div>
+        <div class="form-group"><label class="form-label">KYC Status:</label> <div>${capitalize(user.kyc_status)}</div></div>
+        <div class="form-group"><label class="form-label">Status:</label> <div>${capitalize(user.status)}</div></div>
+        <div class="form-group"><label class="form-label">IP:</label> <div>${user.ip_address || 'N/A'}</div></div>
+        <div class="form-group"><label class="form-label">Location:</label> <div>${user.location || 'N/A'}</div></div>
+        <div class="form-group"><label class="form-label">Email Verified:</label> <div>${user.email_verified ? 'Yes' : 'No'}</div></div>
+        <div class="form-group"><label class="form-label">Joined:</label> <div>${user.created_at}</div></div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">Close</button>`;
+      document.getElementById('userModal').style.display = 'flex';
+    }
+
+    function showEditUserModal(idx) {
+      const user = usersData[idx];
+      document.getElementById('modalTitle').textContent = 'Edit User';
+      document.getElementById('userForm').innerHTML = `
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input class="form-input" type="text" id="editName" value="${escapeHtml(user.name)}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="editEmail" value="${escapeHtml(user.email)}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="editStatus">
+            <option value="active"${user.status === "active" ? " selected" : ""}>Active</option>
+            <option value="frozen"${user.status === "frozen" ? " selected" : ""}>Frozen</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">KYC Status</label>
+          <select class="form-select" id="editKYC">
+            <option value="approved"${user.kyc_status === "approved" ? " selected" : ""}>Approved</option>
+            <option value="pending"${user.kyc_status === "pending" ? " selected" : ""}>Pending</option>
+            <option value="rejected"${user.kyc_status === "rejected" ? " selected" : ""}>Rejected</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Credit Score (0-100)</label>
+          <input class="form-input" type="number" id="editCreditScore" min="0" max="100" value="${user.credit_score}">
+        </div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-primary" onclick="saveEditUser(${user.id})">Save</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      `;
+      document.getElementById('userModal').style.display = 'flex';
+    }
+
+    function saveEditUser(userId) {
+      const name = document.getElementById('editName').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const status = document.getElementById('editStatus').value;
+      const kyc = document.getElementById('editKYC').value;
+      const creditScore = parseInt(document.getElementById('editCreditScore').value);
+      
+      if (isNaN(creditScore) || creditScore < 0 || creditScore > 100) {
+        showToast('Credit score must be between 0 and 100', 'error');
+        return;
+      }
+
+      fetch('api/admin-edit-user.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id: userId, 
+          name, 
+          email, 
+          status, 
+          kyc_status: kyc,
+          credit_score: creditScore
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          showToast('User updated!', 'success');
+          closeModal();
+          fetchUsers();
+        } else {
+          showToast(data.message || 'Failed to update user', 'error');
+        }
+      })
+      .catch(err => {
+        console.error('Update error:', err);
+        showToast('Error updating user: ' + err.message, 'error');
+      });
+    }
+
+    function showBalanceModal(idx) {
+      const user = usersData[idx];
+      document.getElementById('modalTitle').textContent = 'Modify Balance';
+      document.getElementById('userForm').innerHTML = `
+        <div class="form-group">
+          <label class="form-label">Current Balance</label>
+          <div>$${parseFloat(user.wallet_balance).toFixed(2)}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount to Add/Remove</label>
+          <input class="form-input" type="number" id="balanceAmount" step="0.01" placeholder="e.g. 50 or -30">
+        </div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-primary" onclick="updateBalance(${user.id})">Update</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      `;
+      document.getElementById('userModal').style.display = 'flex';
+    }
+
+    function updateBalance(userId) {
+      const amount = parseFloat(document.getElementById('balanceAmount').value);
+      if (isNaN(amount)) { showToast('Enter a valid amount!', 'error'); return; }
+      
+      fetch('api/admin-balance-user.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userId, amount })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          showToast('Balance updated!', 'success');
+          closeModal();
+          fetchUsers();
+        } else {
+          showToast(data.message || 'Failed to update balance', 'error');
+        }
+      })
+      .catch(err => {
+        console.error('Balance update error:', err);
+        showToast('Error updating balance: ' + err.message, 'error');
+      });
+    }
+
+    function showAuthModal(idx) {
+      const user = usersData[idx];
+      document.getElementById('modalTitle').textContent = 'Auth & Certification';
+      document.getElementById('userForm').innerHTML = `
+        <div class="form-group"><label class="form-label">User ID:</label> <div>${user.id}</div></div>
+        <div class="form-group"><label class="form-label">KYC Status:</label> <div>${capitalize(user.kyc_status)}</div></div>
+        <div class="form-group"><label class="form-label">Status:</label> <div>${capitalize(user.status)}</div></div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-outline" onclick="closeModal()">Close</button>
+      `;
+      document.getElementById('userModal').style.display = 'flex';
+    }
+
+    function showNotificationModal(idx) {
+      const user = usersData[idx];
+      document.getElementById('modalTitle').textContent = 'Send Notification';
+      document.getElementById('userForm').innerHTML = `
+        <div class="form-group"><label class="form-label">Send to:</label> <div>${escapeHtml(user.name)} (${escapeHtml(user.email)})</div></div>
+        <div class="form-group"><label class="form-label">Message:</label>
+          <textarea class="form-textarea" id="notifyMsg" rows="4"></textarea>
+        </div>
+      `;
+      document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-primary" onclick="sendNotification(${user.id})">Send</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      `;
+      document.getElementById('userModal').style.display = 'flex';
+    }
+
+    function sendNotification(userId) {
+      const msg = document.getElementById('notifyMsg').value.trim();
+      if (!msg) { showToast('Enter a message!', 'error'); return; }
+      
+      fetch('api/admin-notify-user.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userId, message: msg })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          showToast('Notification sent!', 'success');
+          closeModal();
+        } else {
+          showToast(data.message || 'Failed to send notification', 'error');
+        }
+      })
+      .catch(err => {
+        console.error('Notification error:', err);
+        showToast('Error sending notification: ' + err.message, 'error');
+      });
+    }
+
+    function impersonateUser(idx) {
+      const user = usersData[idx];
+      if (!confirm(`Login as ${user.name} (${user.email})? You will have full access to this user's account.`)) return;
+      
+      showLoading();
+      fetch('api/admin-impersonate-user.php', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ 
+          user_id: user.id
+        })
+      })
+      .then(response => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json();
+        } else {
+          return response.text().then(text => {
+            throw new Error("Server returned non-JSON response: " + text);
+          });
+        }
+      })
+      .then(data => {
+        if (data.success && data.redirect) {
+          if (data.admin_session) {
+            sessionStorage.setItem('adminOriginalSession', JSON.stringify(data.admin_session));
+          }
+          window.location.href = data.redirect;
+        } else {
+          showToast(data.message || 'Could not impersonate user', 'error');
+        }
+      })
+      .catch(err => {
+        console.error('Impersonation error:', err);
+        showToast('Error during impersonation: ' + err.message, 'error');
+      })
+      .finally(() => {
+        hideLoading();
+      });
+    }
+
+    function showExportModal() { 
+      showToast("Export coming soon!", "info"); 
+    }
+
+    function showBulkActionModal() {
+      if (!selectedUsers.size) {
+        showToast('Select at least one user for bulk actions', 'warning');
+      } else {
+        showToast('Bulk action coming soon!', 'info');
+      }
+    }
+  </script>
+  <script src="admin-auth.js"></script>
+</body>
+</html>
