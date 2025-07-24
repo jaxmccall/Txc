@@ -1,0 +1,25 @@
+# Logs
+logs/
+*.log
+otp_debug.log
+
+# Test files
+test_connection.php
+
+# Environment and config backup files
+.env
+config_backup.php
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
