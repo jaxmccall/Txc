@@ -467,8 +467,9 @@
     <div class="page-header">
       <h1>User Management</h1>
       <div class="action-buttons">
+        <button class="btn btn-success" onclick="showCreateUserModal()"><i class="fas fa-user-plus"></i> Create User</button>
         <button class="btn btn-primary" onclick="showExportModal()"><i class="fas fa-file-export"></i> Export</button>
-        <button class="btn btn-success" onclick="showBulkActionModal()"><i class="fas fa-tasks"></i> Bulk Actions</button>
+        <button class="btn btn-outline" onclick="showBulkActionModal()"><i class="fas fa-tasks"></i> Bulk Actions</button>
       </div>
     </div>
     <div class="search-filter-container">
@@ -536,6 +537,75 @@
       </div>
       <form id="userForm"></form>
       <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- CREATE USER MODAL -->
+  <div class="modal" id="createUserModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title">Create New User</div>
+        <button class="close-modal" onclick="closeCreateUserModal()">&times;</button>
+      </div>
+      <form id="createUserForm">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input class="form-input" type="text" id="createFirstName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input class="form-input" type="text" id="createLastName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" type="email" id="createEmail" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" type="text" id="createPhone">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <select class="form-select" id="createCountry">
+            <option value="">Select Country</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="GB">United Kingdom</option>
+            <option value="AU">Australia</option>
+            <option value="DE">Germany</option>
+            <option value="FR">France</option>
+            <option value="JP">Japan</option>
+            <option value="IN">India</option>
+            <option value="BR">Brazil</option>
+            <option value="ZA">South Africa</option>
+            <option value="SG">Singapore</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input class="form-input" type="password" id="createPassword" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">KYC Status</label>
+          <select class="form-select" id="createKYCStatus">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Credit Score (0-100)</label>
+          <input class="form-input" type="number" id="createCreditScore" min="0" max="100" value="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Balance ($)</label>
+          <input class="form-input" type="number" id="createBalance" step="0.01" min="0" value="0">
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="createUser()">Create User</button>
+        <button class="btn btn-outline" onclick="closeCreateUserModal()">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -683,7 +753,7 @@
           <tr>
             <td class="checkbox-cell"><input type="checkbox" class="user-checkbox" data-user-id="${user.id}" ${selectedUsers.has(user.id) ? 'checked' : ''}></td>
             <td>${user.id}</td>
-            <td><a href="#" style="color:var(--primary-light);" onclick="showUserDetailsModal(${idx});return false;">${escapeHtml(user.name)}</a></td>
+            <td><a href="admin-user-profile.html?id=${user.id}" style="color:var(--primary-light);" onclick="return true;">${escapeHtml(user.name)}</a></td>
             <td>${escapeHtml(user.email)}</td>
             <td>$${parseFloat(user.wallet_balance || user.balance || 0).toFixed(2)}</td>
             <td><span class="credit-score ${scoreClass}">${accountScore}</span></td>
@@ -1045,6 +1115,87 @@
       } else {
         showToast('Bulk action coming soon!', 'info');
       }
+    }
+
+    function showCreateUserModal() {
+      document.getElementById('createUserModal').style.display = 'flex';
+    }
+
+    function closeCreateUserModal() {
+      document.getElementById('createUserModal').style.display = 'none';
+      document.getElementById('createUserForm').reset();
+    }
+
+    function createUser() {
+      const firstName = document.getElementById('createFirstName').value.trim();
+      const lastName = document.getElementById('createLastName').value.trim();
+      const email = document.getElementById('createEmail').value.trim();
+      const phone = document.getElementById('createPhone').value.trim();
+      const country = document.getElementById('createCountry').value;
+      const password = document.getElementById('createPassword').value;
+      const kycStatus = document.getElementById('createKYCStatus').value;
+      const creditScore = parseInt(document.getElementById('createCreditScore').value);
+      const initialBalance = parseFloat(document.getElementById('createBalance').value);
+
+      // Validate required fields
+      if (!firstName || !lastName || !email || !password) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+      }
+
+      // Validate credit score
+      if (isNaN(creditScore) || creditScore < 0 || creditScore > 100) {
+        showToast('Credit score must be between 0 and 100', 'error');
+        return;
+      }
+
+      // Validate balance
+      if (isNaN(initialBalance) || initialBalance < 0) {
+        showToast('Initial balance must be 0 or greater', 'error');
+        return;
+      }
+
+      const userData = {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone,
+        country: country,
+        password: password,
+        kyc_status: kycStatus,
+        credit_score: creditScore,
+        initial_balance: initialBalance
+      };
+
+      fetch('api/admin-create-user.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          showToast('User created successfully!', 'success');
+          closeCreateUserModal();
+          fetchUsers(); // Refresh the user list
+        } else {
+          showToast(data.message || 'Failed to create user', 'error');
+        }
+      })
+      .catch(err => {
+        console.error('Create user error:', err);
+        showToast('Error creating user: ' + err.message, 'error');
+      });
     }
   </script>
   <script src="admin-auth.js"></script>
