@@ -48,12 +48,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['logged_in'] = true;
                 $_SESSION['last_activity'] = time(); // Set initial activity time for auto-logout
 
+                // Log successful login
+                error_log("LOGIN SUCCESS: User {$user['username']} (ID: {$user['id']}) logged in from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+
                 echo json_encode(['success' => true]);
                 exit();
             } else {
+                // Log failed password attempt
+                error_log("LOGIN FAILED: Invalid password for email: $email from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
                 $errors['password'] = 'Incorrect password';
             }
         } else {
+            // Log failed email attempt
+            error_log("LOGIN FAILED: Email not found: $email from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
             $errors['email'] = 'Email not found';
         }
         $stmt->close();

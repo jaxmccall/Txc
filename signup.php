@@ -57,6 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows > 0) {
+        // Log existing user attempt  
+        error_log("SIGNUP FAILED: Username or email already exists - username: $username, email: $email from IP: $ip");
+        
         http_response_code(409);
         echo json_encode(['success' => false, 'errors' => ['username' => 'Username or email already in use.']]);
         exit;
@@ -102,13 +105,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $referral
     );
     if ($stmt->execute()) {
+        $user_id = $stmt->insert_id;
         $_SESSION['logged_in'] = true;
         $_SESSION['username'] = $username;
         $_SESSION['email'] = $email;
-        $_SESSION['user_id'] = $stmt->insert_id;
+        $_SESSION['user_id'] = $user_id;
         $_SESSION['last_activity'] = time(); // Set initial activity time for auto-logout
+        
+        // Log successful signup
+        error_log("SIGNUP SUCCESS: User $username (ID: $user_id) registered with email: $email from IP: $ip");
+        
         echo json_encode(['success' => true]);
     } else {
+        // Log failed signup attempt
+        error_log("SIGNUP FAILED: Database error for username: $username, email: $email from IP: $ip - Error: " . $mysqli->error);
+        
         http_response_code(500);
         echo json_encode(['success' => false, 'errors' => ['form' => 'Failed to create user.']]);
     }
