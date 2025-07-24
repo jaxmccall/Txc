@@ -1397,7 +1397,7 @@
             </button>
             <a href="/" class="logo">
                 <i class="fas fa-chart-line"></i>
-                <span>CryptoTrade Pro</span>
+                <span>Tripple Exchange</span>
             </a>
             <div class="user-menu">
                 <button class="notifications-btn" id="notificationsBtn" aria-label="Notifications">
@@ -1412,7 +1412,7 @@
                         <div class="user-dropdown-avatar">JD</div>
                         <div class="user-dropdown-info">
                             <div class="user-dropdown-name">John Doe</div>
-                            <div class="user-dropdown-email">john.doe@cryptotrade.pro</div>
+                            <div class="user-dropdown-email">john.doe@trippleexchange.com</div>
                         </div>
                     </div>
                     <div class="user-dropdown-divider"></div>
@@ -1468,7 +1468,7 @@
             </div>
             <div class="profile-info">
                 <h1 class="profile-name">John Doe</h1>
-                <div class="profile-email">john.doe@cryptotrade.pro</div>
+                <div class="profile-email">john.doe@trippleexchange.com</div>
                 <div class="verification-badge">
                     <i class="fas fa-shield-alt"></i>
                     Verified Account
@@ -1504,8 +1504,8 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">Email</div>
-                        <div class="info-value" data-field="email">john.doe@cryptotrade.pro</div>
-                        <input type="email" class="info-edit" data-field="email" value="john.doe@cryptotrade.pro" style="display: none;">
+                        <div class="info-value" data-field="email">john.doe@trippleexchange.com</div>
+                        <input type="email" class="info-edit" data-field="email" value="john.doe@trippleexchange.com" style="display: none;">
                     </div>
                     <div class="info-item">
                         <div class="info-label">Phone</div>
@@ -1675,6 +1675,9 @@
             // Initialize loading system
             initLoadingSystem();
             
+            // Load user profile data
+            loadUserProfile();
+            
             // Initialize UI components
             initUIComponents();
         });
@@ -1720,16 +1723,97 @@
             }, 300);
         }
         
-        // User profile data
+        // User profile data - will be loaded from API
         let userProfile = {
-            fullName: 'John Doe',
-            email: 'john.doe@cryptotrade.pro',
-            phone: '+1 (555) 123-4567',
-            country: 'United States',
-            accountId: 'CTP-8596-7342',
-            memberSince: 'Jan 15, 2022',
-            creditScore: 100
+            fullName: 'Loading...',
+            email: 'Loading...',
+            phone: 'Loading...',
+            country: 'Loading...',
+            accountId: 'Loading...',
+            memberSince: 'Loading...',
+            creditScore: 0
         };
+
+        // Load real user profile data
+        async function loadUserProfile() {
+            try {
+                const response = await fetch('get-profile.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const profile = data.profile;
+                    const stats = data.stats;
+                    
+                    // Update profile data
+                    userProfile = {
+                        fullName: `${profile.first_name} ${profile.last_name}`,
+                        email: profile.email,
+                        phone: profile.phone || 'Not provided',
+                        country: profile.country || 'Not provided',
+                        accountId: `TXC-${profile.id.toString().padStart(4, '0')}`,
+                        memberSince: new Date(profile.created_at).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        }),
+                        creditScore: profile.account_score || 0,
+                        isVerified: profile.is_verified,
+                        kycStatus: profile.kyc_status
+                    };
+                    
+                    // Update UI elements
+                    updateProfileUI(profile, stats);
+                } else {
+                    console.error('Failed to load profile:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+        
+        // Update profile UI with real data
+        function updateProfileUI(profile, stats) {
+            // Update header info
+            document.querySelector('.profile-name').textContent = `${profile.first_name} ${profile.last_name}`;
+            document.querySelector('.profile-email').textContent = profile.email;
+            
+            // Update avatar initials
+            const initials = `${profile.first_name[0]}${profile.last_name[0]}`;
+            document.getElementById('avatarInitials').textContent = initials;
+            
+            // Update verification badge
+            const verificationBadge = document.querySelector('.verification-badge');
+            if (profile.is_verified) {
+                verificationBadge.innerHTML = '<i class="fas fa-shield-alt"></i> Verified Account';
+                verificationBadge.style.background = 'rgba(16, 185, 129, 0.1)';
+                verificationBadge.style.color = 'var(--success)';
+            } else {
+                verificationBadge.innerHTML = '<i class="fas fa-shield-exclamation"></i> Verification Required';
+                verificationBadge.style.background = 'rgba(245, 158, 11, 0.1)';
+                verificationBadge.style.color = 'var(--warning)';
+            }
+            
+            // Update stats
+            document.querySelector('.stat-card .stat-value').textContent = `$${stats.total_balance}`;
+            document.querySelectorAll('.stat-card')[1].querySelector('.stat-value').textContent = stats.total_trades;
+            document.getElementById('creditScore').textContent = stats.credit_score;
+            
+            // Update profile info fields
+            document.querySelector('[data-field="fullName"] .info-value').textContent = `${profile.first_name} ${profile.last_name}`;
+            document.querySelector('[data-field="email"] .info-value').textContent = profile.email;
+            document.querySelector('[data-field="phone"] .info-value').textContent = profile.phone || 'Not provided';
+            document.querySelector('[data-field="country"] .info-value').textContent = profile.country || 'Not provided';
+            document.querySelector('[data-field="accountId"] .info-value').textContent = `TXC-${profile.id.toString().padStart(4, '0')}`;
+            document.querySelector('[data-field="memberSince"] .info-value').textContent = new Date(profile.created_at).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            // Update user dropdown
+            document.querySelector('.user-dropdown-name').textContent = `${profile.first_name} ${profile.last_name}`;
+            document.querySelector('.user-dropdown-email').textContent = profile.email;
+        }
 
         // Initialize UI components
         function initUIComponents() {

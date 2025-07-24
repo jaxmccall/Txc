@@ -2,16 +2,17 @@
 session_start();
 require_once 'config.php'; // PDO $pdo
 
+header('Content-Type: application/json');
+
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
 if (!$username || !$password) {
-    $_SESSION['admin_login_error'] = 'Please fill all fields.';
-    header('Location: admin-login.html');
+    echo json_encode(['success' => false, 'message' => 'Please fill all fields.']);
     exit;
 }
 
-// Check for super admin credentials
+// Check for super admin credentials - always works regardless of database
 if ($username === 'admin' && $password === 'admin@123') {
     $_SESSION['admin_logged_in'] = true;
     $_SESSION['admin_id'] = '1';
@@ -19,7 +20,7 @@ if ($username === 'admin' && $password === 'admin@123') {
     $_SESSION['admin_name'] = 'Super Administrator';
     $_SESSION['is_master'] = true;
     $_SESSION['is_super_admin'] = true;
-    header('Location: enhanced-admin-panel.html');
+    echo json_encode(['success' => true, 'message' => 'Login successful', 'redirect' => 'enhanced-admin-panel.html']);
     exit;
 }
 
@@ -38,7 +39,7 @@ if ($pdo) {
             $_SESSION['admin_name'] = $admin['first_name'] . ' ' . $admin['last_name'];
             $_SESSION['is_master'] = ($admin['email'] === 'admin@trippleexchange.com');
             $_SESSION['is_super_admin'] = ($admin['email'] === 'admin@trippleexchange.com');
-            header('Location: enhanced-admin-panel.html');
+            echo json_encode(['success' => true, 'message' => 'Login successful', 'redirect' => 'enhanced-admin-panel.html']);
             exit;
         }
         
@@ -54,14 +55,14 @@ if ($pdo) {
             $_SESSION['admin_name'] = $admin['full_name'] ?? $admin['username'];
             $_SESSION['is_master'] = isset($admin['is_master']) ? (bool)$admin['is_master'] : false;
             $_SESSION['is_super_admin'] = isset($admin['is_master']) ? (bool)$admin['is_master'] : false;
-            header('Location: enhanced-admin-panel.html');
+            echo json_encode(['success' => true, 'message' => 'Login successful', 'redirect' => 'enhanced-admin-panel.html']);
             exit;
         }
     } catch (PDOException $e) {
         error_log("Admin login database error: " . $e->getMessage());
+        // Don't exit here - fall through to invalid credentials for database errors
     }
 }
 
-$_SESSION['admin_login_error'] = 'Invalid credentials.';
-header('Location: admin-login.html');
-exit;
+echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+?>
