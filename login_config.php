@@ -1,15 +1,15 @@
 <?php
 // Database configuration
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'tripple_exchange');
-define('DB_USER', 'db_user');
-define('DB_PASS', 'your_secure_password');
+define('DB_NAME', 'u925878138_tripplex');
+define('DB_USER', 'u925878138_admin');
+define('DB_PASS', 'Chills@1008!!');
 
 // SMTP Configuration
 define('SMTP_HOST', 'smtp.hostinger.com');
 define('SMTP_PORT', 587);
 define('SMTP_USERNAME', 'support@trippleexchange.com');
-define('SMTP_PASSWORD', 'your_smtp_password');
+define('SMTP_PASSWORD', 'AAaa112233!!!');
 define('SMTP_FROM_EMAIL', 'support@trippleexchange.com');
 define('SMTP_FROM_NAME', 'Tripple Exchange Support');
 
@@ -33,11 +33,16 @@ session_start([
     'cookie_samesite' => 'Lax'
 ]);
 
-// Error reporting
+// Error reporting and logging
 error_reporting(E_ALL);
 ini_set('display_errors', 0); // Set to 0 in production
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/logs/php_errors.log');
+
+// Create logs directory if it doesn't exist
+if (!file_exists(__DIR__ . '/logs')) {
+    mkdir(__DIR__ . '/logs', 0755, true);
+}
 
 // Timezone
 date_default_timezone_set('UTC');

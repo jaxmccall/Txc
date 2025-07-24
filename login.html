@@ -686,16 +686,45 @@
                 return isValid;
             }
             
-            function showError(message) {
+            function showError(message, field = null) {
                 errorMessage.textContent = message;
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
+                
+                // Highlight specific field if provided
+                if (field) {
+                    const fieldElement = document.getElementById(field);
+                    if (fieldElement) {
+                        fieldElement.style.borderColor = 'var(--error)';
+                        fieldElement.focus();
+                    }
+                }
             }
             
             function showSuccess(message) {
                 successMessage.textContent = message;
                 successMessage.style.display = 'block';
                 errorMessage.style.display = 'none';
+            }
+            
+            function showFieldErrors(errors) {
+                // Clear previous field highlights
+                [emailInput, passwordInput].forEach(input => {
+                    input.style.borderColor = 'var(--border)';
+                });
+                
+                // Show specific field errors
+                if (errors.email) {
+                    showError(errors.email, 'email');
+                } else if (errors.password) {
+                    showError(errors.password, 'password');
+                } else if (errors.general) {
+                    showError(errors.general);
+                } else {
+                    // Show first error if no specific field
+                    const firstError = Object.values(errors)[0];
+                    showError(firstError);
+                }
             }
             
             function hideMessages() {
@@ -722,18 +751,19 @@
                 const email = emailInput.value.trim();
                 const password = passwordInput.value;
                 
+                // Client-side validation
                 if (!email || !password) {
                     showError('Please fill in all fields');
                     return;
                 }
                 
                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    showError('Please enter a valid email address');
+                    showError('Please enter a valid email address', 'email');
                     return;
                 }
                 
                 if (password.length < 8) {
-                    showError('Password must be at least 8 characters long');
+                    showError('Password must be at least 8 characters long', 'password');
                     return;
                 }
                 
@@ -752,22 +782,40 @@
                         credentials: 'same-origin'
                     });
                     
+                    // Check if response is ok
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
                     const result = await response.json();
                     
                     if (result.success) {
-                        showSuccess('Login successful! Redirecting to dashboard...');
+                        showSuccess(result.message || 'Login successful! Redirecting to dashboard...');
                         
                         // Redirect to dashboard after short delay
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
                         }, 1000);
                     } else {
-                        showError(result.message || 'Login failed. Please check your credentials.');
+                        // Handle specific error types
+                        if (result.errors && typeof result.errors === 'object') {
+                            showFieldErrors(result.errors);
+                        } else {
+                            showError(result.message || 'Login failed. Please check your credentials.');
+                        }
                     }
                     
                 } catch (error) {
                     console.error('Login error:', error);
-                    showError('Login failed. Please check your connection and try again.');
+                    
+                    // More specific error messages based on error type
+                    if (error.message.includes('HTTP error')) {
+                        showError('Server error occurred. Please try again later.');
+                    } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                        showError('Connection error. Please check your internet connection.');
+                    } else {
+                        showError('Login failed. Please check your connection and try again.');
+                    }
                 } finally {
                     setLoading(false);
                 }
