@@ -1,0 +1,148 @@
+[2025-07-25 06:02:21] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:21:25] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+    [user_id] => 13
+    [username] => jaxmccall25111
+    [email] => jaxmccall225@proton.me
+    [logged_in] => 1
+    [last_activity] => 1753416769
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_ACTIVITY] => 1753423849
+)
+
+[2025-07-25 06:21:25] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [user_id] => 13
+    [username] => jaxmccall25111
+    [email] => jaxmccall225@proton.me
+    [logged_in] => 1
+    [last_activity] => 1753416769
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_ACTIVITY] => 1753424485
+    [LAST_LOGIN] => 2025-07-25 06:21:25
+)
+
+[2025-07-25 06:21:25] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:23:48] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+)
+
+[2025-07-25 06:23:48] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Invalid request method: GET
+[2025-07-25 06:23:50] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+)
+
+[2025-07-25 06:23:50] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Invalid request method: GET
+[2025-07-25 06:23:56] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+)
+
+[2025-07-25 06:23:56] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:23:56
+    [LAST_ACTIVITY] => 1753424636
+)
+
+[2025-07-25 06:23:56] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:24:03] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:23:56
+    [LAST_ACTIVITY] => 1753424636
+)
+
+[2025-07-25 06:24:03] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:24:03
+    [LAST_ACTIVITY] => 1753424643
+)
+
+[2025-07-25 06:24:03] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:26:36] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:24:03
+    [LAST_ACTIVITY] => 1753424643
+)
+
+[2025-07-25 06:26:36] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:26:36
+    [LAST_ACTIVITY] => 1753424796
+)
+
+[2025-07-25 06:26:36] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:38:42] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:26:36
+    [LAST_ACTIVITY] => 1753424796
+)
+
+[2025-07-25 06:38:42] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:38:42
+    [LAST_ACTIVITY] => 1753425522
+)
+
+[2025-07-25 06:38:42] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:39:27] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:38:42
+    [LAST_ACTIVITY] => 1753425522
+)
+
+[2025-07-25 06:39:27] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:39:27
+    [LAST_ACTIVITY] => 1753425567
+)
+
+[2025-07-25 06:39:27] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]
+[2025-07-25 06:40:11] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:39:27
+    [LAST_ACTIVITY] => 1753425567
+)
+
+[2025-07-25 06:40:11] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] DEBUG SESSION AFTER LOGIN (admin_login.php): Array
+(
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_LOGIN] => 2025-07-25 06:40:11
+    [LAST_ACTIVITY] => 1753425611
+)
+
+[2025-07-25 06:40:11] [IP: 49.156.43.120] [UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36] Login successful for [admin]

@@ -1,0 +1,67 @@
+[25-Jul-2025 06:10:38 UTC] DEBUG: SESSION=Array
+(
+    [user_id] => 13
+    [username] => jaxmccall25111
+    [email] => jaxmccall225@proton.me
+    [logged_in] => 1
+    [last_activity] => 1753416769
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+)
+
+[25-Jul-2025 06:10:38 UTC] [2025-07-25 06:10:38] Session valid for admin: admin (ID: 19), Session ID: i8nnkt9909qo49dj3dc2vu3g12
+[25-Jul-2025 06:10:49 UTC] DEBUG: SESSION=Array
+(
+    [user_id] => 13
+    [username] => jaxmccall25111
+    [email] => jaxmccall225@proton.me
+    [logged_in] => 1
+    [last_activity] => 1753416769
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_ACTIVITY] => 1753423838
+)
+
+[25-Jul-2025 06:10:49 UTC] [2025-07-25 06:10:49] Session valid for admin: admin (ID: 19), Session ID: i8nnkt9909qo49dj3dc2vu3g12
+[25-Jul-2025 06:21:27 UTC] DEBUG: SESSION=Array
+(
+    [user_id] => 13
+    [username] => jaxmccall25111
+    [email] => jaxmccall225@proton.me
+    [logged_in] => 1
+    [last_activity] => 1753416769
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_ACTIVITY] => 1753424485
+    [LAST_LOGIN] => 2025-07-25 06:21:25
+)
+
+[25-Jul-2025 06:21:27 UTC] [2025-07-25 06:21:27] Session valid for admin: admin (ID: 19), Session ID: ajhjg915mu882edk2d4kt8cb8o
+[25-Jul-2025 06:23:40 UTC] DEBUG: SESSION=Array
+(
+    [user_id] => 13
+    [username] => jaxmccall25111
+    [email] => jaxmccall225@proton.me
+    [logged_in] => 1
+    [last_activity] => 1753416769
+    [admin_id] => 19
+    [admin_username] => admin
+    [admin_logged_in] => 1
+    [LAST_ACTIVITY] => 1753424487
+    [LAST_LOGIN] => 2025-07-25 06:21:25
+)
+
+[25-Jul-2025 06:23:40 UTC] [2025-07-25 06:23:40] Session valid for admin: admin (ID: 19), Session ID: ajhjg915mu882edk2d4kt8cb8o
+[25-Jul-2025 06:23:48 UTC] DEBUG: SESSION=Array
+(
+)
+
+[25-Jul-2025 06:23:48 UTC] [2025-07-25 06:23:48] Access denied: Not logged in. IP: 49.156.43.120
+[25-Jul-2025 06:23:49 UTC] DEBUG: SESSION=Array
+(
+)
+
+[25-Jul-2025 06:23:49 UTC] [2025-07-25 06:23:49] Access denied: Not logged in. IP: 49.156.43.120
