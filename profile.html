@@ -1720,16 +1720,8 @@
             }, 300);
         }
         
-        // User profile data
-        let userProfile = {
-            fullName: 'John Doe',
-            email: 'john.doe@cryptotrade.pro',
-            phone: '+1 (555) 123-4567',
-            country: 'United States',
-            accountId: 'CTP-8596-7342',
-            memberSince: 'Jan 15, 2022',
-            creditScore: 100
-        };
+        // User profile data (will be loaded from API)
+        let userProfile = {};
 
         // Initialize UI components
         function initUIComponents() {
@@ -1894,20 +1886,38 @@
 
         // Update form values from user data
         function updateFormValues(data) {
-            Object.keys(data).forEach(key => {
+            const fieldMapping = {
+                'fullName': data.fullName,
+                'email': data.email,
+                'phone': data.phone,
+                'country': data.country
+            };
+            
+            Object.keys(fieldMapping).forEach(key => {
                 const valueElement = document.querySelector(`.info-value[data-field="${key}"]`);
                 const inputElement = document.querySelector(`.info-edit[data-field="${key}"]`);
                 
-                if (valueElement && inputElement) {
-                    valueElement.textContent = data[key];
+                if (valueElement && inputElement && fieldMapping[key]) {
+                    valueElement.textContent = fieldMapping[key];
                     
                     if (inputElement.tagName === 'SELECT') {
-                        inputElement.value = data[key];
+                        inputElement.value = fieldMapping[key];
                     } else {
-                        inputElement.value = data[key];
+                        inputElement.value = fieldMapping[key];
                     }
                 }
             });
+            
+            // Update non-editable fields
+            const accountIdElement = document.querySelector('.info-item:nth-child(5) .info-value');
+            if (accountIdElement && data.id) {
+                accountIdElement.textContent = 'CTP-' + String(data.id).padStart(6, '0');
+            }
+            
+            const memberSinceElement = document.querySelector('.info-item:nth-child(6) .info-value');
+            if (memberSinceElement && data.memberSince) {
+                memberSinceElement.textContent = data.memberSince;
+            }
         }
 
         // Validate form
@@ -1965,16 +1975,107 @@
             }
         }
 
-        // Load user data (in a real app, this would be an API call)
-        function loadUserData() {
-            // In a real app, you would fetch this from your backend
-            updateFormValues(userProfile);
-            
-            // Set credit score
-            const creditScoreElement = document.getElementById('creditScore');
-            if (creditScoreElement) {
-                creditScoreElement.textContent = userProfile.creditScore;
+        // Load user data
+        async function loadUserData() {
+            try {
+                const response = await fetch('api/get-user-profile.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    userProfile = data.user;
+                    updateProfileDisplay(data);
+                } else {
+                    console.error('Failed to load user data:', data.message);
+                    // Redirect to login if not authenticated
+                    if (data.message === 'Not authenticated') {
+                        window.location.href = 'login.html';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
             }
+        }
+        
+        // Update profile display with real data
+        function updateProfileDisplay(data) {
+            const user = data.user;
+            const stats = data.stats;
+            
+            // Update header info
+            document.querySelector('.profile-name').textContent = user.fullName;
+            document.querySelector('.profile-email').textContent = user.email;
+            
+            // Update avatar initials
+            const initials = user.firstName.charAt(0) + user.lastName.charAt(0);
+            document.getElementById('avatarInitials').textContent = initials.toUpperCase();
+            document.querySelector('.user-avatar').textContent = initials.toUpperCase();
+            document.querySelector('.user-dropdown-avatar').textContent = initials.toUpperCase();
+            document.querySelector('.user-dropdown-name').textContent = user.fullName;
+            document.querySelector('.user-dropdown-email').textContent = user.email;
+            
+            // Update stats
+            document.querySelector('.stat-value').textContent = '$' + stats.totalBalance;
+            document.querySelectorAll('.stat-value')[1].textContent = stats.tradeCount;
+            document.getElementById('creditScore').textContent = stats.creditScore;
+            
+            // Update form values
+            updateFormValues(user);
+            
+            // Update activity list with real data
+            updateActivityList(data.activities);
+        }
+        
+        // Update activity list with real data
+        function updateActivityList(activities) {
+            const activityList = document.querySelector('.activity-list');
+            if (!activityList || !activities.length) return;
+            
+            activityList.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                let iconClass = 'login';
+                let iconName = 'fas fa-history';
+                let statusClass = 'status-success';
+                let statusText = 'Completed';
+                
+                switch (activity.transaction_type) {
+                    case 'deposit':
+                        iconClass = 'trade';
+                        iconName = 'fas fa-arrow-down';
+                        statusClass = 'status-success';
+                        statusText = 'Completed';
+                        break;
+                    case 'withdrawal':
+                        iconClass = 'withdraw';
+                        iconName = 'fas fa-arrow-up';
+                        statusClass = 'status-warning';
+                        statusText = 'Processed';
+                        break;
+                    case 'mining_reward':
+                        iconClass = 'trade';
+                        iconName = 'fas fa-coins';
+                        statusClass = 'status-success';
+                        statusText = 'Completed';
+                        break;
+                }
+                
+                activityItem.innerHTML = `
+                    <div class="activity-icon ${iconClass}">
+                        <i class="${iconName}"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">${activity.description || activity.transaction_type}</div>
+                        <div class="activity-desc">${activity.asset_symbol} • ${activity.amount}</div>
+                        <div class="activity-time">${new Date(activity.created_at).toLocaleString()}</div>
+                    </div>
+                    <div class="status-badge ${statusClass}">${statusText}</div>
+                `;
+                
+                activityList.appendChild(activityItem);
+            });
         }
 
         // Sync profile data with other pages
@@ -1997,11 +2098,32 @@
         }
         
         // Handle logout
-        function logout() {
+        async function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                alert('You have been logged out');
-                // Redirect to login page
-                window.location.href = 'login.html';
+                try {
+                    const response = await fetch('logout.php', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            window.location.href = 'login.html';
+                        } else {
+                            alert('Logout failed. Please try again.');
+                        }
+                    } else {
+                        // Fallback for non-JSON response
+                        window.location.href = 'login.html';
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    // Fallback - redirect anyway
+                    window.location.href = 'login.html';
+                }
             }
         }
         
