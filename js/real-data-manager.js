@@ -476,22 +476,94 @@ class RealDataManager {
      * Create asset element
      */
     createAssetElement(asset) {
-        const div = document.createElement('div');
-        div.className = 'asset-item';
-        div.innerHTML = `
-            <div class="asset-info">
-                <img src="${asset.icon || '/assets/icons/' + asset.symbol.toLowerCase() + '.png'}" alt="${asset.symbol}" class="asset-icon">
-                <div class="asset-details">
-                    <h4>${asset.symbol}</h4>
-                    <p>${asset.name || asset.symbol}</p>
+        // For dashboard grid layout
+        if (document.querySelector('.assets-grid')) {
+            const div = document.createElement('div');
+            div.className = 'asset-item';
+            div.innerHTML = `
+                <div class="asset-info">
+                    <img src="${asset.icon || '/assets/icons/' + asset.symbol.toLowerCase() + '.png'}" alt="${asset.symbol}" class="asset-icon">
+                    <div class="asset-details">
+                        <h4>${asset.symbol}</h4>
+                        <p>${asset.name || asset.symbol}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="asset-balance">
-                <span class="balance">${parseFloat(asset.balance || 0).toFixed(8)}</span>
-                <span class="value">$${parseFloat(asset.value || 0).toFixed(2)}</span>
-            </div>
+                <div class="asset-balance">
+                    <span class="balance">${parseFloat(asset.balance || 0).toFixed(8)}</span>
+                    <span class="value">$${parseFloat(asset.value || 0).toFixed(2)}</span>
+                </div>
+            `;
+            return div;
+        }
+        
+        // For wallet table layout
+        const tr = document.createElement('tr');
+        tr.className = 'asset-row';
+        
+        const iconChar = this.getAssetIcon(asset.symbol || asset.asset_symbol);
+        const symbol = asset.symbol || asset.asset_symbol;
+        const name = asset.name || asset.asset_name || symbol;
+        const balance = parseFloat(asset.balance || 0);
+        const price = parseFloat(asset.currentPrice || asset.usd_value || 0);
+        const value = balance * (price || 1);
+        
+        tr.innerHTML = `
+            <td data-label="Asset">
+                <div class="coin-cell">
+                    <div class="coin-icon ${symbol.toLowerCase()}-icon">
+                        ${iconChar}
+                    </div>
+                    <div class="coin-info">
+                        <div class="coin-name">${name} <span class="availability-badge available">Available</span></div>
+                        <div class="coin-symbol">${symbol}</div>
+                        <div class="coin-network">Multi-Network Support</div>
+                    </div>
+                </div>
+            </td>
+            <td class="balance-value ${symbol.toLowerCase()}-balance" data-label="Balance">
+                <div class="balance-amount">${balance.toFixed(8)} ${symbol}</div>
+                <div class="balance-status">Available for trading</div>
+            </td>
+            <td class="balance-value usd-format" data-label="USD Value">
+                <div class="usd-amount">$${value.toFixed(2)}</div>
+                <div class="price-info">≈ $${(price || 1).toFixed(2)} per ${symbol}</div>
+            </td>
+            <td data-label="Actions">
+                <div class="action-buttons">
+                    <button class="action-btn trade" title="Trade" onclick="window.location.href='trade.html?pair=${symbol}/USDT'">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="btn-text">Trade</span>
+                    </button>
+                    <button class="action-btn deposit" title="Deposit" onclick="window.location.href='deposit-usdt.html'">
+                        <i class="fas fa-arrow-down"></i>
+                        <span class="btn-text">Deposit</span>
+                    </button>
+                    <button class="action-btn withdraw" title="Withdraw" onclick="window.location.href='withdraw-usdt.html'">
+                        <i class="fas fa-arrow-up"></i>
+                        <span class="btn-text">Withdraw</span>
+                    </button>
+                </div>
+            </td>
         `;
-        return div;
+        return tr;
+    }
+    
+    /**
+     * Get asset icon character
+     */
+    getAssetIcon(symbol) {
+        const icons = {
+            'USDT': '₮',
+            'BTC': '₿',
+            'ETH': 'Ξ',
+            'BNB': 'B',
+            'ADA': '₳',
+            'XRP': 'X',
+            'SOL': 'S',
+            'DOT': '●',
+            'LTC': 'Ł'
+        };
+        return icons[symbol?.toUpperCase()] || symbol?.charAt(0) || '?';
     }
 
     /**
