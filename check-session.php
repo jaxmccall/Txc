@@ -32,6 +32,7 @@ try {
                 $response['user_id'] = $_SESSION['user_id'];
                 $response['username'] = $_SESSION['username'];
                 $response['last_activity'] = $_SESSION['last_activity'];
+                $response['impersonating'] = isset($_SESSION['impersonating']) ? $_SESSION['impersonating'] : false;
             }
         } else {
             // No last activity recorded, set it now
@@ -40,6 +41,7 @@ try {
             $response['user_id'] = $_SESSION['user_id'];
             $response['username'] = $_SESSION['username'];
             $response['last_activity'] = $_SESSION['last_activity'];
+            $response['impersonating'] = isset($_SESSION['impersonating']) ? $_SESSION['impersonating'] : false;
         }
     } else {
         // No valid session
