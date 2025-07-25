@@ -5,9 +5,10 @@ require_once '../config.php';
 header('Content-Type: application/json');
 
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
     echo json_encode([
         'success' => false,
+        'authenticated' => false,
         'message' => 'Not authenticated'
     ]);
     exit;
