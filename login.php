@@ -32,31 +32,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // If no errors, verify credentials
     if (empty($errors)) {
-        $stmt = $mysqli->prepare("SELECT id, username, password FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            $stmt = $pdo->prepare("SELECT id, username, password, user_type, is_active FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result && $result->num_rows === 1) {
-            $user = $result->fetch_assoc();
+            if ($user) {
+                // Check if account is active
+                if (!$user['is_active']) {
+                    $errors['email'] = 'Account is disabled. Please contact support.';
+                } elseif (password_verify($password, $user['password'])) {
+                    // Update last login
+                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW(), last_activity = NOW() WHERE id = ?");
+                    $updateStmt->execute([$user['id']]);
+                    
+                    // Set session variables
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $email;
+                    $_SESSION['user_type'] = $user['user_type'];
+                    $_SESSION['logged_in'] = true;
+                    $_SESSION['last_activity'] = time();
 
-            // Verify password
-            if (password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['email'] = $email;
-                $_SESSION['logged_in'] = true;
-                $_SESSION['last_activity'] = time(); // Set initial activity time for auto-logout
+                    // Redirect to appropriate dashboard
+                    $redirectUrl = 'dashboard.html';
+                    if ($user['user_type'] === 'admin' || $user['user_type'] === 'super_admin') {
+                        $redirectUrl = 'admin-dashboard.html';
+                    }
 
-                echo json_encode(['success' => true]);
-                exit();
+                    echo json_encode(['success' => true, 'redirect' => $redirectUrl]);
+                    exit();
+                } else {
+                    $errors['password'] = 'Incorrect password';
+                }
             } else {
-                $errors['password'] = 'Incorrect password';
+                $errors['email'] = 'Email not found';
             }
-        } else {
-            $errors['email'] = 'Email not found';
+        } catch (PDOException $e) {
+            error_log("Login error: " . $e->getMessage());
+            $errors['general'] = 'Login failed. Please try again.';
         }
-        $stmt->close();
     }
 
     send_error($errors);

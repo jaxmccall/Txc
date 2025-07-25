@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Tripple Exchange</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary: #7209b7;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --info: #0ea5e9;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --surface-lighter: #475569;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .admin-info {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            border-right: 3px solid transparent;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .stat-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.users {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .stat-icon.trades {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.kyc {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-icon.revenue {
+            background: rgba(114, 9, 183, 0.1);
+            color: var(--secondary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--error);
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            color: var(--text);
+            width: 300px;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table th {
+            background: var(--surface-light);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-lighter);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .badge-info {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--info);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--surface-lighter);
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .table-controls {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    Tripple Exchange Admin
+                </div>
+                <div class="admin-info">
+                    <div id="adminName">Loading...</div>
+                    <div id="adminRole">Administrator</div>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <i class="fas fa-chart-line"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link" data-section="users">
+                            <i class="fas fa-users"></i>
+                            User Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#kyc" class="nav-link" data-section="kyc">
+                            <i class="fas fa-id-card"></i>
+                            KYC Verification
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#trades" class="nav-link" data-section="trades">
+                            <i class="fas fa-exchange-alt"></i>
+                            Trade Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#notifications" class="nav-link" data-section="notifications">
+                            <i class="fas fa-bell"></i>
+                            Notifications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#logs" class="nav-link" data-section="logs">
+                            <i class="fas fa-file-alt"></i>
+                            Activity Logs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="logout.php" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="content-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Overview of platform activity and key metrics</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon users">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-change positive" id="usersChange">+0% this month</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon trades">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="stat-value" id="totalTrades">0</div>
+                        <div class="stat-label">Total Trades</div>
+                        <div class="stat-change positive" id="tradesChange">+0% this month</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon kyc">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="stat-value" id="pendingKyc">0</div>
+                        <div class="stat-label">Pending KYC</div>
+                        <div class="stat-change" id="kycChange">Needs attention</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-value" id="totalVolume">$0</div>
+                        <div class="stat-label">Trading Volume</div>
+                        <div class="stat-change positive" id="volumeChange">+0% this month</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Activity</h3>
+                    </div>
+                    <div id="recentActivity">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Loading recent activity...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users-section" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">User Management</h1>
+                    <p class="page-subtitle">Manage user accounts, balances, and verification status</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="card-title">All Users</h3>
+                        <div class="table-controls">
+                            <div class="search-box">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" class="search-input" placeholder="Search users..." id="userSearch">
+                            </div>
+                            <button class="btn btn-primary" onclick="refreshUsers()">
+                                <i class="fas fa-refresh"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="usersTableContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Loading users...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Other sections will be loaded dynamically -->
+            <section id="kyc-section" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">KYC Verification</h1>
+                    <p class="page-subtitle">Review and manage user identity verification</p>
+                </div>
+                <div class="card">
+                    <p>KYC management interface will be loaded here...</p>
+                </div>
+            </section>
+
+            <section id="trades-section" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">Trade Management</h1>
+                    <p class="page-subtitle">Monitor and manage user trades</p>
+                </div>
+                <div class="card">
+                    <p>Trade management interface will be loaded here...</p>
+                </div>
+            </section>
+
+            <section id="notifications-section" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">Notifications</h1>
+                    <p class="page-subtitle">Send notifications to users</p>
+                </div>
+                <div class="card">
+                    <p>Notification management interface will be loaded here...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">User Details</h3>
+                <button class="close-modal" onclick="closeModal('userModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="userModalContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading user details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUsers = [];
+        let currentPage = 1;
+        let totalPages = 1;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadUsers();
+            setupNavigation();
+            setupSearch();
+            loadAdminInfo();
+        });
+
+        // Load admin info
+        async function loadAdminInfo() {
+            try {
+                const response = await fetch('admin-session-check.php');
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('adminName').textContent = data.admin_name;
+                    document.getElementById('adminRole').textContent = data.is_super_admin ? 'Super Administrator' : 'Administrator';
+                }
+            } catch (error) {
+                console.error('Failed to load admin info:', error);
+            }
+        }
+
+        // Navigation setup
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link[data-section]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    showSection(section);
+                    
+                    // Update active nav
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // Show section
+        function showSection(sectionName) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+
+            // Load section-specific data
+            switch(sectionName) {
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'dashboard':
+                    loadDashboardStats();
+                    break;
+            }
+        }
+
+        // Search setup
+        function setupSearch() {
+            let searchTimeout;
+            const searchInput = document.getElementById('userSearch');
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    loadUsers(this.value);
+                }, 500);
+            });
+        }
+
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('admin-stats-api.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalUsers').textContent = data.stats.total_users || 0;
+                    document.getElementById('totalTrades').textContent = data.stats.total_trades || 0;
+                    document.getElementById('pendingKyc').textContent = data.stats.pending_kyc || 0;
+                    document.getElementById('totalVolume').textContent = '$' + (data.stats.total_volume || 0);
+                }
+            } catch (error) {
+                console.error('Failed to load dashboard stats:', error);
+            }
+        }
+
+        // Load users
+        async function loadUsers(search = '') {
+            try {
+                const params = new URLSearchParams({
+                    action: 'get_users',
+                    page: currentPage,
+                    limit: 20
+                });
+                
+                if (search) {
+                    params.append('search', search);
+                }
+
+                const response = await fetch('admin-users-api.php?' + params);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentUsers = data.users;
+                    totalPages = data.pagination.total_pages;
+                    renderUsersTable(data.users);
+                    renderPagination(data.pagination);
+                } else {
+                    showAlert('Failed to load users: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                showAlert('Failed to load users', 'error');
+            }
+        }
+
+        // Render users table
+        function renderUsersTable(users) {
+            const container = document.getElementById('usersTableContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<div class="card"><p class="text-center">No users found</p></div>';
+                return;
+            }
+
+            const table = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Registration</th>
+                            <th>KYC Status</th>
+                            <th>Balance (USDT)</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(user => `
+                            <tr>
+                                <td>
+                                    <div>
+                                        <strong>${user.first_name} ${user.last_name}</strong>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">@${user.username}</div>
+                                    </div>
+                                </td>
+                                <td>${user.email}</td>
+                                <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="badge badge-${getKycStatusColor(user.kyc_status)}">
+                                        ${user.kyc_status}
+                                    </span>
+                                </td>
+                                <td>$${parseFloat(user.total_balance || 0).toFixed(2)}</td>
+                                <td>${user.account_score}/100</td>
+                                <td>
+                                    <span class="badge badge-${user.is_active ? 'success' : 'error'}">
+                                        ${user.is_active ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="viewUser(${user.id})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="impersonateUser(${user.id})">
+                                        <i class="fas fa-user-secret"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = table;
+        }
+
+        // Get KYC status color
+        function getKycStatusColor(status) {
+            switch(status) {
+                case 'approved': return 'success';
+                case 'rejected': return 'error';
+                case 'submitted': return 'warning';
+                default: return 'info';
+            }
+        }
+
+        // Render pagination
+        function renderPagination(pagination) {
+            const container = document.querySelector('.table-container');
+            const existingPagination = container.querySelector('.pagination');
+            if (existingPagination) {
+                existingPagination.remove();
+            }
+
+            if (pagination.total_pages <= 1) return;
+
+            const paginationHtml = `
+                <div class="pagination">
+                    <button ${pagination.current_page <= 1 ? 'disabled' : ''} onclick="changePage(${pagination.current_page - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    ${Array.from({length: Math.min(5, pagination.total_pages)}, (_, i) => {
+                        const page = i + Math.max(1, pagination.current_page - 2);
+                        if (page > pagination.total_pages) return '';
+                        return `
+                            <button class="${page === pagination.current_page ? 'active' : ''}" onclick="changePage(${page})">
+                                ${page}
+                            </button>
+                        `;
+                    }).join('')}
+                    <button ${pagination.current_page >= pagination.total_pages ? 'disabled' : ''} onclick="changePage(${pagination.current_page + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', paginationHtml);
+        }
+
+        // Change page
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages && page !== currentPage) {
+                currentPage = page;
+                loadUsers(document.getElementById('userSearch').value);
+            }
+        }
+
+        // View user details
+        async function viewUser(userId) {
+            try {
+                const response = await fetch(`admin-users-api.php?action=get_user&user_id=${userId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderUserModal(data);
+                    showModal('userModal');
+                } else {
+                    showAlert('Failed to load user details: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Failed to load user details:', error);
+                showAlert('Failed to load user details', 'error');
+            }
+        }
+
+        // Render user modal
+        function renderUserModal(data) {
+            const user = data.user;
+            const balances = data.balances;
+            const kycDocuments = data.kyc_documents;
+            
+            const content = `
+                <div class="form-group">
+                    <h4>Personal Information</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-input" value="${user.first_name}" id="editFirstName">
+                        </div>
+                        <div>
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-input" value="${user.last_name}" id="editLastName">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-input" value="${user.phone || ''}" id="editPhone">
+                        </div>
+                        <div>
+                            <label class="form-label">Country</label>
+                            <input type="text" class="form-input" value="${user.country || ''}" id="editCountry">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h4>Account Settings</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label class="form-label">Account Score</label>
+                            <input type="number" class="form-input" value="${user.account_score}" min="0" max="100" id="editScore">
+                        </div>
+                        <div>
+                            <label class="form-label">KYC Status</label>
+                            <select class="form-select" id="editKycStatus">
+                                <option value="pending" ${user.kyc_status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="submitted" ${user.kyc_status === 'submitted' ? 'selected' : ''}>Submitted</option>
+                                <option value="approved" ${user.kyc_status === 'approved' ? 'selected' : ''}>Approved</option>
+                                <option value="rejected" ${user.kyc_status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Account Status</label>
+                            <select class="form-select" id="editActive">
+                                <option value="1" ${user.is_active ? 'selected' : ''}>Active</option>
+                                <option value="0" ${!user.is_active ? 'selected' : ''}>Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h4>Balances</h4>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        ${balances.map(balance => `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid var(--border);">
+                                <span>${balance.asset_symbol} (${balance.asset_name || balance.asset_symbol})</span>
+                                <input type="number" step="0.00000001" value="${balance.balance}" 
+                                       style="width: 150px; padding: 0.25rem;" class="form-input"
+                                       onchange="updateBalance(${user.id}, '${balance.asset_symbol}', this.value)">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h4>KYC Documents</h4>
+                    <div style="max-height: 150px; overflow-y: auto;">
+                        ${kycDocuments.length > 0 ? kycDocuments.map(doc => `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid var(--border);">
+                                <div>
+                                    <strong>${doc.document_type}</strong><br>
+                                    <small>${doc.file_name}</small>
+                                </div>
+                                <span class="badge badge-${getKycStatusColor(doc.status)}">${doc.status}</span>
+                            </div>
+                        `).join('') : '<p>No documents uploaded</p>'}
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="saveUserChanges(${user.id})">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button class="btn btn-secondary" onclick="impersonateUser(${user.id})">
+                        <i class="fas fa-user-secret"></i> Impersonate User
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal('userModal')">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('userModalContent').innerHTML = content;
+        }
+
+        // Save user changes
+        async function saveUserChanges(userId) {
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('first_name', document.getElementById('editFirstName').value);
+            formData.append('last_name', document.getElementById('editLastName').value);
+            formData.append('phone', document.getElementById('editPhone').value);
+            formData.append('country', document.getElementById('editCountry').value);
+            formData.append('account_score', document.getElementById('editScore').value);
+            formData.append('kyc_status', document.getElementById('editKycStatus').value);
+            formData.append('is_active', document.getElementById('editActive').value);
+
+            try {
+                const response = await fetch('admin-users-api.php?action=update_user', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('User updated successfully', 'success');
+                    closeModal('userModal');
+                    loadUsers();
+                } else {
+                    showAlert('Failed to update user: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Failed to update user:', error);
+                showAlert('Failed to update user', 'error');
+            }
+        }
+
+        // Update balance
+        async function updateBalance(userId, assetSymbol, newBalance) {
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('asset_symbol', assetSymbol);
+            formData.append('balance', newBalance);
+
+            try {
+                const response = await fetch('admin-users-api.php?action=update_balance', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Balance updated successfully', 'success');
+                } else {
+                    showAlert('Failed to update balance: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Failed to update balance:', error);
+                showAlert('Failed to update balance', 'error');
+            }
+        }
+
+        // Impersonate user
+        async function impersonateUser(userId) {
+            if (!confirm('Are you sure you want to impersonate this user? You will be logged in as them.')) {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('user_id', userId);
+
+            try {
+                const response = await fetch('admin-users-api.php?action=impersonate_user', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    showAlert('Failed to impersonate user: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Failed to impersonate user:', error);
+                showAlert('Failed to impersonate user', 'error');
+            }
+        }
+
+        // Refresh users
+        function refreshUsers() {
+            currentPage = 1;
+            loadUsers(document.getElementById('userSearch').value);
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
+                ${message}
+            `;
+            
+            document.querySelector('.main-content').insertBefore(alert, document.querySelector('.main-content').firstChild);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
