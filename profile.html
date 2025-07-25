@@ -6,6 +6,7 @@
     <title>Profile | Tripple Exchange</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="./js/auth-manager.js"></script>
+    <script src="./js/real-data-manager.js"></script>
     <style>
         :root {
             --primary: #6c5ce7;
@@ -1499,23 +1500,29 @@
                 <div class="info-grid" id="profileInfoGrid">
                     <div class="info-item">
                         <div class="info-label">Full Name</div>
-                        <div class="info-value" data-field="fullName">John Doe</div>
-                        <input type="text" class="info-edit" data-field="fullName" value="John Doe" style="display: none;">
+                        <div class="info-value" data-field="full_name">Loading...</div>
+                        <input type="text" class="info-edit" data-field="full_name" style="display: none;">
                     </div>
                     <div class="info-item">
                         <div class="info-label">Email</div>
-                        <div class="info-value" data-field="email">john.doe@cryptotrade.pro</div>
-                        <input type="email" class="info-edit" data-field="email" value="john.doe@cryptotrade.pro" style="display: none;">
+                        <div class="info-value" data-field="email">Loading...</div>
+                        <input type="email" class="info-edit" data-field="email" style="display: none;">
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Username</div>
+                        <div class="info-value" data-field="username">Loading...</div>
+                        <input type="text" class="info-edit" data-field="username" style="display: none;">
                     </div>
                     <div class="info-item">
                         <div class="info-label">Phone</div>
-                        <div class="info-value" data-field="phone">+1 (555) 123-4567</div>
-                        <input type="tel" class="info-edit" data-field="phone" value="+1 (555) 123-4567" style="display: none;">
+                        <div class="info-value" data-field="phone">Not provided</div>
+                        <input type="tel" class="info-edit" data-field="phone" style="display: none;">
                     </div>
                     <div class="info-item">
                         <div class="info-label">Country</div>
-                        <div class="info-value" data-field="country">United States</div>
+                        <div class="info-value" data-field="country">Not provided</div>
                         <select class="info-edit" data-field="country" style="display: none;">
+                            <option value="">Select Country</option>
                             <option value="United States">United States</option>
                             <option value="United Kingdom">United Kingdom</option>
                             <option value="Canada">Canada</option>
@@ -1525,12 +1532,21 @@
                         </select>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Account ID</div>
-                        <div class="info-value">CTP-8596-7342</div>
+                        <div class="info-label">Wallet Address</div>
+                        <div class="info-value" data-field="wallet_address">Not provided</div>
+                        <input type="text" class="info-edit" data-field="wallet_address" style="display: none;">
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">KYC Status</div>
+                        <div class="info-value" data-field="kyc_status">Pending</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Account Score</div>
+                        <div class="info-value" data-field="account_score">0%</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Member Since</div>
-                        <div class="info-value">Jan 15, 2022</div>
+                        <div class="info-value" data-field="created_at">Loading...</div>
                     </div>
                 </div>
                 <div class="form-actions" style="display: none; margin-top: 1.5rem; justify-content: flex-end; gap: 1rem;" id="profileFormActions">
@@ -1589,51 +1605,8 @@
 
             <div class="profile-section">
                 <h2 class="section-title"><i class="fas fa-history"></i> Recent Activity</h2>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon login">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </div>
-                        <div class="activity-details">
-                            <div class="activity-title">Successful Login</div>
-                            <div class="activity-desc">New York, United States • Chrome Browser</div>
-                            <div class="activity-time">Today at 09:42 AM</div>
-                        </div>
-                        <div class="status-badge status-success">Secure</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon trade">
-                            <i class="fas fa-exchange-alt"></i>
-                        </div>
-                        <div class="activity-details">
-                            <div class="activity-title">Successful Trade</div>
-                            <div class="activity-desc">BTC/USDT • $1,200 Profit</div>
-                            <div class="activity-time">Yesterday at 02:15 PM</div>
-                        </div>
-                        <div class="status-badge status-success">Completed</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon withdraw">
-                            <i class="fas fa-money-check-alt"></i>
-                        </div>
-                        <div class="activity-details">
-                            <div class="activity-title">Withdrawal Request</div>
-                            <div class="activity-desc">$5,000 to Bank Account • Processing</div>
-                            <div class="activity-time">Jan 12, 2023 at 10:30 AM</div>
-                        </div>
-                        <div class="status-badge status-warning">Pending</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon login">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="activity-details">
-                            <div class="activity-title">Security Update</div>
-                            <div class="activity-desc">Two-Factor Authentication Enabled</div>
-                            <div class="activity-time">Jan 5, 2023 at 04:20 PM</div>
-                        </div>
-                        <div class="status-badge status-success">Completed</div>
-                    </div>
+                <div class="activity-list" data-recent-activity>
+                    <!-- Recent activity will be populated here -->
                 </div>
             </div>
 
@@ -1642,27 +1615,19 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Primary Wallet</div>
-                        <div class="info-value">0x1a2b3c4d5e6f...7g8h9i0j</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Connected Wallets</div>
-                        <div class="info-value">3 Wallets</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Last Deposit</div>
-                        <div class="info-value">$5,000 • Jan 10, 2023</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Last Withdrawal</div>
-                        <div class="info-value">$3,000 • Dec 28, 2022</div>
+                        <div class="info-value" data-field="wallet_address">Not provided</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Total Deposits</div>
-                        <div class="info-value">$42,500</div>
+                        <div class="info-value" data-field="total_deposits">$0.00</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Total Withdrawals</div>
-                        <div class="info-value">$18,300</div>
+                        <div class="info-value" data-field="total_withdrawals">$0.00</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Transactions</div>
+                        <div class="info-value" data-field="total_transactions">0</div>
                     </div>
                 </div>
             </div>

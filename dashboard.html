@@ -10,6 +10,9 @@
     <script src="./js/notifications.js"></script>
     <script src="./js/balance-manager.js"></script>
     <script src="./js/auth-manager.js"></script>
+    <script src="./js/real-data-manager.js"></script>
+    <!-- Development testing script - remove in production -->
+    <script src="./js/platform-test.js"></script>
     <style>
         /* Mobile-first CSS with responsive enhancements */
         :root {
@@ -1099,7 +1102,7 @@
                             <i class="fas fa-check-double"></i> Mark all
                         </button>
                     </div>
-                    <ul id="notificationsList">
+                    <ul id="notificationsList" data-notifications-container>
                         <!-- Notifications will be populated here -->
                     </ul>
                 </div>
@@ -1130,7 +1133,7 @@
     <main class="main-content" id="main-content">
         <!-- Welcome Banner -->
         <section class="welcome-banner fade-in">
-            <h1>Welcome, <span id="usernameDisplay">CryptoTrader</span>! 👋</h1>
+            <h1>Welcome, <span id="usernameDisplay" data-user-display-name>CryptoTrader</span>! 👋</h1>
             <p>Track your portfolio and stay updated with the latest market movements.</p>
             <div class="security-badge">
                 <i class="fas fa-shield-alt"></i> 2FA Enabled
@@ -1140,7 +1143,7 @@
         <!-- Total Balance -->
         <div class="total-balance fade-in">
             <div class="label">Total Portfolio Value</div>
-            <div class="amount" id="totalBalance">$0.00</div>
+            <div class="amount" id="totalBalance" data-total-balance>$0.00</div>
             
             <div class="balance-actions">
                 <button class="balance-action-btn deposit" onclick="window.location.href='deposit-usdt.html'">
@@ -1155,7 +1158,7 @@
         <!-- Assets Grid -->
         <section class="assets-section">
             <h2><i class="fas fa-coins"></i> Your Assets</h2>
-            <div class="assets-grid" id="assetsGrid">
+            <div class="assets-grid" id="assetsGrid" data-assets-list>
                 <!-- Assets will be dynamically inserted here -->
             </div>
             <div class="price-update" id="priceUpdate">
@@ -1610,29 +1613,19 @@
             // Initialize loading system
             new LoadingSystem().init();
             
-            // Set username safely
-            const usernameDisplay = document.getElementById('usernameDisplay');
-            if (usernameDisplay) {
-                usernameDisplay.textContent = userData.username;
-            }
+            // The real data manager will handle initialization
+            // All user data, balances, and notifications will be loaded automatically
             
             // Initialize notifications
             initNotifications();
             
-            // Initialize all cryptocurrency assets (zero balances except USDT)
-            initializeAssets();
-            
-            // Render notifications
-            renderNotifications();
-            
-            // Render assets grid
-            renderAssets();
-            
-            // Setup balance synchronization with balance manager
-            setupBalanceSync();
-            
             // Set up event listeners
             setupEventListeners();
+            
+            // Legacy balance sync for backward compatibility (deprecated - real data manager handles this)
+            if (window.balanceManager) {
+                setTimeout(setupBalanceSync, 1000);
+            }
         });
         
         // Set up all event listeners

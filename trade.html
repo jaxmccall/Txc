@@ -9,6 +9,7 @@
     <script src="./js/notifications.js"></script>
     <script src="./js/balance-manager.js"></script>
     <script src="./js/auth-manager.js"></script>
+    <script src="./js/real-data-manager.js"></script>
     <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
         :root {
@@ -3298,7 +3299,7 @@
         }
         
         // Set custom amount
-        function setCustomAmount() {
+        async function setCustomAmount() {
             if (activeTrade) return;
             
             const customAmountInput = document.getElementById('customAmount');
@@ -3312,7 +3313,7 @@
                 if (amountValueEl) {
                     amountValueEl.textContent = '$0.00';
                 }
-                updatePlaceOrderButton();
+                await updatePlaceOrderButton();
                 return;
             }
             
@@ -3331,25 +3332,47 @@
                 amountValueEl.textContent = `$${amount.toFixed(2)}`;
             }
             
-            updatePlaceOrderButton();
+            await updatePlaceOrderButton();
         }
         
         // Update place order button state
-        function updatePlaceOrderButton() {
+        async function updatePlaceOrderButton() {
             const placeOrderBtn = document.getElementById('placeOrderBtn');
             if (!placeOrderBtn) return;
             
             const hasDirection = selectedContract.direction !== null;
             const hasTime = selectedContract.time > 0;
             const hasAmount = selectedContract.amount > 0;
-            const hasBalance = window.balanceManager ? window.balanceManager.getUSDTBalance() >= selectedContract.amount : true;
+            
+            // Get real balance from API
+            let hasBalance = true;
+            let usdtBalance = 0;
+            
+            try {
+                if (window.realDataManager) {
+                    const balanceData = await window.realDataManager.getBalances();
+                    const usdtAsset = balanceData.data.balances.find(b => b.asset_symbol === 'USDT');
+                    usdtBalance = usdtAsset ? parseFloat(usdtAsset.balance) : 0;
+                    hasBalance = usdtBalance >= selectedContract.amount;
+                } else if (window.balanceManager) {
+                    usdtBalance = window.balanceManager.getUSDTBalance();
+                    hasBalance = usdtBalance >= selectedContract.amount;
+                }
+            } catch (error) {
+                console.warn('Failed to fetch balance for validation:', error);
+                // Fallback to balance manager
+                if (window.balanceManager) {
+                    usdtBalance = window.balanceManager.getUSDTBalance();
+                    hasBalance = usdtBalance >= selectedContract.amount;
+                }
+            }
             
             const canTrade = hasDirection && hasTime && hasAmount && hasBalance && !activeTrade;
             
             placeOrderBtn.disabled = !canTrade;
             
             if (!hasBalance && hasAmount) {
-                placeOrderBtn.textContent = 'Insufficient Balance';
+                placeOrderBtn.textContent = `Insufficient Balance (${usdtBalance.toFixed(2)} USDT available)`;
                 placeOrderBtn.classList.add('insufficient-balance');
             } else if (activeTrade) {
                 placeOrderBtn.textContent = 'Trade in Progress';
@@ -3363,10 +3386,19 @@
             }
         }
         
-        // Update balance display from balance manager
-        function updateBalanceDisplay() {
-            if (window.balanceManager) {
-                const usdtBalance = window.balanceManager.getUSDTBalance();
+        // Update balance display from real balance data
+        async function updateBalanceDisplay() {
+            try {
+                let usdtBalance = 0;
+                
+                if (window.realDataManager) {
+                    const balanceData = await window.realDataManager.getBalances();
+                    const usdtAsset = balanceData.data.balances.find(b => b.asset_symbol === 'USDT');
+                    usdtBalance = usdtAsset ? parseFloat(usdtAsset.balance) : 0;
+                } else if (window.balanceManager) {
+                    usdtBalance = window.balanceManager.getUSDTBalance();
+                }
+                
                 const availableBalanceEl = document.getElementById('availableBalance');
                 const availableBalanceUSDEl = document.getElementById('availableBalanceUSD');
                 
@@ -3378,7 +3410,25 @@
                 }
                 
                 // Update place order button state
-                updatePlaceOrderButton();
+                await updatePlaceOrderButton();
+                
+            } catch (error) {
+                console.warn('Failed to update balance display:', error);
+                // Fallback to balance manager
+                if (window.balanceManager) {
+                    const usdtBalance = window.balanceManager.getUSDTBalance();
+                    const availableBalanceEl = document.getElementById('availableBalance');
+                    const availableBalanceUSDEl = document.getElementById('availableBalanceUSD');
+                    
+                    if (availableBalanceEl) {
+                        availableBalanceEl.textContent = `${usdtBalance.toFixed(2)} USDT`;
+                    }
+                    if (availableBalanceUSDEl) {
+                        availableBalanceUSDEl.textContent = `$${usdtBalance.toFixed(2)}`;
+                    }
+                    
+                    updatePlaceOrderButton();
+                }
             }
         }
         

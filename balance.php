@@ -14,6 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Redirect to the main balance API
-require_once 'api/balance.php';
+// Include the main balance API
+require_once __DIR__ . '/api/balance.php';
 ?>

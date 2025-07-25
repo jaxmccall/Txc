@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="./js/auth-manager.js"></script>
+    <script src="./js/real-data-manager.js"></script>
     <style>
         /* Modern Loading Overlay Styles */
         .loading-screen {
@@ -855,6 +856,30 @@
         .welcome-banner p {
             opacity: 0.9;
             max-width: 600px;
+        }
+        
+        .portfolio-summary {
+            margin-top: 1.5rem;
+        }
+        
+        .portfolio-value {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .portfolio-value .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        .portfolio-value .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
         }
 
         /* Wallet Summary Cards */
@@ -2196,6 +2221,14 @@
                     <h1 class="responsive-title">Your Crypto Wallet <i class="fas fa-wallet"></i></h1>
                     <p class="responsive-text">Manage your digital assets, track balances, and perform transactions securely</p>
                 </div>
+                <div class="portfolio-summary">
+                    <div class="portfolio-value">
+                        <div class="label">Total Portfolio Value</div>
+                        <div class="value" data-total-value>$0.00</div>
+                    </div>
+                </div>
+            </div>
+        </section>
                 <div class="privacy-toggle responsive-btn" id="privacyToggle">
                     <i class="fas fa-eye"></i>
                     <span>Hide Balances</span>
@@ -2265,37 +2298,8 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="assetsTableBody">
-                    <tr class="asset-row">
-                        <td data-label="Asset">
-                            <div class="coin-cell">
-                                <div class="coin-icon usdt-icon">
-                                    ₮
-                                </div>
-                                <div class="coin-info">
-                                    <div class="coin-name">Tether <span class="availability-badge available">Available</span></div>
-                                    <div class="coin-symbol">USDT</div>
-                                    <div class="coin-network">Multi-Network Support</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="balance-value usdt-balance" id="walletUSDTBalance" data-label="Balance">
-                            <div class="balance-amount">0.00 USDT</div>
-                            <div class="balance-status">Available for trading</div>
-                        </td>
-                        <td class="balance-value usd-format" id="walletUSDTValue" data-label="USD Value">
-                            <div class="usd-amount">$0.00</div>
-                            <div class="price-info">≈ $1.00 per USDT</div>
-                        </td>
-                        <td data-label="Actions">
-                            <div class="action-buttons">
-                                <button class="action-btn trade" title="Trade" onclick="window.location.href='trade.html'">
-                                    <i class="fas fa-chart-line"></i>
-                                    <span class="btn-text">Trade</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="assetsTableBody" data-assets-list>
+                    <!-- Assets will be populated by real data manager -->
                 </tbody>
                 <tfoot>
                     <tr>
