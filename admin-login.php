@@ -65,7 +65,7 @@ try {
     // Set session values for admin authentication
     $_SESSION['admin_id'] = $admin['id'];
     $_SESSION['admin_username'] = $admin['username'];
-    $_SESSION['admin_logged_in'] = 1; // Use 1 (int) for consistent truthy checks
+    $_SESSION['admin_logged_in'] = true; // Use boolean true for consistent truthy checks
     $_SESSION['LAST_LOGIN'] = date('Y-m-d H:i:s');
     $_SESSION['LAST_ACTIVITY'] = time();
     session_regenerate_id(true);
@@ -74,7 +74,7 @@ try {
     respond([
         'success' => true,
         'message' => 'Login successful.',
-        'redirect' => 'admin_panel.php'
+        'redirect' => 'admin-dashboard.php'
     ]);
 } catch (Exception $e) {
     log_admin_login_error("Exception during login: " . $e->getMessage());

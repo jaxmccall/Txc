@@ -592,7 +592,7 @@
       setLoadingState(true);
 
       try {
-        const response = await fetch('/0/Txc-main/admin_login.php', {
+        const response = await fetch('admin-login.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -668,7 +668,7 @@
 
       showMessage('Authentication successful. Redirecting...', 'success');
       setTimeout(() => {
-        window.location.href = data.redirect || 'enhanced-admin-panel.html';
+        window.location.href = data.redirect || 'admin-dashboard.php';
       }, 1500);
     }
 

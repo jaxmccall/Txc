@@ -6,14 +6,10 @@ ini_set('error_log', __DIR__ . '/admin_panel_error.log');
 error_reporting(E_ALL);
 
 session_start();
-if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: admin_login7.php');
-    exit;
-}
-// Security: Redirect if not logged in
-if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+// Standardized admin session check
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true || empty($_SESSION['admin_id'])) {
     error_log("[" . date('Y-m-d H:i:s') . "] Access denied: Not logged in. IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
-    header('Location: admin_login.php');
+    header('Location: admin-login.html');
     exit;
 }
 
@@ -23,7 +19,7 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
     error_log("[" . date('Y-m-d H:i:s') . "] Session expired for user " . ($_SESSION['admin_username'] ?? 'unknown') . ". IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
     session_unset();
     session_destroy();
-    header('Location: admin_login.php?error=Session expired, please log in again.');
+    header('Location: admin-login.html?error=Session expired, please log in again.');
     exit;
 }
 $_SESSION['LAST_ACTIVITY'] = time(); // Update last activity time
