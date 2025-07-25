@@ -157,8 +157,11 @@ class AdminAuth {
         }
 
         try {
-            const response = await fetch('api/admin-logout.php', {
-                method: 'POST'
+            const response = await fetch('admin-logout.php', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
             
             const data = await response.json();
