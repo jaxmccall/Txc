@@ -65,7 +65,7 @@ try {
     // Set session values for admin authentication
     $_SESSION['admin_id'] = $admin['id'];
     $_SESSION['admin_username'] = $admin['username'];
-    $_SESSION['admin_logged_in'] = 1; // Use 1 (int) for consistent truthy checks
+    $_SESSION['admin_logged_in'] = true; // Use boolean true for consistent checks
     $_SESSION['LAST_LOGIN'] = date('Y-m-d H:i:s');
     $_SESSION['LAST_ACTIVITY'] = time();
     session_regenerate_id(true);

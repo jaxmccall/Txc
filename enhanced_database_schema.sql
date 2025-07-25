@@ -156,9 +156,31 @@ CREATE TABLE IF NOT EXISTS asset_configs (
     INDEX idx_sort_order (sort_order)
 );
 
+-- Admin Users Table (separate from regular users)
+CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    role ENUM('superadmin', 'admin', 'moderator') DEFAULT 'admin',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL,
+    
+    INDEX idx_username (username),
+    INDEX idx_email (email)
+);
+
 -- Insert default admin user
 INSERT IGNORE INTO users (username, email, password, first_name, last_name, is_verified, is_active) VALUES 
 ('admin', 'admin@trippleexchange.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'System', 'Administrator', TRUE, TRUE);
+
+-- Insert default admin in admins table
+INSERT IGNORE INTO admins (username, password, email, first_name, last_name, role) VALUES 
+('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@trippleexchange.com', 'System', 'Administrator', 'superadmin');
 
 -- Insert default assets
 INSERT IGNORE INTO asset_configs (symbol, name, decimals, sort_order) VALUES 
