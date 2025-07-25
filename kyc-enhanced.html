@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Verification | Tripple Exchange</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary: #7209b7;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .kyc-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .kyc-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .kyc-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .kyc-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-container {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .upload-section {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-section.dragover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .upload-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-requirements {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .upload-requirements ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .upload-requirements li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-requirements li i {
+            color: var(--success);
+            font-size: 0.8rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .uploaded-files {
+            margin-top: 2rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--surface-light);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .file-details h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .file-size {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .file-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .file-status.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .file-status.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .file-status.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: var(--error);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .remove-file:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .kyc-status {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-pending {
+            color: var(--warning);
+        }
+
+        .status-submitted {
+            color: var(--primary);
+        }
+
+        .status-approved {
+            color: var(--success);
+        }
+
+        .status-rejected {
+            color: var(--error);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            color: var(--primary);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--warning);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .webcam-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .webcam-video {
+            width: 100%;
+            border-radius: var(--radius);
+            border: 3px solid var(--primary);
+        }
+
+        .webcam-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .capture-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .capture-btn:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .kyc-card {
+                padding: 1.5rem;
+            }
+
+            .kyc-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="kyc-header">
+            <h1><i class="fas fa-shield-alt"></i> KYC Verification</h1>
+            <p>Complete your identity verification to unlock full trading features</p>
+        </div>
+
+        <div id="kycStatus" class="kyc-status">
+            <div class="status-icon status-pending">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h3>Verification Status: <span id="statusText">Pending</span></h3>
+            <p id="statusDescription">Upload your documents to start the verification process</p>
+        </div>
+
+        <div class="kyc-card">
+            <h2 class="section-title">
+                <i class="fas fa-camera"></i>
+                Selfie Verification
+            </h2>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Take a clear selfie photo for identity verification. Ensure good lighting and that your face is clearly visible.
+            </div>
+
+            <div id="selfieSection" class="upload-section">
+                <div class="upload-icon">📸</div>
+                <div class="upload-title">Upload Selfie</div>
+                <div class="upload-description">
+                    Take a photo of yourself or upload an existing selfie
+                </div>
+                
+                <div class="webcam-container" id="webcamContainer" style="display: none;">
+                    <video id="webcamVideo" class="webcam-video" autoplay muted></video>
+                    <canvas id="webcamCanvas" style="display: none;"></canvas>
+                    <div class="webcam-controls">
+                        <button type="button" class="capture-btn" id="captureBtn">
+                            <i class="fas fa-camera"></i> Capture Photo
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="stopWebcamBtn">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="selfieUploadControls">
+                    <button type="button" class="btn" id="startWebcamBtn">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="uploadSelfieBtn">
+                        <i class="fas fa-upload"></i> Upload File
+                    </button>
+                </div>
+
+                <input type="file" id="selfieInput" class="file-input" accept="image/*" data-type="selfie">
+                
+                <div class="upload-requirements">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Clear photo of your face</li>
+                        <li><i class="fas fa-check"></i> Good lighting conditions</li>
+                        <li><i class="fas fa-check"></i> No sunglasses or masks</li>
+                        <li><i class="fas fa-check"></i> Maximum file size: 5MB</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="selfieFiles" class="uploaded-files"></div>
+        </div>
+
+        <div class="kyc-card">
+            <h2 class="section-title">
+                <i class="fas fa-id-card"></i>
+                Identity Documents
+            </h2>
+            
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                Upload clear photos of both sides of your government-issued ID (passport, driver's license, or national ID).
+            </div>
+
+            <div class="upload-container">
+                <div class="upload-section" onclick="document.getElementById('idFrontInput').click()">
+                    <div class="upload-icon">🆔</div>
+                    <div class="upload-title">ID Front Side</div>
+                    <div class="upload-description">
+                        Upload the front side of your ID document
+                    </div>
+                    <input type="file" id="idFrontInput" class="file-input" accept="image/*,application/pdf" data-type="id_front">
+                </div>
+
+                <div class="upload-section" onclick="document.getElementById('idBackInput').click()">
+                    <div class="upload-icon">🆔</div>
+                    <div class="upload-title">ID Back Side</div>
+                    <div class="upload-description">
+                        Upload the back side of your ID document
+                    </div>
+                    <input type="file" id="idBackInput" class="file-input" accept="image/*,application/pdf" data-type="id_back">
+                </div>
+
+                <div class="upload-section" onclick="document.getElementById('idFileInput').click()">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-title">Additional Documents</div>
+                    <div class="upload-description">
+                        Upload any additional identity documents (optional)
+                    </div>
+                    <input type="file" id="idFileInput" class="file-input" accept="image/*,application/pdf" data-type="id_file" multiple>
+                </div>
+            </div>
+
+            <div class="upload-requirements">
+                <ul>
+                    <li><i class="fas fa-check"></i> Government-issued photo ID</li>
+                    <li><i class="fas fa-check"></i> All text must be clearly readable</li>
+                    <li><i class="fas fa-check"></i> No blurred or cropped images</li>
+                    <li><i class="fas fa-check"></i> Supported formats: JPG, PNG, PDF</li>
+                    <li><i class="fas fa-check"></i> Maximum file size: 5MB per file</li>
+                </ul>
+            </div>
+
+            <div id="idFiles" class="uploaded-files"></div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Uploading document...</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <button type="button" class="btn" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let webcamStream = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadKYCStatus();
+            setupFileUploads();
+            setupWebcam();
+        });
+
+        // Load current KYC status
+        async function loadKYCStatus() {
+            try {
+                const response = await fetch('get-kyc-status.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateKYCStatus(data.status, data.documents || []);
+                }
+            } catch (error) {
+                console.error('Failed to load KYC status:', error);
+            }
+        }
+
+        // Update KYC status display
+        function updateKYCStatus(status, documents) {
+            const statusIcon = document.querySelector('.status-icon');
+            const statusText = document.getElementById('statusText');
+            const statusDescription = document.getElementById('statusDescription');
+
+            statusIcon.className = 'status-icon status-' + status;
+            
+            switch (status) {
+                case 'pending':
+                    statusIcon.innerHTML = '<i class="fas fa-clock"></i>';
+                    statusText.textContent = 'Pending';
+                    statusDescription.textContent = 'Upload your documents to start the verification process';
+                    break;
+                case 'submitted':
+                    statusIcon.innerHTML = '<i class="fas fa-hourglass-half"></i>';
+                    statusText.textContent = 'Under Review';
+                    statusDescription.textContent = 'Your documents are being reviewed by our team';
+                    break;
+                case 'approved':
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    statusText.textContent = 'Verified';
+                    statusDescription.textContent = 'Your identity has been successfully verified';
+                    break;
+                case 'rejected':
+                    statusIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                    statusText.textContent = 'Rejected';
+                    statusDescription.textContent = 'Please upload new documents or contact support';
+                    break;
+            }
+
+            // Display uploaded documents
+            displayUploadedDocuments(documents);
+        }
+
+        // Display uploaded documents
+        function displayUploadedDocuments(documents) {
+            const containers = {
+                'selfie': document.getElementById('selfieFiles'),
+                'id_front': document.getElementById('idFiles'),
+                'id_back': document.getElementById('idFiles'),
+                'id_file': document.getElementById('idFiles')
+            };
+
+            // Clear containers
+            Object.values(containers).forEach(container => {
+                if (container) container.innerHTML = '';
+            });
+
+            documents.forEach(doc => {
+                const container = containers[doc.document_type];
+                if (container) {
+                    const fileItem = createFileItem(doc);
+                    container.appendChild(fileItem);
+                }
+            });
+        }
+
+        // Create file item element
+        function createFileItem(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            const fileSize = file.file_size ? formatFileSize(file.file_size) : '';
+            const statusClass = file.status || 'pending';
+            
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    <div class="file-details">
+                        <h4>${file.file_name || file.name}</h4>
+                        <div class="file-size">${fileSize}</div>
+                    </div>
+                </div>
+                <div class="file-status ${statusClass}">${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</div>
+                ${file.id ? '' : '<button type="button" class="remove-file" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>'}
+            `;
+            
+            return fileItem;
+        }
+
+        // Setup file uploads
+        function setupFileUploads() {
+            const fileInputs = document.querySelectorAll('.file-input');
+            
+            fileInputs.forEach(input => {
+                input.addEventListener('change', handleFileUpload);
+            });
+
+            // Drag and drop for upload sections
+            const uploadSections = document.querySelectorAll('.upload-section');
+            uploadSections.forEach(section => {
+                section.addEventListener('dragover', handleDragOver);
+                section.addEventListener('dragleave', handleDragLeave);
+                section.addEventListener('drop', handleDrop);
+            });
+
+            // Upload selfie button
+            document.getElementById('uploadSelfieBtn').addEventListener('click', () => {
+                document.getElementById('selfieInput').click();
+            });
+        }
+
+        // Handle file upload
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            const documentType = event.target.dataset.type;
+            
+            for (let file of files) {
+                if (validateFile(file)) {
+                    await uploadFile(file, documentType);
+                }
+            }
+            
+            // Clear input
+            event.target.value = '';
+        }
+
+        // Validate file
+        function validateFile(file) {
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf'];
+            
+            if (file.size > maxSize) {
+                showAlert('File size too large. Maximum 5MB allowed.', 'error');
+                return false;
+            }
+            
+            if (!allowedTypes.includes(file.type)) {
+                showAlert('Invalid file type. Only images and PDF files are allowed.', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Upload file to server
+        async function uploadFile(file, documentType) {
+            const formData = new FormData();
+            formData.append('document', file);
+            formData.append('document_type', documentType);
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('kyc-upload.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Document uploaded successfully!', 'success');
+                    
+                    // Add file to display
+                    const container = getFileContainer(documentType);
+                    if (container) {
+                        const fileItem = createFileItem({
+                            name: file.name,
+                            file_size: file.size,
+                            status: 'pending'
+                        });
+                        container.appendChild(fileItem);
+                    }
+                    
+                    // Refresh status
+                    loadKYCStatus();
+                } else {
+                    showAlert(result.error || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showAlert('Upload failed. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Get file container for document type
+        function getFileContainer(documentType) {
+            switch (documentType) {
+                case 'selfie':
+                    return document.getElementById('selfieFiles');
+                case 'id_front':
+                case 'id_back':
+                case 'id_file':
+                    return document.getElementById('idFiles');
+                default:
+                    return null;
+            }
+        }
+
+        // Webcam functionality
+        function setupWebcam() {
+            const startBtn = document.getElementById('startWebcamBtn');
+            const stopBtn = document.getElementById('stopWebcamBtn');
+            const captureBtn = document.getElementById('captureBtn');
+            
+            startBtn.addEventListener('click', startWebcam);
+            stopBtn.addEventListener('click', stopWebcam);
+            captureBtn.addEventListener('click', capturePhoto);
+        }
+
+        async function startWebcam() {
+            try {
+                webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('webcamVideo');
+                video.srcObject = webcamStream;
+                
+                document.getElementById('webcamContainer').style.display = 'block';
+                document.getElementById('selfieUploadControls').style.display = 'none';
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+                showAlert('Could not access camera. Please upload a file instead.', 'warning');
+            }
+        }
+
+        function stopWebcam() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+            
+            document.getElementById('webcamContainer').style.display = 'none';
+            document.getElementById('selfieUploadControls').style.display = 'block';
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('webcamVideo');
+            const canvas = document.getElementById('webcamCanvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+            
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'selfie_capture.jpg', { type: 'image/jpeg' });
+                await uploadFile(file, 'selfie');
+                stopWebcam();
+            }, 'image/jpeg', 0.8);
+        }
+
+        // Drag and drop handlers
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            const uploadSection = event.currentTarget;
+            const fileInput = uploadSection.querySelector('.file-input');
+            
+            if (fileInput && files.length > 0) {
+                fileInput.files = files;
+                handleFileUpload({ target: fileInput });
+            }
+        }
+
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert-dynamic');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dynamic`;
+            alert.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}`;
+            
+            document.querySelector('.container').insertBefore(alert, document.querySelector('.kyc-header').nextSibling);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.style.display = show ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
