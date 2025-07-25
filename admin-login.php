@@ -74,7 +74,7 @@ try {
     respond([
         'success' => true,
         'message' => 'Login successful.',
-        'redirect' => 'admin_panel.php'
+        'redirect' => 'enhanced-admin-panel.html'
     ]);
 } catch (Exception $e) {
     log_admin_login_error("Exception during login: " . $e->getMessage());

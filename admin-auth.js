@@ -17,7 +17,7 @@ class AdminAuth {
 
     async checkAuthentication() {
         try {
-            const response = await fetch('api/admin-session-check.php');
+            const response = await fetch('admin-session-check.php');
             const data = await response.json();
 
             if (!data.success || !data.authenticated) {
@@ -157,7 +157,7 @@ class AdminAuth {
         }
 
         try {
-            const response = await fetch('api/admin-logout.php', {
+            const response = await fetch('admin-logout.php', {
                 method: 'POST'
             });
             
