@@ -1835,8 +1835,8 @@
                 <i class="fas fa-bars"></i>
             </button>
             <a href="dashboard.html" class="logo">
-                <i class="fas fa-chart-line"></i>
-                <span>CryptoTrade Pro</span>
+                <i class="fas fa-exchange-alt"></i>
+                <span>Tripple Exchange</span>
             </a>
         </div>
         <div class="user-menu">
@@ -1864,10 +1864,10 @@
 
     <!-- Menu -->
     <div id="menu">
-        <a href="./dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="./trade.html" class="active" aria-current="page"><i class="fas fa-chart-line"></i> Trade</a>
-        <a href="./wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
-        <a href="./profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="trade.html" class="active" aria-current="page"><i class="fas fa-chart-line"></i> Trade</a>
+        <a href="wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
         <a href="./activities.html"><i class="fas fa-history"></i> Activity</a>
         
         <div class="menu-divider"></div>
@@ -2167,7 +2167,7 @@
         
         let activeTrade = false;
         let countdownInterval = null;
-        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 32967.06;
+        let userBalance = 0; // Will be loaded from balance manager
         // Synchronized notification system - will be defined later
         let notificationCount = 3;
         let currentPairId = "bitcoin";
@@ -2726,10 +2726,44 @@
         
         // Update balance display
         function updateBalanceDisplay() {
-            document.getElementById('balanceDisplay').textContent = userBalance.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) + ' USDT';
+            const balanceEl = document.getElementById('balanceDisplay');
+            if (!balanceEl) return;
+            
+            if (window.balanceManager) {
+                const usdtBalance = window.balanceManager.getBalance('USDT');
+                userBalance = usdtBalance;
+                balanceEl.textContent = usdtBalance.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + ' USDT';
+                
+                // Update trade button availability based on balance
+                updateTradeButtonState();
+            } else {
+                balanceEl.textContent = '0.00 USDT';
+            }
+        }
+        
+        // Update trade button state based on balance
+        function updateTradeButtonState() {
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            if (!placeOrderBtn) return;
+            
+            const availableBalance = window.balanceManager ? window.balanceManager.getBalance('USDT') : 0;
+            const hasBalance = availableBalance > 0;
+            
+            placeOrderBtn.disabled = !hasBalance || activeTrade;
+            
+            if (!hasBalance) {
+                placeOrderBtn.textContent = 'No Funds Available';
+                placeOrderBtn.title = 'Please deposit funds to start trading';
+            } else if (activeTrade) {
+                placeOrderBtn.textContent = 'Trade in Progress';
+                placeOrderBtn.title = 'Please wait for current trade to complete';
+            } else {
+                placeOrderBtn.textContent = 'Place Order';
+                placeOrderBtn.title = 'Click to place your trade order';
+            }
         }
         
         // Update pair display everywhere
@@ -2907,8 +2941,15 @@
                     throw new Error('Please select an investment amount');
                 }
                 
-                if (selectedContract.amount > userBalance) {
-                    throw new Error('Insufficient balance');
+                // Check balance using balance manager
+                const availableBalance = window.balanceManager ? window.balanceManager.getBalance('USDT') : userBalance;
+                
+                if (selectedContract.amount > availableBalance) {
+                    throw new Error(`Insufficient balance. Available: $${availableBalance.toFixed(2)}`);
+                }
+                
+                if (availableBalance <= 0) {
+                    throw new Error('No funds available. Please deposit funds to start trading.');
                 }
                 
                 // Set active trade
@@ -2919,7 +2960,10 @@
                 
                 // Deduct from balance using balance manager
                 if (window.balanceManager) {
-                    window.balanceManager.subtractBalance(selectedContract.amount);
+                    const success = window.balanceManager.subtractBalance('USDT', selectedContract.amount);
+                    if (!success) {
+                        throw new Error('Failed to deduct balance. Please try again.');
+                    }
                 } else {
                     console.warn('Balance manager not available');
                 }
@@ -3042,20 +3086,37 @@
             // Calculate guaranteed profit based on the selected yield
             const profit = (selectedContract.amount * selectedContract.yield) / 100;
             
-            // Add investment and profit back to balance
-            userBalance = parseFloat((userBalance + selectedContract.amount + profit).toFixed(2));
+            // Update balance using balance manager
+            if (window.balanceManager) {
+                // Add back the original investment plus profit
+                const totalReturn = selectedContract.amount + profit;
+                window.balanceManager.addBalance('USDT', totalReturn);
+            } else {
+                // Fallback to old method
+                userBalance = parseFloat((userBalance + selectedContract.amount + profit).toFixed(2));
+                updateBalance(userBalance);
+            }
             
-            // Save the updated balance
-            updateBalance(userBalance);
+            // Update balance display
+            updateBalanceDisplay();
             
-            // Add notification for successful trade
+            // Show success notification using notification manager
+            if (window.notificationManager) {
+                window.notificationManager.showToast(
+                    'Trade Completed!',
+                    `You earned $${profit.toFixed(2)} USDT profit from your ${selectedContract.amount} USDT investment.`,
+                    'success'
+                );
+            }
+            
+            // Add notification for successful trade (legacy system)
             addNotification(
                 'Trade Successful', 
                 `You earned ${profit.toFixed(2)} USDT profit`,
                 'fas fa-check-circle success'
             );
             
-            // Show trade result modal
+            // Show trade result modal with detailed information
             showTradeResult(profit, tradeSuccess);
             
             // Log the trade for admin review

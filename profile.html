@@ -1395,24 +1395,24 @@
             <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
-            <a href="/" class="logo">
-                <i class="fas fa-chart-line"></i>
-                <span>CryptoTrade Pro</span>
+            <a href="dashboard.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Tripple Exchange</span>
             </a>
             <div class="user-menu">
                 <button class="notifications-btn" id="notificationsBtn" aria-label="Notifications">
                     <i class="far fa-bell"></i>
                     <span class="notification-badge">3</span>
                 </button>
-                <div class="user-avatar" id="userAvatar" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="User menu">
+                <div class="user-avatar" id="userAvatar" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" aria-label="User menu" data-user-avatar>
                     JD
                 </div>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-dropdown-header">
-                        <div class="user-dropdown-avatar">JD</div>
+                        <div class="user-dropdown-avatar" data-user-avatar>JD</div>
                         <div class="user-dropdown-info">
-                            <div class="user-dropdown-name">John Doe</div>
-                            <div class="user-dropdown-email">john.doe@cryptotrade.pro</div>
+                            <div class="user-dropdown-name" data-user-name>John Doe</div>
+                            <div class="user-dropdown-email" data-user-email>john.doe@cryptotrade.pro</div>
                         </div>
                     </div>
                     <div class="user-dropdown-divider"></div>
@@ -1436,11 +1436,11 @@
 
     <!-- Menu -->
     <div id="menu">
-        <a href="./dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="./trade.html"><i class="fas fa-chart-line"></i> Trade</a>
-        <a href="./wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
-        <a href="./profile.html" class="active" aria-current="page"><i class="fas fa-user"></i> Profile</a>
-        <a href="./activities.html"><i class="fas fa-history"></i> Activity</a>
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="trade.html"><i class="fas fa-chart-line"></i> Trade</a>
+        <a href="wallet.html"><i class="fas fa-wallet"></i> Wallet</a>
+        <a href="profile.html" class="active" aria-current="page"><i class="fas fa-user"></i> Profile</a>
+        <a href="activities.html"><i class="fas fa-history"></i> Activity</a>
         
         <div class="menu-divider"></div>
         
@@ -1467,8 +1467,8 @@
                 </div>
             </div>
             <div class="profile-info">
-                <h1 class="profile-name">John Doe</h1>
-                <div class="profile-email">john.doe@cryptotrade.pro</div>
+                <h1 class="profile-name" data-user-name>John Doe</h1>
+                <div class="profile-email" data-user-email>john.doe@cryptotrade.pro</div>
                 <div class="verification-badge">
                     <i class="fas fa-shield-alt"></i>
                     Verified Account
@@ -1476,7 +1476,7 @@
             </div>
             <div class="profile-stats">
                 <div class="stat-card">
-                    <div class="stat-value">$32,967</div>
+                    <div class="stat-value" data-total-balance>$32,967</div>
                     <div class="stat-label">Balance</div>
                 </div>
                 <div class="stat-card">
@@ -1499,12 +1499,12 @@
                 <div class="info-grid" id="profileInfoGrid">
                     <div class="info-item">
                         <div class="info-label">Full Name</div>
-                        <div class="info-value" data-field="fullName">John Doe</div>
+                        <div class="info-value" data-field="fullName" data-user-name>John Doe</div>
                         <input type="text" class="info-edit" data-field="fullName" value="John Doe" style="display: none;">
                     </div>
                     <div class="info-item">
                         <div class="info-label">Email</div>
-                        <div class="info-value" data-field="email">john.doe@cryptotrade.pro</div>
+                        <div class="info-value" data-field="email" data-user-email>john.doe@cryptotrade.pro</div>
                         <input type="email" class="info-edit" data-field="email" value="john.doe@cryptotrade.pro" style="display: none;">
                     </div>
                     <div class="info-item">
@@ -1526,7 +1526,7 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">Account ID</div>
-                        <div class="info-value">CTP-8596-7342</div>
+                        <div class="info-value" data-account-id>CTP-8596-7342</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Member Since</div>
@@ -1677,6 +1677,11 @@
             
             // Initialize UI components
             initUIComponents();
+            
+            // Load user profile data after auth is ready
+            setTimeout(async () => {
+                await loadUserProfile();
+            }, 1000);
         });
         
         // Initialize loading system
@@ -1720,16 +1725,49 @@
             }, 300);
         }
         
-        // User profile data
-        let userProfile = {
-            fullName: 'John Doe',
-            email: 'john.doe@cryptotrade.pro',
-            phone: '+1 (555) 123-4567',
-            country: 'United States',
-            accountId: 'CTP-8596-7342',
-            memberSince: 'Jan 15, 2022',
-            creditScore: 100
-        };
+        // User profile data - will be loaded from server
+        let userProfile = {};
+
+        // Load user profile from server
+        async function loadUserProfile() {
+            try {
+                if (window.authManager && window.authManager.isAuthenticated) {
+                    const profile = await window.authManager.getUserProfile();
+                    if (profile) {
+                        userProfile = profile;
+                        updateProfileDisplay();
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load user profile:', error);
+                // Fallback to default values
+                userProfile = {
+                    fullName: 'User',
+                    email: 'user@trippleexchange.com',
+                    phone: '+1 (555) 000-0000',
+                    country: 'United States',
+                    accountId: 'CTP-0001-0000',
+                    memberSince: 'Recently',
+                    creditScore: 100
+                };
+                updateProfileDisplay();
+            }
+        }
+
+        // Update profile display with real data
+        function updateProfileDisplay() {
+            // Update all profile fields
+            Object.keys(userProfile).forEach(field => {
+                const elements = document.querySelectorAll(`[data-field="${field}"]`);
+                elements.forEach(el => {
+                    if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+                        el.value = userProfile[field];
+                    } else {
+                        el.textContent = userProfile[field];
+                    }
+                });
+            });
+        }
 
         // Initialize UI components
         function initUIComponents() {
