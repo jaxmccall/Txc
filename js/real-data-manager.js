@@ -258,33 +258,55 @@ class RealDataManager {
      */
     updateProfileUI(userData) {
         const user = userData.user;
-        const fields = ['username', 'email', 'first_name', 'last_name', 'phone', 'country', 'wallet_address'];
+        const activity = userData.activity || {};
         
-        fields.forEach(field => {
+        // Handle combined full name field
+        const fullName = user.first_name && user.last_name ? 
+            `${user.first_name} ${user.last_name}` : 
+            (user.first_name || user.last_name || user.username);
+        
+        const fields = {
+            'full_name': fullName,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'phone': user.phone,
+            'country': user.country,
+            'wallet_address': user.wallet_address,
+            'kyc_status': user.kyc_status,
+            'account_score': user.account_score !== undefined ? user.account_score + '%' : '0%',
+            'created_at': user.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown',
+            'total_deposits': activity.total_deposits ? `$${parseFloat(activity.total_deposits).toFixed(2)}` : '$0.00',
+            'total_withdrawals': activity.total_withdrawals ? `$${parseFloat(activity.total_withdrawals).toFixed(2)}` : '$0.00',
+            'total_transactions': activity.total_transactions || '0'
+        };
+        
+        Object.entries(fields).forEach(([field, value]) => {
             const element = document.querySelector(`[data-field="${field}"]`) || 
                            document.getElementById(field) ||
                            document.querySelector(`input[name="${field}"]`);
             
-            if (element && user[field]) {
-                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                    element.value = user[field];
+            if (element && value !== undefined && value !== null) {
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
+                    element.value = value;
                 } else {
-                    element.textContent = user[field];
+                    element.textContent = value;
                 }
             }
         });
 
-        // Update KYC status
+        // Update KYC status with proper styling
         const kycElement = document.querySelector('[data-field="kyc_status"]');
         if (kycElement && user.kyc_status) {
-            kycElement.textContent = user.kyc_status.charAt(0).toUpperCase() + user.kyc_status.slice(1);
-            kycElement.className = `status ${user.kyc_status}`;
+            const status = user.kyc_status.charAt(0).toUpperCase() + user.kyc_status.slice(1);
+            kycElement.textContent = status;
+            kycElement.className = `info-value status-${user.kyc_status}`;
         }
 
-        // Update account score
-        const scoreElement = document.querySelector('[data-field="account_score"]');
-        if (scoreElement && user.account_score !== undefined) {
-            scoreElement.textContent = user.account_score + '%';
+        // Update activity summary
+        if (userData.recent_transactions) {
+            this.updateRecentActivity(userData.recent_transactions);
         }
     }
 
