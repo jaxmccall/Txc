@@ -8,8 +8,8 @@ error_reporting(E_ALL);
 session_start();
 error_log("DEBUG: SESSION=" . print_r($_SESSION, true));
 
-// Admin session check: loose, robust
-if (empty($_SESSION['admin_logged_in'])) {
+// Admin session check: standardized validation
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true || empty($_SESSION['admin_id'])) {
     error_log("[" . date('Y-m-d H:i:s') . "] Access denied: Not logged in. IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
     header('Location: admin-login.html');
     exit;
@@ -58,7 +58,7 @@ error_log("[" . date('Y-m-d H:i:s') . "] Session valid for admin: $admin_usernam
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <span class="navbar-brand">Admin Panel</span>
-        <form class="d-flex ms-auto" method="post" action="logout.php">
+        <form class="d-flex ms-auto" method="post" action="admin-logout.php">
             <button class="btn btn-sm logout-btn" type="submit">Logout</button>
         </form>
     </div>

@@ -2,8 +2,8 @@
 session_start();
 require_once 'db-connect.php';
 
-// Restrict access to logged-in admins only (not impersonated users)
-if (empty($_SESSION['admin_id']) || !empty($_SESSION['is_impersonated'])) {
+// Check admin session - standardized validation
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true || empty($_SESSION['admin_id'])) {
     header('Location: admin-login.html');
     exit;
 }
@@ -150,7 +150,7 @@ try {
   <div class="dashboard-container">
     <div class="header">
       <h1>Welcome, <?php echo htmlspecialchars($adminName); ?></h1>
-      <a href="logout.php" class="btn-logout">Logout</a>
+      <a href="admin-logout.php" class="btn-logout">Logout</a>
     </div>
     <div class="stats-grid">
       <div class="card">
