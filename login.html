@@ -686,8 +686,30 @@
                 return isValid;
             }
             
-            function showError(message) {
-                errorMessage.textContent = message;
+            function showError(message, errors = null) {
+                // Handle different types of errors
+                let displayMessage = message;
+                
+                if (errors && typeof errors === 'object') {
+                    // Show specific field errors if available
+                    if (errors.email) {
+                        displayMessage = errors.email;
+                        emailInput.focus();
+                        emailInput.style.borderColor = 'var(--error)';
+                    } else if (errors.password) {
+                        displayMessage = errors.password;
+                        passwordInput.focus();
+                        passwordInput.style.borderColor = 'var(--error)';
+                    } else if (errors.general) {
+                        displayMessage = errors.general;
+                    } else {
+                        // Show first available error
+                        const firstError = Object.values(errors)[0];
+                        if (firstError) displayMessage = firstError;
+                    }
+                }
+                
+                errorMessage.textContent = displayMessage;
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
             }
@@ -701,6 +723,9 @@
             function hideMessages() {
                 errorMessage.style.display = 'none';
                 successMessage.style.display = 'none';
+                // Reset input border colors
+                emailInput.style.borderColor = 'var(--border)';
+                passwordInput.style.borderColor = 'var(--border)';
             }
             
             function setLoading(isLoading) {
@@ -752,6 +777,10 @@
                         credentials: 'same-origin'
                     });
                     
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
                     const result = await response.json();
                     
                     if (result.success) {
@@ -762,12 +791,26 @@
                             window.location.href = 'dashboard.html';
                         }, 1000);
                     } else {
-                        showError(result.message || 'Login failed. Please check your credentials.');
+                        // Handle specific error types
+                        if (result.errors) {
+                            showError(result.message || 'Login failed', result.errors);
+                        } else {
+                            showError(result.message || 'Login failed. Please check your credentials.');
+                        }
+                        console.error('Login failed:', result);
                     }
                     
                 } catch (error) {
                     console.error('Login error:', error);
-                    showError('Login failed. Please check your connection and try again.');
+                    let errorMessage = 'Login failed. Please check your connection and try again.';
+                    
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        errorMessage = 'Network error. Please check your internet connection.';
+                    } else if (error.message.includes('HTTP error')) {
+                        errorMessage = 'Server error. Please try again later.';
+                    }
+                    
+                    showError(errorMessage);
                 } finally {
                     setLoading(false);
                 }
