@@ -1548,6 +1548,34 @@
                         <div class="info-label">Member Since</div>
                         <div class="info-value" data-field="created_at">Loading...</div>
                     </div>
+                    <div class="info-item">
+                        <div class="info-label">Account Status</div>
+                        <div class="info-value">
+                            <span class="badge kyc-approved">Active</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">KYC Status</div>
+                        <div class="info-value">
+                            <span class="badge kyc-approved">Verified</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Login</div>
+                        <div class="info-value">Today at 09:42 AM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">IP Address</div>
+                        <div class="info-value">192.168.1.100</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Location</div>
+                        <div class="info-value">New York, United States</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Referral Code</div>
+                        <div class="info-value">JD123456</div>
+                    </div>
                 </div>
                 <div class="form-actions" style="display: none; margin-top: 1.5rem; justify-content: flex-end; gap: 1rem;" id="profileFormActions">
                     <button class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
@@ -1693,7 +1721,16 @@
             country: 'United States',
             accountId: 'CTP-8596-7342',
             memberSince: 'Jan 15, 2022',
-            creditScore: 100
+            creditScore: 100,
+            kycStatus: 'approved',
+            accountStatus: 'active',
+            walletBalance: 32967.00,
+            totalTrades: 128,
+            lastLogin: 'Today at 09:42 AM',
+            ipAddress: '192.168.1.100',
+            location: 'New York, United States',
+            referralCode: 'JD123456',
+            twoFactorEnabled: true
         };
 
         // Initialize UI components
